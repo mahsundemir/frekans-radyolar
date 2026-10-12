@@ -1,0 +1,54 @@
+{
+  "version": 3,
+  "updatedAt": "2026-10-13T09:00:00Z",
+  "languages": [
+    {
+      "code": "tr",
+      "name": "Türkçe",
+      "categories": [
+        {
+          "id": "pop",
+          "name": "Pop",
+          "color": "#FF5B4A",
+          "stations": [
+            { "id": "power-turk", "name": "Power Türk", "short": "PT", "streamUrl": "", "metadata": "icy" },
+            { "id": "kral-fm", "name": "Kral FM", "short": "KF", "streamUrl": "", "metadata": "icy" }
+          ]
+        },
+        {
+          "id": "rock",
+          "name": "Rock & Alternatif",
+          "color": "#6A47FF",
+          "stations": [
+            { "id": "virgin-radio", "name": "Virgin Radio", "short": "VR", "streamUrl": "", "metadata": "icy" },
+            { "id": "radyo-eksen", "name": "Radyo Eksen", "short": "RE", "streamUrl": "", "metadata": "icy" }
+          ]
+        },
+        {
+          "id": "slow",
+          "name": "Slow",
+          "color": "#FF6FB5",
+          "stations": [
+            { "id": "slow-turk", "name": "Slow Türk", "short": "ST", "streamUrl": "", "metadata": "icy" }
+          ]
+        },
+        {
+          "id": "halk-sanat",
+          "name": "Halk & Sanat",
+          "color": "#2DD4A8",
+          "stations": [
+            { "id": "trt-nagme", "name": "TRT Nağme", "short": "TN", "streamUrl": "", "metadata": "icy" }
+          ]
+        },
+        {
+          "id": "haber",
+          "name": "Haber",
+          "color": "#34C8FF",
+          "stations": [
+            { "id": "ntv-radyo", "name": "NTV Radyo", "short": "NR", "streamUrl": "", "metadata": "none" }
+          ]
+        }
+      ]
+    }
+  ]
+}
