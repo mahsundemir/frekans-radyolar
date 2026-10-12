@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "updatedAt": "2026-10-13T09:00:00Z",
+  "version": 4,
+  "updatedAt": "2026-10-12T21:09:53Z",
   "languages": [
     {
       "code": "tr",
@@ -11,8 +11,132 @@
           "name": "Pop",
           "color": "#FF5B4A",
           "stations": [
-            { "id": "power-turk", "name": "Power Türk", "short": "PT", "streamUrl": "", "metadata": "icy" },
-            { "id": "kral-fm", "name": "Kral FM", "short": "KF", "streamUrl": "", "metadata": "icy" }
+            {
+              "id": "power-turk",
+              "name": "Power Türk",
+              "short": "PT",
+              "streamUrl": "https://live.powerapp.com.tr/powerturk/abr/powerturk/128/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "power-pop",
+              "name": "Power Pop",
+              "short": "PP",
+              "streamUrl": "https://listen.powerapp.com.tr/powerpop/128/chunks.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "super-fm",
+              "name": "Süper FM",
+              "short": "SF",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "radyo-fenomen",
+              "name": "Radyo Fenomen",
+              "short": "RF",
+              "streamUrl": "https://live.radyofenomen.com/fenomen/128/icecast.audio",
+              "metadata": "none"
+            },
+            {
+              "id": "kral-fm",
+              "name": "Kral FM",
+              "short": "KF",
+              "streamUrl": "https://dygedge2.radyotvonline.net/kralfm/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "alem-fm",
+              "name": "Alem FM",
+              "short": "AF",
+              "streamUrl": "https://turkmedya.radyotvonline.net/alemfmaac",
+              "metadata": "icy"
+            },
+            {
+              "id": "radyo-d",
+              "name": "Radyo D",
+              "short": "RD",
+              "streamUrl": "https://moondigitaledge2.radyotvonline.net/radyod/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "kiss-turk",
+              "name": "Kiss Türk",
+              "short": "KT",
+              "streamUrl": "https://kiss.radyotvonline.net/kissturk",
+              "metadata": "icy"
+            },
+            {
+              "id": "best-fm",
+              "name": "Best FM",
+              "short": "BF",
+              "streamUrl": "https://ssldyg.radyotvonline.com/best/bestfm.stream/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "pal-fm",
+              "name": "Pal FM",
+              "short": "PF",
+              "streamUrl": "https://ssl4.radyotvonline.com/radyohome/palfmhome.stream/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "show-radyo",
+              "name": "Show Radyo",
+              "short": "SR",
+              "streamUrl": "https://moondigitaledge.radyotvonline.net/show/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "radyo-turkuvaz",
+              "name": "Radyo Turkuvaz",
+              "short": "RT",
+              "streamUrl": "https://trkvz-radyolar.ercdn.net/radyoturkuvaz/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "radyo-viva",
+              "name": "Radyo Viva",
+              "short": "RV",
+              "streamUrl": "https://moondigitaledge.radyotvonline.net/radyoviva/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "trt-fm",
+              "name": "TRT FM",
+              "short": "TF",
+              "streamUrl": "https://trt.radyotvonline.net/trtfm",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "yabanci-pop",
+          "name": "Yabancı Pop",
+          "color": "#FFB020",
+          "stations": [
+            {
+              "id": "metro-fm",
+              "name": "Metro FM",
+              "short": "MF",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "joy-fm",
+              "name": "Joy FM",
+              "short": "JF",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FMAAC_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "radyo-mydonose",
+              "name": "Radyo Mydonose",
+              "short": "RM",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_MYDONOSE128AAC.aac",
+              "metadata": "icy"
+            }
           ]
         },
         {
@@ -20,8 +144,34 @@
           "name": "Rock & Alternatif",
           "color": "#6A47FF",
           "stations": [
-            { "id": "virgin-radio", "name": "Virgin Radio", "short": "VR", "streamUrl": "", "metadata": "icy" },
-            { "id": "radyo-eksen", "name": "Radyo Eksen", "short": "RE", "streamUrl": "", "metadata": "icy" }
+            {
+              "id": "virgin-radio",
+              "name": "Virgin Radio",
+              "short": "VR",
+              "streamUrl": "https://25503.live.streamtheworld.com/VIRGIN_RADIOAAC_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "radyo-eksen",
+              "name": "Radyo Eksen",
+              "short": "RE",
+              "streamUrl": "https://dygedge.radyotvonline.net/radyoeksen/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "joy-turk-rock",
+              "name": "Joy Türk Rock",
+              "short": "JT",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_ROCK_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "radyo-odtu-rock",
+              "name": "Radyo ODTÜ Rock",
+              "short": "RO",
+              "streamUrl": "https://stream.radyoodtu.com.tr/rock",
+              "metadata": "icy"
+            }
           ]
         },
         {
@@ -29,7 +179,139 @@
           "name": "Slow",
           "color": "#FF6FB5",
           "stations": [
-            { "id": "slow-turk", "name": "Slow Türk", "short": "ST", "streamUrl": "", "metadata": "icy" }
+            {
+              "id": "slow-turk",
+              "name": "Slow Türk",
+              "short": "ST",
+              "streamUrl": "https://radyo.duhnet.tv/ak_dtvh_slowturk",
+              "metadata": "icy"
+            },
+            {
+              "id": "joy-turk",
+              "name": "Joy Türk",
+              "short": "JT",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_TURK_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "hayatmix-slow",
+              "name": "HayatMix Slow",
+              "short": "HS",
+              "streamUrl": "https://radyo.yayin.com.tr:4090/mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "power-love",
+              "name": "Power Love",
+              "short": "PL",
+              "streamUrl": "https://listen.powerapp.com.tr/powerlove/abr/powerlove/128/playlist.m3u8",
+              "metadata": "hls"
+            }
+          ]
+        },
+        {
+          "id": "arabesk",
+          "name": "Arabesk",
+          "color": "#C8F560",
+          "stations": [
+            {
+              "id": "arabesk-fm",
+              "name": "Arabesk FM",
+              "short": "AF",
+              "streamUrl": "https://yayin.arabeskfm.biz:8042/",
+              "metadata": "icy"
+            },
+            {
+              "id": "damar-turk-fm",
+              "name": "Damar Türk FM",
+              "short": "DT",
+              "streamUrl": "https://live.radyositesihazir.com:10997/",
+              "metadata": "icy"
+            },
+            {
+              "id": "kral-turk-fm",
+              "name": "Kral Türk FM",
+              "short": "KT",
+              "streamUrl": "https://live.radyositesihazir.com/8032/stream",
+              "metadata": "icy"
+            },
+            {
+              "id": "radyo-seymen",
+              "name": "Radyo Seymen",
+              "short": "RS",
+              "streamUrl": "https://yayin.radyoseymen.com.tr:1070/stream",
+              "metadata": "icy"
+            },
+            {
+              "id": "silhoutte-arabesk-fm",
+              "name": "Silhoutte Arabesk FM",
+              "short": "SA",
+              "streamUrl": "https://yayin.radyoarabesk.com.tr:8000/stream",
+              "metadata": "icy"
+            },
+            {
+              "id": "baba-radyo",
+              "name": "Baba Radyo",
+              "short": "BR",
+              "streamUrl": "https://babaradyo.turkhosted.com/best/babaradyo.stream/playlist.m3u8",
+              "metadata": "hls"
+            }
+          ]
+        },
+        {
+          "id": "nostalji",
+          "name": "Nostalji",
+          "color": "#FF8A3D",
+          "stations": [
+            {
+              "id": "altin-sarkilar",
+              "name": "Altın Şarkılar",
+              "short": "AŞ",
+              "streamUrl": "https://moondigitalmaster.radyotvonline.net/altinsarkilar/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "efsane-4-lu",
+              "name": "Efsane 4'lü",
+              "short": "E4",
+              "streamUrl": "https://moondigitalmaster.radyotvonline.net/efsane4lu/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "retro-turk",
+              "name": "Retro Türk",
+              "short": "RT",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/RETROTURKAAC_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "radyo-45-lik",
+              "name": "Radyo 45'lik",
+              "short": "R4",
+              "streamUrl": "https://stream.radyo45lik.com:4545/",
+              "metadata": "icy"
+            },
+            {
+              "id": "90-lar-pop",
+              "name": "90'lar Pop",
+              "short": "9L",
+              "streamUrl": "https://moondigitaledge.radyotvonline.net/radyolanddoksanlar/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "pal-nostalji",
+              "name": "Pal Nostalji",
+              "short": "PN",
+              "streamUrl": "https://moondigitaledge.radyotvonline.net/palnostalji/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "radyo-dejavu",
+              "name": "Radyo Dejavu",
+              "short": "RD",
+              "streamUrl": "https://radyodejavu.80.yayin.com.tr",
+              "metadata": "icy"
+            }
           ]
         },
         {
@@ -37,7 +319,48 @@
           "name": "Halk & Sanat",
           "color": "#2DD4A8",
           "stations": [
-            { "id": "trt-nagme", "name": "TRT Nağme", "short": "TN", "streamUrl": "", "metadata": "icy" }
+            {
+              "id": "trt-nagme",
+              "name": "TRT Nağme",
+              "short": "TN",
+              "streamUrl": "https://tv-trtmuzik.medya.trt.com.tr/master_720.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "trt-turku",
+              "name": "TRT Türkü",
+              "short": "TT",
+              "streamUrl": "https://rd-trtturku.medya.trt.com.tr/master_128.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "radyo-siran",
+              "name": "Radyo Şiran",
+              "short": "RŞ",
+              "streamUrl": "https://live.radyositesihazir.com/8078/stream",
+              "metadata": "icy"
+            },
+            {
+              "id": "ege-havalari",
+              "name": "Ege Havaları",
+              "short": "EH",
+              "streamUrl": "https://moondigitalmaster.radyotvonline.net/egehavalari/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "turkuvaz-anadolu",
+              "name": "Turkuvaz Anadolu",
+              "short": "TA",
+              "streamUrl": "https://trkvz-radyolar.ercdn.net/turkuvazanadolu/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "halk-radyo",
+              "name": "Halk Radyo",
+              "short": "HR",
+              "streamUrl": "https://anadolu.liderhost.com.tr:10876/;",
+              "metadata": "icy"
+            }
           ]
         },
         {
@@ -45,7 +368,222 @@
           "name": "Haber",
           "color": "#34C8FF",
           "stations": [
-            { "id": "ntv-radyo", "name": "NTV Radyo", "short": "NR", "streamUrl": "", "metadata": "none" }
+            {
+              "id": "ntv-radyo",
+              "name": "NTV Radyo",
+              "short": "NR",
+              "streamUrl": "https://dygedge.radyotvonline.net/ntvradyo/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "a-haber",
+              "name": "A Haber",
+              "short": "AH",
+              "streamUrl": "https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "trt-radyo-haber",
+              "name": "TRT Radyo Haber",
+              "short": "TR",
+              "streamUrl": "https://radio-trtradyohaber.live.trt.com.tr/master.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "haberturk-radyo",
+              "name": "Habertürk Radyo",
+              "short": "HR",
+              "streamUrl": "https://haberturkradyo.radyotvonline.net/haberturkradyo",
+              "metadata": "none"
+            },
+            {
+              "id": "cnn-turk-radyo",
+              "name": "CNN Türk Radyo",
+              "short": "CT",
+              "streamUrl": "https://moondigitaledge2.radyotvonline.net/cnnturk/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "bloomberg-ht-radyo",
+              "name": "Bloomberg HT Radyo",
+              "short": "BH",
+              "streamUrl": "https://ciner-live.ercdn.net/bloombergradyo/bloombergradyo_1.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "trt-radyo-1",
+              "name": "TRT Radyo 1",
+              "short": "TR",
+              "streamUrl": "https://trt.radyotvonline.net/trt1",
+              "metadata": "icy"
+            },
+            {
+              "id": "tgrt-fm",
+              "name": "TGRT FM",
+              "short": "TF",
+              "streamUrl": "https://icecasttgrt.ihlasdigitalassets.com/tgrtfm",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "spor",
+          "name": "Spor",
+          "color": "#4ADE80",
+          "stations": [
+            {
+              "id": "a-spor",
+              "name": "A Spor",
+              "short": "AS",
+              "streamUrl": "https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "radyo-spor",
+              "name": "Radyo Spor",
+              "short": "RS",
+              "streamUrl": "https://moondigitaledge.radyotvonline.net/radyospor/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "radyo-gol",
+              "name": "Radyo Gol",
+              "short": "RG",
+              "streamUrl": "https://edge1.radyotvonline.net/shoutcast/play/radyogol",
+              "metadata": "none"
+            }
+          ]
+        },
+        {
+          "id": "dans",
+          "name": "Dans & Elektronik",
+          "color": "#E040FB",
+          "stations": [
+            {
+              "id": "power-turk-dans",
+              "name": "Power Türk Dans",
+              "short": "PT",
+              "streamUrl": "https://listen.powerapp.com.tr/powerturkdans/abr/powerturkdans/128/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "fenomen-dans",
+              "name": "Fenomen Dans",
+              "short": "FD",
+              "streamUrl": "https://live.radyofenomen.com/fenomendans/abr/fenomendans/128/chunks.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "radyo-fenomen-clubbin",
+              "name": "Radyo Fenomen Clubbin",
+              "short": "RF",
+              "streamUrl": "https://live.radyofenomen.com/fenomenclubbin/128/icecast.audio",
+              "metadata": "none"
+            },
+            {
+              "id": "power-dance",
+              "name": "Power Dance",
+              "short": "PD",
+              "streamUrl": "https://listen.powerapp.com.tr/powerdance/abr/powerdance/128/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "danceland",
+              "name": "Danceland",
+              "short": "DA",
+              "streamUrl": "https://moondigitaledge.radyotvonline.net/danceland/playlist.m3u8",
+              "metadata": "hls"
+            }
+          ]
+        },
+        {
+          "id": "klasik",
+          "name": "Klasik & Caz",
+          "color": "#9AA5FF",
+          "stations": [
+            {
+              "id": "trt-3",
+              "name": "TRT 3",
+              "short": "T3",
+              "streamUrl": "https://rd-trtradyo3.medya.trt.com.tr/master.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "borusan-klasik",
+              "name": "Borusan Klasik",
+              "short": "BK",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/BORUSAN_KLASIKAAC_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "classicland",
+              "name": "Classicland",
+              "short": "CL",
+              "streamUrl": "https://moondigitaledge.radyotvonline.net/classicland/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "home-klasik",
+              "name": "Home Klasik",
+              "short": "HK",
+              "streamUrl": "https://ssl4.radyotvonline.com/radyohome/klasikhome.stream_aac/playlist.m3u8",
+              "metadata": "hls"
+            }
+          ]
+        },
+        {
+          "id": "dini",
+          "name": "Dini",
+          "color": "#B8C0CC",
+          "stations": [
+            {
+              "id": "diyanet-radyo",
+              "name": "Diyanet Radyo",
+              "short": "DR",
+              "streamUrl": "https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1171d7d2a.smil/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "diyanet-kur-an-radyo",
+              "name": "Diyanet Kur'an Radyo",
+              "short": "DK",
+              "streamUrl": "https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c14192aa92.smil/playlist.m3u8",
+              "metadata": "hls"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "ku",
+      "name": "Kürtçe",
+      "categories": [
+        {
+          "id": "haber-kultur",
+          "name": "Haber & Kültür",
+          "color": "#34C8FF",
+          "stations": [
+            {
+              "id": "trt-kurd",
+              "name": "TRT Kurdî",
+              "short": "TK",
+              "streamUrl": "https://radio-trtradyo6.medya.trt.com.tr/master.m3u8",
+              "metadata": "hls"
+            }
+          ]
+        },
+        {
+          "id": "halk",
+          "name": "Halk Müziği",
+          "color": "#2DD4A8",
+          "stations": [
+            {
+              "id": "gundi-fm",
+              "name": "Gundi FM",
+              "short": "GF",
+              "streamUrl": "https://gundifm.ozelip.com:7830/;",
+              "metadata": "icy"
+            }
           ]
         }
       ]
