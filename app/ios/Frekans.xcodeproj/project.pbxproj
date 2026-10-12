@@ -19,6 +19,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		92C7DE5C5B342887101A0098 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80C468EB5C2421A508DD416B /* Foundation.framework */; };
 		9343D59B7F0735EA969BEB2A /* FrekansIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98505B08BAE1C240E42A91F6 /* FrekansIntents.swift */; };
+		B3D432C41BB87D6BAD6272F2 /* BricolageGrotesque-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 738C7457B21A3E94DD0AC724 /* BricolageGrotesque-ExtraBold.ttf */; };
 		B6D8002E170C5B5EDEF67ACA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E696C004DCB403AEAD8E4D89 /* SwiftUI.framework */; };
 		C5BA459B23E778C1D73A3F7A /* FrekansIslandBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3230762CF965932FC68370C /* FrekansIslandBundle.swift */; };
 		D9750DF2E813A550D0BA15DA /* FrekansIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98505B08BAE1C240E42A91F6 /* FrekansIntents.swift */; };
@@ -59,6 +60,7 @@
 		3B4392A12AC88292D35C810B /* Pods-Frekans.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Frekans.debug.xcconfig"; path = "Target Support Files/Pods-Frekans/Pods-Frekans.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Frekans.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Frekans.release.xcconfig"; path = "Target Support Files/Pods-Frekans/Pods-Frekans.release.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-Frekans.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Frekans.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		738C7457B21A3E94DD0AC724 /* BricolageGrotesque-ExtraBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "BricolageGrotesque-ExtraBold.ttf"; path = "../assets/fonts/BricolageGrotesque-ExtraBold.ttf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Frekans/AppDelegate.swift; sourceTree = "<group>"; };
 		765506F5E89DA46D3E255077 /* LiveActivityManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Frekans/LiveActivityManager.swift; sourceTree = "<group>"; };
 		80C468EB5C2421A508DD416B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -149,6 +151,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				260A2C25F64173C1E6FD0C67 /* FrekansIsland */,
+				738C7457B21A3E94DD0AC724 /* BricolageGrotesque-ExtraBold.ttf */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				6D7BBA23F49B860DD7E4E73F /* PrivacyInfo.xcprivacy in Resources */,
+				B3D432C41BB87D6BAD6272F2 /* BricolageGrotesque-ExtraBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

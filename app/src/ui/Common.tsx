@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import {colors} from '../theme';
 
-export const FONT_DISPLAY = {fontWeight: '800' as const, letterSpacing: -1};
+// Başlık yazı tipi: Bricolage Grotesque ExtraBold (assets/fonts, her iki uygulamaya gömülü)
+export const FONT_DISPLAY = {fontFamily: 'BricolageGrotesque-ExtraBold', letterSpacing: -1};
 
 // Yeni renge 500 ms'de geçen animasyonlu renk
 export function useColorTransition(target: string) {

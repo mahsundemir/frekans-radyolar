@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D4B563DFC469F018791595A /* BricolageGrotesque-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9CDFE6D032C1CF4345ECF9F3 /* BricolageGrotesque-ExtraBold.ttf */; };
 		5142014D2437B4B30078DB4F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5142014C2437B4B30078DB4F /* AppDelegate.swift */; };
 		514201522437B4B40078DB4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 514201512437B4B40078DB4F /* Assets.xcassets */; };
 		973CE9A9E8704CDF2617CFA6 /* libPods-Frekans-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16983611F3BCF7190A21B47B /* libPods-Frekans-macOS.a */; };
@@ -23,6 +24,7 @@
 		514201512437B4B40078DB4F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		514201562437B4B40078DB4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		514201592437B4B40078DB4F /* Frekans.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Frekans.entitlements; sourceTree = "<group>"; };
+		9CDFE6D032C1CF4345ECF9F3 /* BricolageGrotesque-ExtraBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "BricolageGrotesque-ExtraBold.ttf"; path = "../assets/fonts/BricolageGrotesque-ExtraBold.ttf"; sourceTree = "<group>"; };
 		AC8F27736DCF104486F3CF0F /* Pods-Frekans-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Frekans-macOS.debug.xcconfig"; path = "Target Support Files/Pods-Frekans-macOS/Pods-Frekans-macOS.debug.xcconfig"; sourceTree = "<group>"; };
 		C5348E22B7D83E00FCD458AB /* Pods-Frekans-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Frekans-macOS.release.xcconfig"; path = "Target Support Files/Pods-Frekans-macOS/Pods-Frekans-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -83,6 +85,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				30BD9422CC55AEE448176902 /* PrivacyInfo.xcprivacy */,
 				DD00794EF18A489095D0AB64 /* Pods */,
+				9CDFE6D032C1CF4345ECF9F3 /* BricolageGrotesque-ExtraBold.ttf */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 			files = (
 				514201522437B4B40078DB4F /* Assets.xcassets in Resources */,
 				AF0F9B9786C59C019110E2C2 /* PrivacyInfo.xcprivacy in Resources */,
+				4D4B563DFC469F018791595A /* BricolageGrotesque-ExtraBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
