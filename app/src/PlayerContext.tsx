@@ -44,6 +44,8 @@ type Ctx = {
   history: NowPlaying[];
   volume: number;
   refreshing: boolean;
+  sleepEnd: number | null;
+  setSleep: (minutes: number) => void;
   select: (s: FlatStation) => void;
   toggle: () => void;
   next: () => void;
@@ -70,6 +72,7 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   const [volume, setVolumeState] = useState(0.8);
   const [refreshing, setRefreshing] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [sleepEnd, setSleepEnd] = useState<number | null>(null);
   const metaRef = useRef<NowPlaying | null>(null);
   const lastRefresh = useRef(0);
   const fileRef = useRef(file);
@@ -201,6 +204,11 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     Native?.setVolume(v);
   }, []);
 
+  const setSleep = useCallback((minutes: number) => {
+    Native?.startSleepTimer(minutes);
+    setSleepEnd(minutes > 0 ? Date.now() + minutes * 60000 : null);
+  }, []);
+
   const setEnabled = useCallback((id: string, on: boolean) => {
     setEnabledMap(m => ({...m, [id]: on}));
   }, []);
@@ -245,11 +253,28 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     };
   }, [refresh]);
 
+  // Dynamic Island'daki hızlı radyo seçimi: favoriler önce, kalanı listeden, en çok 5
+  useEffect(() => {
+    const favs = favorites
+      .map(id => stations.find(s => s.id === id))
+      .filter((s): s is FlatStation => !!s);
+    const rest = stations.filter(s => !favorites.includes(s.id));
+    Native?.setQuick?.(
+      [...favs, ...rest].slice(0, 5).map(s => ({
+        id: s.id,
+        short: s.short,
+        color: s.color,
+      })),
+    );
+  }, [favorites, stations]);
+
   // Native olaylar
   const stepRef = useRef(step);
   stepRef.current = step;
   const adoptRef = useRef(adopt);
   adoptRef.current = adopt;
+  const selectRef = useRef(select);
+  selectRef.current = select;
   useEffect(() => {
     if (!emitter) {
       return;
@@ -275,10 +300,20 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
         metaRef.current = next;
         setMeta(next);
       }),
+      emitter.addListener('onSleep', (e: any) => {
+        setSleepEnd(e.endsAt > 0 ? e.endsAt : null);
+      }),
       emitter.addListener('onPlayRequest', (e: any) => {
         adoptRef.current({id: e.id, name: e.name, url: e.url});
       }),
       emitter.addListener('onRemote', (e: any) => {
+        if (e.command === 'station') {
+          const s = allRef.current.find(x => x.id === e.id);
+          if (s) {
+            selectRef.current(s);
+          }
+          return;
+        }
         stepRef.current(e.command === 'previous' ? -1 : 1);
       }),
     ];
@@ -298,6 +333,8 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     history,
     volume,
     refreshing,
+    sleepEnd,
+    setSleep,
     select,
     toggle,
     next: () => step(1),

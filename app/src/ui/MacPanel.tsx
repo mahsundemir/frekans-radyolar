@@ -26,6 +26,7 @@ import {
   SlidersIcon,
   VolumeIcon,
 } from './Icons';
+import SleepSheet from './SleepSheet';
 import StationsScreen from './StationsScreen';
 import Waveform from './Waveform';
 
@@ -35,6 +36,7 @@ export default function MacPanel() {
   const [cat, setCat] = useState(ALL);
   const [query, setQuery] = useState('');
   const [settings, setSettings] = useState(false);
+  const [sleepOpen, setSleepOpen] = useState(false);
   const st = p.current ?? p.stations[0];
   const bg = useColorTransition(st?.color ?? '#FF5B4A');
   if (!st) {
@@ -189,14 +191,22 @@ export default function MacPanel() {
         })}
       </ScrollView>
 
+      {sleepOpen && (
+        <View style={styles.sleepWrap}>
+          <SleepSheet color={st.color} ink={st.ink} onClose={() => setSleepOpen(false)} />
+        </View>
+      )}
+
       <View style={styles.footer}>
         <Pressable onPress={() => setSettings(true)} style={styles.footBtn}>
           <SlidersIcon color={colors.muted} />
           <Text style={styles.footText}>Ayarlar</Text>
         </Pressable>
-        <Pressable style={styles.footBtn}>
-          <MoonIcon size={18} color={colors.muted} />
-          <Text style={styles.footText}>Uyku zamanlayıcı</Text>
+        <Pressable onPress={() => setSleepOpen(o => !o)} style={styles.footBtn}>
+          <MoonIcon size={18} color={p.sleepEnd ? st.color : colors.muted} />
+          <Text style={[styles.footText, p.sleepEnd ? {color: st.color} : null]}>
+            {p.sleepEnd ? 'Uyku zamanlayıcı açık' : 'Uyku zamanlayıcı'}
+          </Text>
         </Pressable>
         <Pressable
           onPress={() => NativeModules.FrekansAudio?.quit()}
@@ -250,6 +260,7 @@ const styles = StyleSheet.create({
   rowHeart: {width: 36, height: 36, alignItems: 'center', justifyContent: 'center'},
   rowName: {color: colors.text, fontSize: 14, fontWeight: '700'},
   rowSub: {color: colors.muted, fontSize: 12},
+  sleepWrap: {position: 'absolute', left: 12, right: 12, bottom: 56},
   footer: {
     marginTop: 8,
     paddingTop: 10,

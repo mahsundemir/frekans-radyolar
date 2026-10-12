@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Animated, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {usePlayer} from '../PlayerContext';
@@ -15,11 +15,13 @@ import {
   PlayIcon,
   PrevIcon,
 } from './Icons';
+import SleepSheet from './SleepSheet';
 import Waveform from './Waveform';
 
 export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
   const p = usePlayer();
   const insets = useSafeAreaInsets();
+  const [sleepOpen, setSleepOpen] = useState(false);
   const st = p.current ?? p.stations[0];
   const bg = useColorTransition(st?.color ?? '#FF5B4A');
   if (!st) {
@@ -131,8 +133,11 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
         <Pressable accessibilityLabel="Sonraki radyo" onPress={p.next} style={styles.skip}>
           <NextIcon size={30} color={ink} />
         </Pressable>
-        <Pressable accessibilityLabel="Uyku zamanlayıcı" style={styles.side}>
-          <MoonIcon color={ink} />
+        <Pressable
+          accessibilityLabel="Uyku zamanlayıcı"
+          onPress={() => setSleepOpen(o => !o)}
+          style={styles.side}>
+          <MoonIcon color={ink} filled={!!p.sleepEnd} />
         </Pressable>
       </View>
 
@@ -159,6 +164,11 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
           );
         })}
       </ScrollView>
+      {sleepOpen && (
+        <View style={[styles.sleepWrap, {bottom: Math.max(insets.bottom, 12) + 70}]}>
+          <SleepSheet color={st.color} ink={st.ink} onClose={() => setSleepOpen(false)} />
+        </View>
+      )}
     </Animated.View>
   );
 }
@@ -206,6 +216,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  sleepWrap: {position: 'absolute', left: 24, right: 24},
   dialScroll: {flexGrow: 0, flexShrink: 0},
   dial: {alignItems: 'center', gap: 10, paddingVertical: 2},
   dialItem: {

@@ -34,7 +34,12 @@ final class LiveActivityManager {
       colorHex: info["color"] as? String ?? "#FF5B4A",
       title: info["title"] as? String ?? "",
       artist: info["artist"] as? String ?? "",
-      playing: info["playing"] as? Bool ?? true
+      playing: info["playing"] as? Bool ?? true,
+      quick: (info["quick"] as? [[String: Any]] ?? []).map {
+        FrekansActivityAttributes.Quick(
+          id: $0["id"] as? String ?? "", short: $0["short"] as? String ?? "",
+          colorHex: $0["color"] as? String ?? "#FF5B4A")
+      }
     )
     let content = ActivityContent(state: state, staleDate: nil)
     if let activity {

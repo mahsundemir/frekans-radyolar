@@ -18,8 +18,10 @@
 		7822968A2E1228F3FEC8AC07 /* FrekansActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA44FAAB19CBF32129C59E6B /* FrekansActivityAttributes.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		92C7DE5C5B342887101A0098 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80C468EB5C2421A508DD416B /* Foundation.framework */; };
+		9343D59B7F0735EA969BEB2A /* FrekansIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98505B08BAE1C240E42A91F6 /* FrekansIntents.swift */; };
 		B6D8002E170C5B5EDEF67ACA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E696C004DCB403AEAD8E4D89 /* SwiftUI.framework */; };
 		C5BA459B23E778C1D73A3F7A /* FrekansIslandBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3230762CF965932FC68370C /* FrekansIslandBundle.swift */; };
+		D9750DF2E813A550D0BA15DA /* FrekansIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98505B08BAE1C240E42A91F6 /* FrekansIntents.swift */; };
 		F709EC97511DCE8FA5F6CFDD /* FrekansIsland.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 90A56B4623D62B00C7AC1B29 /* FrekansIsland.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F9EB8EE8046FEA62B99DEE67 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765506F5E89DA46D3E255077 /* LiveActivityManager.swift */; };
 /* End PBXBuildFile section */
@@ -63,6 +65,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Frekans/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		85F2BB5981FA6BCF8E2A590B /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		90A56B4623D62B00C7AC1B29 /* FrekansIsland.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FrekansIsland.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		98505B08BAE1C240E42A91F6 /* FrekansIntents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Frekans/FrekansIntents.swift; sourceTree = "<group>"; };
 		AC836E78289C259FCD04746A /* ActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActivityKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/ActivityKit.framework; sourceTree = DEVELOPER_DIR; };
 		CA44FAAB19CBF32129C59E6B /* FrekansActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Frekans/FrekansActivityAttributes.swift; sourceTree = "<group>"; };
 		D3230762CF965932FC68370C /* FrekansIslandBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FrekansIslandBundle.swift; sourceTree = "<group>"; };
@@ -104,6 +107,7 @@
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				CA44FAAB19CBF32129C59E6B /* FrekansActivityAttributes.swift */,
 				765506F5E89DA46D3E255077 /* LiveActivityManager.swift */,
+				98505B08BAE1C240E42A91F6 /* FrekansIntents.swift */,
 			);
 			name = Frekans;
 			sourceTree = "<group>";
@@ -358,6 +362,7 @@
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
 				7822968A2E1228F3FEC8AC07 /* FrekansActivityAttributes.swift in Sources */,
 				F9EB8EE8046FEA62B99DEE67 /* LiveActivityManager.swift in Sources */,
+				D9750DF2E813A550D0BA15DA /* FrekansIntents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,6 +373,7 @@
 				C5BA459B23E778C1D73A3F7A /* FrekansIslandBundle.swift in Sources */,
 				750FEE6A28EACE50701EB3DB /* FrekansLiveActivity.swift in Sources */,
 				6EC3AAE0976F5B57B49AB117 /* FrekansActivityAttributes.swift in Sources */,
+				9343D59B7F0735EA969BEB2A /* FrekansIntents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

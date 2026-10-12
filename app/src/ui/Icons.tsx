@@ -77,9 +77,17 @@ export const HeartIcon = ({
   </Svg>
 );
 
-export const MoonIcon = ({size = 24, color}: P) => (
+export const MoonIcon = ({
+  size = 24,
+  color,
+  filled = false,
+}: P & {filled?: boolean}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24">
-    <Path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" {...stroke(color)} />
+    <Path
+      d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"
+      {...stroke(color)}
+      fill={filled ? color : 'none'}
+    />
   </Svg>
 );
 

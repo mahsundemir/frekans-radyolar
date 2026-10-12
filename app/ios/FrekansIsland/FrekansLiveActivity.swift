@@ -1,4 +1,5 @@
 import ActivityKit
+import AppIntents
 import SwiftUI
 import WidgetKit
 
@@ -66,6 +67,55 @@ struct NowPlayingText: View {
   }
 }
 
+// Oynat/duraklat, önceki, sonraki düğmeleri
+struct TransportControls: View {
+  let state: FrekansActivityAttributes.ContentState
+
+  var body: some View {
+    let accent = Color(hex: state.colorHex)
+    HStack(spacing: 28) {
+      Button(intent: PreviousStationIntent()) {
+        Image(systemName: "backward.fill").font(.system(size: 18, weight: .bold))
+          .frame(width: 44, height: 40)
+      }
+      Button(intent: TogglePlaybackIntent()) {
+        Image(systemName: state.playing ? "pause.fill" : "play.fill")
+          .font(.system(size: 20, weight: .bold))
+          .foregroundStyle(Color.ink(onHex: state.colorHex))
+          .frame(width: 56, height: 40)
+          .background(accent, in: Capsule())
+      }
+      Button(intent: NextStationIntent()) {
+        Image(systemName: "forward.fill").font(.system(size: 18, weight: .bold))
+          .frame(width: 44, height: 40)
+      }
+    }
+    .buttonStyle(.plain)
+    .foregroundStyle(.white)
+  }
+}
+
+// Hızlı radyo seçimi (favoriler önce)
+struct QuickStations: View {
+  let state: FrekansActivityAttributes.ContentState
+
+  var body: some View {
+    HStack(spacing: 12) {
+      ForEach(state.quick, id: \.id) { q in
+        Button(intent: PlayStationIntent(stationId: q.id)) {
+          Text(q.short)
+            .font(.system(size: 12, weight: .heavy))
+            .foregroundStyle(Color.ink(onHex: q.colorHex))
+            .frame(width: 34, height: 34)
+            .background(Color(hex: q.colorHex), in: Circle())
+            .overlay(Circle().stroke(.white, lineWidth: q.id == state.stationId ? 2.5 : 0).padding(-3))
+        }
+        .buttonStyle(.plain)
+      }
+    }
+  }
+}
+
 // Kilit ekranı kartı: radyonun rengiyle dolu
 struct LockScreenView: View {
   let state: FrekansActivityAttributes.ContentState
@@ -85,8 +135,14 @@ struct LockScreenView: View {
           .font(.system(size: 14)).lineLimit(1).opacity(0.85)
       }
       Spacer()
-      Image(systemName: state.playing ? "waveform" : "pause.fill")
-        .font(.system(size: 18, weight: .bold))
+      Button(intent: TogglePlaybackIntent()) {
+        Image(systemName: state.playing ? "pause.fill" : "play.fill")
+          .font(.system(size: 18, weight: .bold))
+          .foregroundStyle(Color(hex: state.colorHex))
+          .frame(width: 44, height: 44)
+          .background(ink, in: Circle())
+      }
+      .buttonStyle(.plain)
     }
     .foregroundStyle(ink)
     .padding(16)
@@ -112,9 +168,12 @@ struct FrekansLiveActivity: Widget {
           WaveGlyph(state: c)
         }
         DynamicIslandExpandedRegion(.bottom) {
-          Text("Frekans'ı açmak için dokun")
-            .font(.system(size: 12))
-            .foregroundStyle(.secondary)
+          VStack(spacing: 10) {
+            TransportControls(state: c)
+            if !c.quick.isEmpty {
+              QuickStations(state: c)
+            }
+          }
         }
       } compactLeading: {
         Monogram(state: c, size: 22)

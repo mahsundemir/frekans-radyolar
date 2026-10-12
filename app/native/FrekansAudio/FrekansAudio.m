@@ -13,6 +13,10 @@
 @property (nonatomic, copy) NSString *shortName;
 @property (nonatomic, copy) NSString *trackTitle;
 @property (nonatomic, copy) NSString *trackArtist;
+@property (nonatomic, copy) NSArray *quickStations;
+@property (nonatomic, strong) NSTimer *sleepTimer;
+@property (nonatomic, strong) NSTimer *fadeTimer;
+@property (nonatomic, assign) float volumeBeforeFade;
 @property (nonatomic, assign) BOOL hasListeners;
 @property (nonatomic, assign) BOOL remoteReady;
 @end
@@ -30,6 +34,8 @@ RCT_EXPORT_MODULE()
   if ((self = [super init])) {
     // Swift tarafı (SceneDelegate / AppDelegate) frekans:// bağlantısını kaydedip bildirim gönderir.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePendingURL) name:@"FrekansOpenURL" object:nil];
+    // Dynamic Island / kilit ekranı düğmeleri (iOS): oynat-duraklat, önceki, sonraki, radyo seç
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleRemote:) name:@"FrekansRemote" object:nil];
     dispatch_async(dispatch_get_main_queue(), ^{ [self handlePendingURL]; });
   }
   return self;
@@ -37,7 +43,7 @@ RCT_EXPORT_MODULE()
 
 - (void)dealloc { [[NSNotificationCenter defaultCenter] removeObserver:self]; }
 - (dispatch_queue_t)methodQueue { return dispatch_get_main_queue(); }
-- (NSArray<NSString *> *)supportedEvents { return @[@"onState", @"onMetadata", @"onRemote", @"onPlayRequest"]; }
+- (NSArray<NSString *> *)supportedEvents { return @[@"onState", @"onMetadata", @"onRemote", @"onPlayRequest", @"onSleep"]; }
 - (void)startObserving { self.hasListeners = YES; }
 - (void)stopObserving { self.hasListeners = NO; }
 
@@ -103,6 +109,28 @@ RCT_EXPORT_METHOD(getCurrent:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseR
   [self postNowPlaying];
 }
 
+- (void)handleRemote:(NSNotification *)n {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSString *cmd = n.userInfo[@"command"];
+    if ([cmd isEqualToString:@"toggle"]) {
+      if (!self.player.currentItem) { return; }
+      if (self.player.timeControlStatus == AVPlayerTimeControlStatusPaused) { [self.player play]; }
+      else { [self.player pause]; }
+    } else if (cmd.length) {
+      // sonraki / önceki / station: radyo listesi JS'te olduğu için olay olarak iletilir
+      NSMutableDictionary *body = [@{@"command": cmd} mutableCopy];
+      if (n.userInfo[@"id"]) { body[@"id"] = n.userInfo[@"id"]; }
+      [self emit:@"onRemote" body:body];
+    }
+  });
+}
+
+// Genişletilmiş adadaki hızlı seçim için radyolar (JS: favoriler önce)
+RCT_EXPORT_METHOD(setQuick:(NSArray *)list) {
+  self.quickStations = list;
+  [self postNowPlaying];
+}
+
 // frekans://radyo/<id>?u=<https yayın adresi>&n=<ad>
 - (void)handlePendingURL {
   NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
@@ -121,6 +149,48 @@ RCT_EXPORT_METHOD(getCurrent:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseR
   if (!rid.length || ![stream hasPrefix:@"https://"]) { return; }
   [self startURL:stream station:(name.length ? name : rid) stationId:rid];
   [self emit:@"onPlayRequest" body:@{@"id": rid, @"name": name ?: rid, @"url": stream}];
+}
+
+// Uyku zamanlayıcı: native taraf zamanlar, böylece panel/ekran kapalıyken de çalışır.
+// 0 dakika zamanlayıcıyı iptal eder. Süre dolunca ses 5 saniyede kısılır ve yayın durur.
+RCT_EXPORT_METHOD(startSleepTimer:(double)minutes) {
+  [self.sleepTimer invalidate];
+  self.sleepTimer = nil;
+  if (self.fadeTimer) { [self cancelFade]; }
+  if (minutes <= 0) {
+    [self emit:@"onSleep" body:@{@"endsAt": @0}];
+    return;
+  }
+  NSTimeInterval secs = minutes * 60.0;
+  self.sleepTimer = [NSTimer scheduledTimerWithTimeInterval:secs target:self selector:@selector(sleepFired) userInfo:nil repeats:NO];
+  double endsAt = ([[NSDate date] timeIntervalSince1970] + secs) * 1000.0;
+  [self emit:@"onSleep" body:@{@"endsAt": @(endsAt)}];
+}
+
+- (void)sleepFired {
+  self.sleepTimer = nil;
+  self.volumeBeforeFade = self.player.volume;
+  __block int step = 0;
+  __weak FrekansAudio *weakSelf = self;
+  self.fadeTimer = [NSTimer scheduledTimerWithTimeInterval:0.25 repeats:YES block:^(NSTimer *timer) {
+    FrekansAudio *s = weakSelf;
+    if (!s) { [timer invalidate]; return; }
+    step++;
+    s.player.volume = s.volumeBeforeFade * MAX(0.0f, 1.0f - step / 20.0f);
+    if (step >= 20) {
+      [timer invalidate];
+      s.fadeTimer = nil;
+      [s.player pause];
+      s.player.volume = s.volumeBeforeFade;
+      [s emit:@"onSleep" body:@{@"endsAt": @0, @"fired": @YES}];
+    }
+  }];
+}
+
+- (void)cancelFade {
+  [self.fadeTimer invalidate];
+  self.fadeTimer = nil;
+  self.player.volume = self.volumeBeforeFade;
 }
 
 RCT_EXPORT_METHOD(pause) { [self.player pause]; }
@@ -182,6 +252,7 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
     @"title": self.trackTitle ?: @"",
     @"artist": self.trackArtist ?: @"",
     @"playing": @(self.player.timeControlStatus != AVPlayerTimeControlStatusPaused),
+    @"quick": self.quickStations ?: @[],
   }];
 }
 
