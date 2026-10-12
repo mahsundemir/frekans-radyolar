@@ -74,6 +74,18 @@ RCT_EXPORT_METHOD(stop) {
   [self emit:@"onState" body:@{@"state": @"stopped"}];
 }
 
+// Basit kalıcı depo (NSUserDefaults): favoriler, ayarlar ve liste önbelleği için
+RCT_EXPORT_METHOD(storageGet:(NSString *)key
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  NSString *v = [[NSUserDefaults standardUserDefaults] stringForKey:key];
+  resolve(v ?: [NSNull null]);
+}
+
+RCT_EXPORT_METHOD(storageSet:(NSString *)key value:(NSString *)value) {
+  [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+}
+
 RCT_EXPORT_METHOD(quit) {
 #if TARGET_OS_OSX
   [NSApp terminate:nil];

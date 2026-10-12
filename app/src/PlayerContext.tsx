@@ -7,7 +7,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {NativeEventEmitter, NativeModules} from 'react-native';
+import {AppState, NativeEventEmitter, NativeModules} from 'react-native';
+import {loadJson, saveJson} from './storage';
 import {bundledStations, fetchStations, flatten} from './stations';
 import type {
   FlatStation,
@@ -19,11 +20,23 @@ import type {
 const Native = NativeModules.FrekansAudio;
 const emitter = Native ? new NativeEventEmitter(Native) : null;
 
+const PREFS_KEY = 'frekans.prefs';
+const STATIONS_KEY = 'frekans.stations';
+const REFRESH_EVERY_MS = 6 * 60 * 60 * 1000;
+
+type Prefs = {
+  enabled: Record<string, boolean>;
+  favorites: string[];
+  volume: number;
+  lastId: string | null;
+};
+
 type Ctx = {
   file: StationsFile;
   stations: FlatStation[]; // etkin radyolar
   all: FlatStation[];
   enabled: Record<string, boolean>;
+  favorites: string[];
   current: FlatStation | null;
   status: PlayerStatus;
   error: string | null;
@@ -37,6 +50,8 @@ type Ctx = {
   prev: () => void;
   setVolume: (v: number) => void;
   setEnabled: (id: string, on: boolean) => void;
+  isFavorite: (id: string) => boolean;
+  toggleFavorite: (id: string) => void;
   refresh: () => Promise<void>;
 };
 
@@ -46,6 +61,7 @@ export const usePlayer = () => useContext(PlayerCtx);
 export function PlayerProvider({children}: {children: React.ReactNode}) {
   const [file, setFile] = useState<StationsFile>(bundledStations());
   const [enabled, setEnabledMap] = useState<Record<string, boolean>>({});
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [current, setCurrent] = useState<FlatStation | null>(null);
   const [status, setStatus] = useState<PlayerStatus>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -53,13 +69,62 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   const [history, setHistory] = useState<NowPlaying[]>([]);
   const [volume, setVolumeState] = useState(0.8);
   const [refreshing, setRefreshing] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const metaRef = useRef<NowPlaying | null>(null);
+  const lastRefresh = useRef(0);
+  const fileRef = useRef(file);
+  fileRef.current = file;
 
   const all = useMemo(() => flatten(file), [file]);
   const stations = useMemo(
     () => all.filter(s => enabled[s.id] !== false),
     [all, enabled],
   );
+
+  // Açılışta kayıtlı ayarları ve önbellekteki listeyi yükle
+  useEffect(() => {
+    (async () => {
+      const [prefs, cached] = await Promise.all([
+        loadJson<Prefs>(PREFS_KEY),
+        loadJson<StationsFile>(STATIONS_KEY),
+      ]);
+      let list = fileRef.current;
+      if (cached && cached.version > list.version) {
+        list = cached;
+        setFile(cached);
+      }
+      Native?.setVolume(
+        typeof prefs?.volume === 'number' ? prefs.volume : 0.8,
+      );
+      if (prefs) {
+        setEnabledMap(prefs.enabled ?? {});
+        setFavorites(prefs.favorites ?? []);
+        if (typeof prefs.volume === 'number') {
+          setVolumeState(prefs.volume);
+        }
+        if (prefs.lastId) {
+          const last = flatten(list).find(s => s.id === prefs.lastId);
+          if (last) {
+            setCurrent(last);
+          }
+        }
+      }
+      setHydrated(true);
+    })();
+  }, []);
+
+  // Ayarlar değişince kaydet
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+    saveJson(PREFS_KEY, {
+      enabled,
+      favorites,
+      volume,
+      lastId: current?.id ?? null,
+    } satisfies Prefs);
+  }, [hydrated, enabled, favorites, volume, current]);
 
   const select = useCallback((s: FlatStation) => {
     setCurrent(s);
@@ -92,8 +157,8 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     }
     if (status === 'playing' || status === 'buffering') {
       Native?.pause();
-    } else if (status === 'error') {
-      select(current);
+    } else if (status === 'idle' || status === 'error') {
+      select(current); // kayıtlı son radyo ya da hata sonrası yeniden dene
     } else {
       Native?.resume();
     }
@@ -108,22 +173,45 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     setEnabledMap(m => ({...m, [id]: on}));
   }, []);
 
+  const isFavorite = useCallback(
+    (id: string) => favorites.includes(id),
+    [favorites],
+  );
+
+  const toggleFavorite = useCallback((id: string) => {
+    setFavorites(f => (f.includes(id) ? f.filter(x => x !== id) : [...f, id]));
+  }, []);
+
   const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      setFile(await fetchStations(file));
+      const next = await fetchStations(fileRef.current);
+      lastRefresh.current = Date.now();
+      if (JSON.stringify(next) !== JSON.stringify(fileRef.current)) {
+        setFile(next);
+        saveJson(STATIONS_KEY, next);
+      }
     } catch {
       // internet yoksa mevcut liste kalır
     } finally {
       setRefreshing(false);
     }
-  }, [file]);
+  }, []);
 
-  // Açılışta bir kez listeyi güncelle
+  // Açılışta, uygulama öne gelince (en az 30 dk sonra) ve 6 saatte bir listeyi güncelle
   useEffect(() => {
     refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const timer = setInterval(refresh, REFRESH_EVERY_MS);
+    const sub = AppState.addEventListener('change', s => {
+      if (s === 'active' && Date.now() - lastRefresh.current > 30 * 60 * 1000) {
+        refresh();
+      }
+    });
+    return () => {
+      clearInterval(timer);
+      sub.remove();
+    };
+  }, [refresh]);
 
   // Native olaylar
   const stepRef = useRef(step);
@@ -132,7 +220,6 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     if (!emitter) {
       return;
     }
-    Native?.setVolume(0.8);
     const subs = [
       emitter.addListener('onState', (e: any) => {
         if (e.state === 'stopped') {
@@ -166,6 +253,7 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     stations,
     all,
     enabled,
+    favorites,
     current,
     status,
     error,
@@ -179,6 +267,8 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     prev: () => step(-1),
     setVolume,
     setEnabled,
+    isFavorite,
+    toggleFavorite,
     refresh,
   };
   return <PlayerCtx.Provider value={value}>{children}</PlayerCtx.Provider>;

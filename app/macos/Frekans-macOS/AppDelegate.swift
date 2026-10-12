@@ -11,7 +11,7 @@ struct FrekansApp: App {
     // Menü çubuğu uygulaması: Dock simgesi yok (Info.plist: LSUIElement), panel menü çubuğundan açılır.
     MenuBarExtra {
       ReactNativeView(rootView: appDelegate.rootView)
-        .frame(width: 372, height: 640)
+        .frame(width: 372, height: 700)
     } label: {
       Image(systemName: "waveform")
     }
@@ -82,7 +82,7 @@ extension AppDelegate {
     // FREKANS_DEBUG_WINDOW=1 ile panel yerine normal pencere açılır (ekran görüntüsü alınamayan ortamlar için).
     if ProcessInfo.processInfo.environment["FREKANS_DEBUG_WINDOW"] == "1" {
       let win = NSWindow(
-        contentRect: NSRect(x: 200, y: 200, width: 372, height: 640),
+        contentRect: NSRect(x: 200, y: 200, width: 372, height: 700),
         styleMask: [.titled, .closable],
         backing: .buffered,
         defer: false)
@@ -91,6 +91,21 @@ extension AppDelegate {
       win.makeKeyAndOrderFront(nil)
       NSApp.activate(ignoringOtherApps: true)
       debugWindow = win
+    }
+    // FREKANS_SNAPSHOT_AFTER=<sn>: pencerenin görüntüsünü yerel dinleyiciye gönderir.
+    if let after = ProcessInfo.processInfo.environment["FREKANS_SNAPSHOT_AFTER"], let secs = Double(after) {
+      Timer.scheduledTimer(withTimeInterval: secs, repeats: false) { _ in
+        guard let v = self.debugWindow?.contentView,
+          let rep = v.bitmapImageRepForCachingDisplay(in: v.bounds) else { return }
+        v.cacheDisplay(in: v.bounds, to: rep)
+        if let png = rep.representation(using: .png, properties: [:]) {
+          // Kum havuzlu uygulama dosya yazamaz; görüntü yerel dinleyiciye (localhost:9099/snap) gönderilir.
+          var req = URLRequest(url: URL(string: "http://localhost:9099/snap")!)
+          req.httpMethod = "POST"
+          req.httpBody = png
+          URLSession.shared.dataTask(with: req).resume()
+        }
+      }
     }
   }
 }

@@ -7,10 +7,11 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import {filterStations, FAVORITES, norm} from '../filter';
 import {usePlayer} from '../PlayerContext';
 import {colors} from '../theme';
 import {FONT_DISPLAY, Mono, Toggle} from './Common';
-import {ChevronLeft, RefreshIcon, SearchIcon} from './Icons';
+import {ChevronLeft, HeartIcon, RefreshIcon, SearchIcon} from './Icons';
 
 // Ayarlar › Radyolar: Dil > Kategori > Radyolar (stations.json'dan)
 export default function StationsScreen({onBack}: {onBack: () => void}) {
@@ -18,7 +19,7 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
   const [lang, setLang] = useState(p.file.languages[0]?.code ?? 'tr');
   const [query, setQuery] = useState('');
   const language = p.file.languages.find(l => l.code === lang) ?? p.file.languages[0];
-  const q = query.trim().toLocaleLowerCase('tr');
+  const q = norm(query.trim());
 
   const groups = useMemo(
     () =>
@@ -26,11 +27,16 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
         .map(c => ({
           ...c,
           stations: c.stations.filter(
-            s => !q || s.name.toLocaleLowerCase('tr').includes(q),
+            s => !q || norm(s.name).includes(q),
           ),
         }))
         .filter(c => c.stations.length > 0),
     [language, q],
+  );
+
+  const favs = filterStations(
+    p.all.filter(s => s.languageCode === language?.code),
+    {category: FAVORITES, query, favorites: p.favorites},
   );
 
   return (
@@ -79,6 +85,34 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
       </View>
 
       <ScrollView contentContainerStyle={styles.list}>
+        {favs.length > 0 && (
+          <View>
+            <View style={styles.groupHead}>
+              <HeartIcon size={14} color={colors.text} filled />
+              <Text style={styles.groupName}>FAVORİLER</Text>
+              <Text style={styles.groupCount}>· {favs.length}</Text>
+            </View>
+            <View style={styles.card}>
+              {favs.map((s, i) => (
+                <View key={s.id}>
+                  {i > 0 && <View style={styles.sep} />}
+                  <View style={styles.row}>
+                    <Pressable style={styles.rowMain} onPress={() => p.select(s)}>
+                      <Mono text={s.short} color={s.color} ink={s.ink} />
+                      <Text style={styles.rowName}>{s.name}</Text>
+                    </Pressable>
+                    <Pressable
+                      accessibilityLabel={`${s.name} favorilerden çıkar`}
+                      onPress={() => p.toggleFavorite(s.id)}
+                      style={styles.heartBtn}>
+                      <HeartIcon size={20} color={s.color} filled />
+                    </Pressable>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
         {groups.map(c => (
           <View key={c.id}>
             <View style={styles.groupHead}>
@@ -103,6 +137,20 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
                           ink={flat?.ink ?? colors.ink}
                         />
                         <Text style={styles.rowName}>{s.name}</Text>
+                      </Pressable>
+                      <Pressable
+                        accessibilityLabel={
+                          p.isFavorite(s.id)
+                            ? `${s.name} favorilerden çıkar`
+                            : `${s.name} favorilere ekle`
+                        }
+                        onPress={() => p.toggleFavorite(s.id)}
+                        style={styles.heartBtn}>
+                        <HeartIcon
+                          size={20}
+                          color={p.isFavorite(s.id) ? c.color : colors.muted}
+                          filled={p.isFavorite(s.id)}
+                        />
                       </Pressable>
                       <Toggle
                         on={on}
@@ -186,6 +234,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     gap: 12,
   },
+  heartBtn: {width: 36, height: 36, alignItems: 'center', justifyContent: 'center'},
   rowMain: {flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12},
   rowName: {color: colors.text, fontSize: 15, fontWeight: '700', flex: 1},
 });

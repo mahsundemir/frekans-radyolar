@@ -63,11 +63,16 @@ export const MenuIcon = ({size = 22, color}: P) => (
   </Svg>
 );
 
-export const HeartIcon = ({size = 24, color}: P) => (
+export const HeartIcon = ({
+  size = 24,
+  color,
+  filled = false,
+}: P & {filled?: boolean}) => (
   <Svg width={size} height={size} viewBox="0 0 24 24">
     <Path
       d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"
       {...stroke(color)}
+      fill={filled ? color : 'none'}
     />
   </Svg>
 );
@@ -96,5 +101,12 @@ export const SearchIcon = ({size = 18, color}: P) => (
   <Svg width={size} height={size} viewBox="0 0 24 24">
     <Circle cx="11" cy="11" r="6.5" {...stroke(color, 2.2)} />
     <Path d="M16 16l4 4" {...stroke(color, 2.2)} />
+  </Svg>
+);
+
+export const ShareIcon = ({size = 22, color}: P) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24">
+    <Path d="M12 15V4M8 8l4-4 4 4" {...stroke(color, 2.2)} />
+    <Path d="M6 11H5a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1h-1" {...stroke(color, 2.2)} />
   </Svg>
 );

@@ -2,12 +2,14 @@ import React from 'react';
 import {Animated, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {usePlayer} from '../PlayerContext';
+import {shareStation} from '../share';
 import {chipFor} from '../theme';
 import {FONT_DISPLAY, useColorTransition} from './Common';
 import {
   HeartIcon,
   MenuIcon,
   MoonIcon,
+  ShareIcon,
   NextIcon,
   PauseIcon,
   PlayIcon,
@@ -26,6 +28,7 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
   const ink = st.ink;
   const chip = chipFor(ink);
   const live = p.status === 'playing' || p.status === 'buffering';
+  const fav = p.isFavorite(st.id);
 
   const title =
     p.status === 'error'
@@ -46,7 +49,12 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
         },
       ]}>
       <View style={styles.topBar}>
-        <View style={{width: 44}} />
+        <Pressable
+          accessibilityLabel="Arkadaşınla paylaş"
+          onPress={() => shareStation(st, p.meta)}
+          style={[styles.round, {backgroundColor: chip}]}>
+          <ShareIcon color={ink} />
+        </Pressable>
         <View style={{alignItems: 'center'}}>
           <Text style={[styles.kicker, {color: ink}]}>ŞU AN DİNLENİYOR</Text>
           <Text style={[styles.cat, {color: ink}]}>{st.categoryName}</Text>
@@ -101,8 +109,11 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
       </View>
 
       <View style={styles.controls}>
-        <Pressable accessibilityLabel="Favorilere ekle" style={styles.side}>
-          <HeartIcon color={ink} />
+        <Pressable
+          accessibilityLabel={fav ? 'Favorilerden çıkar' : 'Favorilere ekle'}
+          onPress={() => p.toggleFavorite(st.id)}
+          style={styles.side}>
+          <HeartIcon color={ink} filled={fav} />
         </Pressable>
         <Pressable accessibilityLabel="Önceki radyo" onPress={p.prev} style={styles.skip}>
           <PrevIcon size={30} color={ink} />

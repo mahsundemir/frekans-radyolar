@@ -1,5 +1,8 @@
 import React, {useEffect, useMemo} from 'react';
-import {Animated, Easing, StyleSheet, View} from 'react-native';
+import {Animated, Easing, Platform, StyleSheet, View} from 'react-native';
+
+// macOS'ta native sürücülü transform animasyonları güvenilir değil: yükseklik JS sürücüsüyle animasyonlanır.
+const NATIVE = Platform.OS !== 'macos';
 
 type Props = {
   count: number;
@@ -38,7 +41,7 @@ export default function Waveform({
           toValue: 0.18,
           duration: 300,
           easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
+          useNativeDriver: NATIVE,
         }).start();
         return null;
       }
@@ -48,13 +51,13 @@ export default function Waveform({
             toValue: 1,
             duration: b.duration / 2,
             easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
+            useNativeDriver: NATIVE,
           }),
           Animated.timing(b.value, {
             toValue: 0.18,
             duration: b.duration / 2,
             easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
+            useNativeDriver: NATIVE,
           }),
         ]),
       );
@@ -79,13 +82,22 @@ export default function Waveform({
       {bars.map((b, i) => (
         <Animated.View
           key={i}
-          style={{
-            width: barWidth,
-            height: height * b.base,
-            borderRadius: barWidth / 2,
-            backgroundColor: color,
-            transform: [{scaleY: b.value}],
-          }}
+          style={
+            NATIVE
+              ? {
+                  width: barWidth,
+                  height: height * b.base,
+                  borderRadius: barWidth / 2,
+                  backgroundColor: color,
+                  transform: [{scaleY: b.value}],
+                }
+              : {
+                  width: barWidth,
+                  height: Animated.multiply(b.value, height * b.base),
+                  borderRadius: barWidth / 2,
+                  backgroundColor: color,
+                }
+          }
         />
       ))}
     </View>

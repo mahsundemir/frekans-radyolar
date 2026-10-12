@@ -1,24 +1,39 @@
 import React, {useState} from 'react';
-import {Animated, NativeModules, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Animated,
+  NativeModules,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import {ALL, FAVORITES, filterStations} from '../filter';
 import {usePlayer} from '../PlayerContext';
+import {shareStation} from '../share';
 import {colors} from '../theme';
 import {FONT_DISPLAY, Mono, useColorTransition, VolumeBar} from './Common';
 import {
+  HeartIcon,
   MoonIcon,
   NextIcon,
   PauseIcon,
   PlayIcon,
   PrevIcon,
+  SearchIcon,
+  ShareIcon,
   SlidersIcon,
   VolumeIcon,
 } from './Icons';
 import StationsScreen from './StationsScreen';
 import Waveform from './Waveform';
 
-// Menü çubuğu paneli: canlı yayın kartı, kontroller, kategori filtresi, radyo listesi
+// Menü çubuğu paneli: canlı yayın kartı, kontroller, arama, kategori filtresi, radyo listesi
 export default function MacPanel() {
   const p = usePlayer();
-  const [cat, setCat] = useState('all');
+  const [cat, setCat] = useState(ALL);
+  const [query, setQuery] = useState('');
   const [settings, setSettings] = useState(false);
   const st = p.current ?? p.stations[0];
   const bg = useColorTransition(st?.color ?? '#FF5B4A');
@@ -31,12 +46,17 @@ export default function MacPanel() {
 
   const live = p.status === 'playing' || p.status === 'buffering';
   const cats = [
-    {id: 'all', name: 'Tümü'},
+    {id: ALL, name: 'Tümü'},
+    {id: FAVORITES, name: `Favoriler${p.favorites.length ? ` · ${p.favorites.length}` : ''}`},
     ...Array.from(
       new Map(p.stations.map(s => [s.categoryId, s.categoryName])).entries(),
     ).map(([id, name]) => ({id, name})),
   ];
-  const rows = p.stations.filter(s => cat === 'all' || s.categoryId === cat);
+  const rows = filterStations(p.stations, {
+    category: cat,
+    query,
+    favorites: p.favorites,
+  });
   const title =
     p.status === 'error'
       ? p.error ?? 'Yayın açılamadı'
@@ -44,6 +64,7 @@ export default function MacPanel() {
       ? 'Bağlanıyor…'
       : p.meta?.title || 'Canlı yayın';
   const artist = p.meta?.artist || st.categoryName;
+  const fav = p.isFavorite(st.id);
 
   return (
     <View style={styles.root}>
@@ -53,7 +74,21 @@ export default function MacPanel() {
             <View style={[styles.dot, {backgroundColor: st.ink, opacity: live ? 1 : 0.4}]} />
             <Text style={[styles.heroKicker, {color: st.ink}]}>CANLI</Text>
           </View>
-          <Text style={[styles.heroKicker, {color: st.ink}]}>{st.categoryName}</Text>
+          <View style={styles.liveRow}>
+            <Text style={[styles.heroKicker, {color: st.ink}]}>{st.categoryName}</Text>
+            <Pressable
+              accessibilityLabel="Arkadaşınla paylaş"
+              onPress={() => shareStation(st, p.meta)}
+              style={styles.heroHeart}>
+              <ShareIcon size={20} color={st.ink} />
+            </Pressable>
+            <Pressable
+              accessibilityLabel={fav ? 'Favorilerden çıkar' : 'Favorilere ekle'}
+              onPress={() => p.toggleFavorite(st.id)}
+              style={styles.heroHeart}>
+              <HeartIcon size={20} color={st.ink} filled={fav} />
+            </Pressable>
+          </View>
         </View>
         <View>
           <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.heroName, FONT_DISPLAY, {color: st.ink}]}>
@@ -90,6 +125,22 @@ export default function MacPanel() {
         </Pressable>
       </View>
 
+      <View style={styles.search}>
+        <SearchIcon color={colors.muted} />
+        <TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Radyo ara"
+          placeholderTextColor={colors.muted}
+          style={styles.input}
+        />
+        {query.length > 0 && (
+          <Pressable accessibilityLabel="Aramayı temizle" onPress={() => setQuery('')}>
+            <Text style={styles.clear}>Temizle</Text>
+          </Pressable>
+        )}
+      </View>
+
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillScroll} contentContainerStyle={styles.pills}>
         {cats.map(c => (
           <Pressable
@@ -102,8 +153,16 @@ export default function MacPanel() {
       </ScrollView>
 
       <ScrollView style={styles.list}>
+        {rows.length === 0 && (
+          <Text style={styles.empty}>
+            {cat === FAVORITES && !query
+              ? 'Henüz favori yok. Radyonun yanındaki kalbe dokun.'
+              : 'Sonuç bulunamadı.'}
+          </Text>
+        )}
         {rows.map(s => {
           const active = s.id === st.id;
+          const isFav = p.isFavorite(s.id);
           return (
             <Pressable
               key={s.id}
@@ -119,6 +178,12 @@ export default function MacPanel() {
               {active && live && (
                 <Waveform count={3} barWidth={3} height={14} gap={2} color={s.color} active={p.status === 'playing'} />
               )}
+              <Pressable
+                accessibilityLabel={isFav ? `${s.name} favorilerden çıkar` : `${s.name} favorilere ekle`}
+                onPress={() => p.toggleFavorite(s.id)}
+                style={styles.rowHeart}>
+                <HeartIcon size={18} color={isFav ? s.color : colors.muted} filled={isFav} />
+              </Pressable>
             </Pressable>
           );
         })}
@@ -155,6 +220,7 @@ const styles = StyleSheet.create({
   },
   heroTop: {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'},
   liveRow: {flexDirection: 'row', alignItems: 'center', gap: 7},
+  heroHeart: {width: 28, height: 28, alignItems: 'center', justifyContent: 'center'},
   dot: {width: 8, height: 8, borderRadius: 4},
   heroKicker: {fontSize: 11, fontWeight: '700', letterSpacing: 1.3},
   heroName: {fontSize: 38, lineHeight: 38},
@@ -162,12 +228,26 @@ const styles = StyleSheet.create({
   controls: {flexDirection: 'row', alignItems: 'center', gap: 14, paddingTop: 14, paddingHorizontal: 4},
   skip: {width: 36, height: 36, alignItems: 'center', justifyContent: 'center'},
   play: {width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center'},
+  search: {
+    marginTop: 14,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: colors.surface2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 12,
+  },
+  input: {flex: 1, color: colors.text, fontSize: 14, padding: 0},
+  clear: {color: colors.muted, fontSize: 12},
   pillScroll: {flexGrow: 0},
-  pills: {gap: 6, paddingTop: 14, paddingBottom: 10},
+  pills: {gap: 6, paddingTop: 10, paddingBottom: 10},
   pill: {height: 30, paddingHorizontal: 13, borderRadius: 15, backgroundColor: colors.surface2, justifyContent: 'center'},
   pillText: {color: '#C9C5D8', fontSize: 13, fontWeight: '500'},
   list: {flex: 1},
-  row: {height: 48, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 8, borderRadius: 12, marginBottom: 4},
+  empty: {color: colors.muted, fontSize: 13, paddingVertical: 16, paddingHorizontal: 8},
+  row: {height: 48, flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 8, paddingRight: 4, borderRadius: 12, marginBottom: 4},
+  rowHeart: {width: 36, height: 36, alignItems: 'center', justifyContent: 'center'},
   rowName: {color: colors.text, fontSize: 14, fontWeight: '700'},
   rowSub: {color: colors.muted, fontSize: 12},
   footer: {

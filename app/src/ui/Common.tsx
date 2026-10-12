@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
-  GestureResponderEvent,
   LayoutChangeEvent,
+  PanResponder,
   Pressable,
   Text,
   View,
@@ -115,18 +115,33 @@ export function VolumeBar({
   onChange: (v: number) => void;
 }) {
   const [w, setW] = useState(1);
-  const set = (e: GestureResponderEvent) => {
-    onChange(Math.max(0, Math.min(1, e.nativeEvent.locationX / w)));
-  };
+  const start = useRef(0);
+  const live = useRef({w: 1, value, onChange});
+  live.current = {w, value, onChange};
+  const clamp = (v: number) => Math.max(0, Math.min(1, v));
+  const pan = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: e => {
+        const v = clamp(e.nativeEvent.locationX / live.current.w);
+        start.current = v;
+        live.current.onChange(v);
+      },
+      onPanResponderMove: (_e, g) => {
+        live.current.onChange(clamp(start.current + g.dx / live.current.w));
+      },
+    }),
+  ).current;
   return (
-    <Pressable
+    <View
       accessibilityRole="adjustable"
       accessibilityLabel="Ses"
       onLayout={(e: LayoutChangeEvent) => setW(e.nativeEvent.layout.width)}
-      onPressIn={set}
-      onTouchMove={set}
+      {...pan.panHandlers}
       style={{flex: 1, height: 28, justifyContent: 'center'}}>
       <View
+        pointerEvents="none"
         style={{height: 4, borderRadius: 2, backgroundColor: colors.surface3}}>
         <View
           style={{
@@ -137,7 +152,6 @@ export function VolumeBar({
           }}
         />
         <View
-          pointerEvents="none"
           style={{
             position: 'absolute',
             left: `${value * 100}%`,
@@ -150,6 +164,6 @@ export function VolumeBar({
           }}
         />
       </View>
-    </Pressable>
+    </View>
   );
 }
