@@ -25,6 +25,9 @@ RCT_EXPORT_MODULE()
 - (void)stopObserving { self.hasListeners = NO; }
 
 - (void)emit:(NSString *)name body:(id)body {
+#if DEBUG
+  NSLog(@"[FrekansAudio] %@ %@", name, body);
+#endif
   if (self.hasListeners) { [self sendEventWithName:name body:body]; }
 }
 
@@ -69,6 +72,12 @@ RCT_EXPORT_METHOD(stop) {
   [self.player replaceCurrentItemWithPlayerItem:nil];
   MPNowPlayingInfoCenter.defaultCenter.nowPlayingInfo = nil;
   [self emit:@"onState" body:@{@"state": @"stopped"}];
+}
+
+RCT_EXPORT_METHOD(quit) {
+#if TARGET_OS_OSX
+  [NSApp terminate:nil];
+#endif
 }
 
 RCT_EXPORT_METHOD(setVolume:(double)volume) {

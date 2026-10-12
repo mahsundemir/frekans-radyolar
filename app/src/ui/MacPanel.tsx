@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Animated, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Animated, NativeModules, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {usePlayer} from '../PlayerContext';
 import {colors} from '../theme';
 import {FONT_DISPLAY, Mono, useColorTransition, VolumeBar} from './Common';
@@ -132,6 +132,11 @@ export default function MacPanel() {
         <Pressable style={styles.footBtn}>
           <MoonIcon size={18} color={colors.muted} />
           <Text style={styles.footText}>Uyku zamanlayıcı</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => NativeModules.FrekansAudio?.quit()}
+          style={styles.footBtn}>
+          <Text style={styles.footText}>Çık</Text>
         </Pressable>
       </View>
     </View>
