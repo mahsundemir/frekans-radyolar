@@ -12,7 +12,8 @@ Bu proje Claude (yapay zekâ ajanı) ile birlikte geliştirildi. Tasarım, radyo
 - **Renkli tasarım:** Her kategorinin kendi rengi var. Radyo değişince ekran o rengin tonuna geçer.
 - **Arama:** Radyo listesinin üzerinde arama. Türkçe harflere duyarsız ("nagme" yazınca "Nağme" bulunur).
 - **Favoriler:** Kalp simgesiyle favori ekleme, "Favoriler" filtresi ve ayarlarda favori grubu. Favoriler, ses seviyesi, kapattığın radyolar ve son dinlenen radyo cihazda saklanır.
-- **Arkadaşa paylaşım:** Paylaş düğmesi, çalan radyoyu ve şarkıyı doğrudan yayın adresiyle gönderir. Arkadaşın uygulamaya sahip olmadan da herhangi bir oynatıcıda açabilir.
+- **Arkadaşa paylaşım:** Paylaş düğmesi, çalan radyoyu ve şarkıyı bir bağlantıyla gönderir (`https://mahsundemir.github.io/frekans-radyolar/?r=<radyo>`). Bağlantı açılınca bir web sayfası gelir: uygulaması olmayan arkadaşın radyoyu tarayıcıda dinler, uygulaması olan "Frekans uygulamasında aç" ile radyoyu uygulamada başlatır (`frekans://radyo/...`). Sayfa yayın adresini yalnızca `stations.json` içindeki kayıttan alır.
+- **Dynamic Island (v1, yalnızca gösterim):** Radyo çalarken iPhone'un Dynamic Island'ında ve kilit ekranında canlı etkinlik görünür: kompakt (kısaltma + dalga simgesi), minimal ve genişletilmiş hal (radyo adı, şarkı, sanatçı). Dokununca uygulama açılır. Düğmeler (oynat/duraklat, sonraki) henüz yok. Gerekli: iOS 17 ve Dynamic Island'lı iPhone (14 Pro ve sonrası), kilit ekranı kartı diğer iPhone'larda da çıkar.
 - **Liste güncelleme:** Açılışta, uygulama öne gelince (30 dakikadan eskiyse) ve 6 saatte bir `stations.json` çekilir. İnternet yoksa önbellekteki ya da uygulamayla gelen kopya kullanılır.
 - **Dil > Kategori > Radyolar:** Ayarlar ekranı listeyi bu hiyerarşiyle gösterir. Her radyo ayrı ayrı açılıp kapatılabilir.
 
@@ -49,6 +50,7 @@ GitHub'ın ham dosya servisi dosyayı birkaç dakika önbellekte tutar, değişi
 
 ```
 stations.json            Radyo listesi (uygulamaya da gömülür)
+index.html               Paylaşım sayfası (GitHub Pages): tarayıcıda dinleme + uygulamada aç
 app/                     React Native 0.83 projesi (iOS + macOS)
 ├─ App.tsx               Platforma göre ekran seçimi
 ├─ src/
@@ -61,6 +63,7 @@ app/                     React Native 0.83 projesi (iOS + macOS)
 ├─ native/FrekansAudio/  Ortak native modül (Objective-C): AVPlayer, ICY/ID3
 │                        bilgisi, uzaktan kontrol, kalıcı depo
 ├─ ios/                  iPhone uygulaması
+│  └─ FrekansIsland/     Dynamic Island / kilit ekranı eklentisi (SwiftUI, WidgetKit)
 ├─ macos/                Mac menü çubuğu uygulaması (SwiftUI MenuBarExtra)
 └─ patches/              react-native-svg macOS düzeltmesi (patch-package)
 ```
@@ -106,6 +109,7 @@ Testler: `npm test` (Jest).
 
 - React Native 0.83.10: `react-native-macos` en güncel sürümü (0.83) bu sürüme bağlı.
 - Expo kullanılmadı, Community CLI kullanıldı. (`react-native-cli` paketi artık kullanılmıyor, yerini `@react-native-community/cli` aldı.)
+- Dynamic Island eklentisi için iPhone uygulamasının en düşük sürümü iOS 17 yapıldı.
 - Pod hedefleri iOS 15.1 ve macOS 12'ye yükseltildi (Xcode 27 daha düşüğünü kabul etmiyor).
 - iOS 27 UIScene yaşam döngüsünü zorunlu kılıyor, uygulama buna geçirildi.
 - Mac uygulaması `LSUIElement` ile yalnızca menü çubuğunda çalışır.
@@ -114,10 +118,12 @@ Testler: `npm test` (Jest).
 
 ## Henüz yapılmayanlar
 
-- **Mac menü çubuğu panelinin açılması gerçek menü çubuğunda doğrulanmadı.** Panelin içeriği (oynatma, şarkı bilgisi, favoriler, arama, paylaşım) normal pencerede doğrulandı. Menü çubuğu simgesine tıklayınca açıldığını sen de kontrol et. Panel, açılış davranışı olarak hover'da değil tıklamada açılır.
-- **Dynamic Island başlatılmadı.** Bunun için ayrı bir Swift eklentisi (ActivityKit / Live Activity) gerekiyor. Tasarımı hazır.
+- **Mac menü çubuğu panelinin açılması gerçek menü çubuğunda doğrulanmadı.** Panelin içeriği (oynatma, şarkı bilgisi, favoriler, arama, paylaşım, bağlantıyla açma) normal pencerede doğrulandı. Menü çubuğu simgesine tıklayınca açıldığını sen de kontrol et. Panel hover'da değil tıklamada açılır.
+- **Dynamic Island'ın görünüşü doğrulanmadı.** Eklenti derleniyor, uygulamaya gömülüyor ve canlı etkinlik başarıyla başlıyor (günlükten doğrulandı). Ancak simülatör ekran görüntüsü Dynamic Island'ı çizmediği için tasarımın nasıl göründüğünü görmedik. Genişletilmiş hal uzun basarak açılır, o da denenmedi.
+- **Dynamic Island düğmeleri:** Oynat/duraklat, sonraki ve hızlı radyo seçimi (tasarımdaki 5 radyo) yok. Bunlar iOS 17 `LiveActivityIntent` ile yapılabilir, sonraki adım.
+- **Otomatik açılan paylaşım bağlantısı:** Şu an bağlantı bir web sayfası açıyor, uygulamada açmak için sayfadaki düğmeye dokunmak gerekiyor. iMessage ve benzerlerinde bağlantıya dokununca doğrudan uygulamanın açılması (universal link) için gerçek bir Apple Developer ekip kimliği ve alan adı dosyası lazım. Paket kimliğiyle birlikte yapılacak.
+- **Paylaşım sayfası gerçek tarayıcıda denenmedi.** Sayfa yayında ve komut dizisi sözdizimi doğrulandı. Çalma, tarayıcıya ve yayının CORS ayarına bağlı: HLS yayınları Safari dışında hls.js ile açılır, bazı yayınlar tarayıcıda açılmayabilir (sayfa o durumda uygulamayı öneriyor).
 - **Uyku zamanlayıcı** düğmeleri tasarımda var, henüz çalışmıyor.
-- **Linkle paylaşım:** Şu an yayın adresi paylaşılıyor. Arkadaşın uygulamasında doğrudan o radyoyu açan bir bağlantı (derin bağlantı) yok.
 - **Yazı tipi:** Tasarımdaki Bricolage Grotesque yazı tipi henüz uygulamaya eklenmedi, sistem yazı tipi kullanılıyor.
-- **Kimlik ve imzalama:** Paket kimliği şablondaki `org.reactjs.native.example.Frekans`. Yayına çıkmadan önce kendi kimliğinle ve Apple Developer hesabınla değiştirilmeli. Mac uygulaması Debug derlemesi, imzalı/noter onaylı sürüm yok.
-- **Test kapsamı:** Jest testleri filtre, paylaşım metni ve liste şemasını kapsıyor. Ses çalma gerçek yayınla elle doğrulandı (Süper FM'de canlı şarkı bilgisi iOS simülatöründe ve Mac'te göründü). Diğer radyoların dinlenebilirliği tek tek elle doğrulanmadı.
+- **Kimlik ve imzalama:** Paket kimliği şablondaki `org.reactjs.native.example.Frekans` (eklenti: `...Frekans.FrekansIsland`). Yayına çıkmadan önce kendi kimliğinle ve Apple Developer hesabınla değiştirilmeli. Gerçek cihazda Live Activity için imzalama gerekir. Mac uygulaması Debug derlemesi, imzalı/noter onaylı sürüm yok.
+- **Test kapsamı:** Jest testleri filtre, paylaşım metni ve liste şemasını kapsıyor. Ses çalma gerçek yayınla elle doğrulandı (iOS simülatörü ve Mac'te canlı şarkı bilgisi göründü). Diğer radyoların dinlenebilirliği tek tek elle doğrulanmadı.

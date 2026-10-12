@@ -8,6 +8,11 @@
 @property (nonatomic, strong) AVPlayerItemMetadataOutput *metaOutput;
 @property (nonatomic, copy) NSString *station;
 @property (nonatomic, copy) NSString *stationId;
+@property (nonatomic, copy) NSString *streamURL;
+@property (nonatomic, copy) NSString *colorHex;
+@property (nonatomic, copy) NSString *shortName;
+@property (nonatomic, copy) NSString *trackTitle;
+@property (nonatomic, copy) NSString *trackArtist;
 @property (nonatomic, assign) BOOL hasListeners;
 @property (nonatomic, assign) BOOL remoteReady;
 @end
@@ -45,14 +50,24 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - JS API
 
-RCT_EXPORT_METHOD(play:(NSString *)urlString station:(NSString *)station stationId:(NSString *)stationId) {
+RCT_EXPORT_METHOD(play:(NSString *)urlString station:(NSString *)station stationId:(NSString *)stationId
+                  color:(NSString *)color short:(NSString *)shortName) {
+  self.colorHex = color;
+  self.shortName = shortName;
   [self startURL:urlString station:station stationId:stationId];
+}
+
+// Paylaşılan bağlantıyla açılan radyonun rengi/kısaltması JS'ten sonradan bildirilir
+RCT_EXPORT_METHOD(setStyle:(NSString *)color short:(NSString *)shortName) {
+  self.colorHex = color;
+  self.shortName = shortName;
+  [self postNowPlaying];
 }
 
 // Şu an native tarafta çalan radyo (JS sonradan açıldığında arayüzü eşitlemek için)
 RCT_EXPORT_METHOD(getCurrent:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
   if (!self.stationId.length) { resolve([NSNull null]); return; }
-  resolve(@{@"id": self.stationId, @"name": self.station ?: @"",
+  resolve(@{@"id": self.stationId, @"name": self.station ?: @"", @"url": self.streamURL ?: @"",
             @"playing": @(self.player.timeControlStatus != AVPlayerTimeControlStatusPaused)});
 }
 
@@ -61,6 +76,9 @@ RCT_EXPORT_METHOD(getCurrent:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseR
   if (!url) { [self emit:@"onState" body:@{@"state": @"error", @"message": @"Geçersiz adres"}]; return; }
   self.station = station;
   self.stationId = stationId;
+  self.streamURL = urlString;
+  self.trackTitle = nil;
+  self.trackArtist = nil;
   [self configureSession];
   [self teardownItem];
 
@@ -82,6 +100,7 @@ RCT_EXPORT_METHOD(getCurrent:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseR
   [self setupRemoteCommands];
   [self updateNowPlayingTitle:nil artist:nil];
   [self emit:@"onState" body:@{@"state": @"buffering"}];
+  [self postNowPlaying];
 }
 
 // frekans://radyo/<id>?u=<https yayın adresi>&n=<ad>
@@ -117,6 +136,7 @@ RCT_EXPORT_METHOD(stop) {
   MPNowPlayingInfoCenter.defaultCenter.nowPlayingInfo = nil;
   self.stationId = nil;
   [self emit:@"onState" body:@{@"state": @"stopped"}];
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"FrekansNowPlaying" object:nil userInfo:@{@"ended": @YES}];
 }
 
 // Basit kalıcı depo (NSUserDefaults): favoriler, ayarlar ve liste önbelleği için
@@ -151,7 +171,23 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
 #endif
 }
 
+// Swift tarafı (iOS: Dynamic Island / Live Activity) bu bildirimi dinler.
+- (void)postNowPlaying {
+  if (!self.stationId.length) { return; }
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"FrekansNowPlaying" object:nil userInfo:@{
+    @"stationId": self.stationId,
+    @"name": self.station ?: @"",
+    @"short": self.shortName ?: @"",
+    @"color": self.colorHex ?: @"#FF5B4A",
+    @"title": self.trackTitle ?: @"",
+    @"artist": self.trackArtist ?: @"",
+    @"playing": @(self.player.timeControlStatus != AVPlayerTimeControlStatusPaused),
+  }];
+}
+
 - (void)updateNowPlayingTitle:(NSString *)title artist:(NSString *)artist {
+  self.trackTitle = title;
+  self.trackArtist = artist;
   NSMutableDictionary *info = [NSMutableDictionary dictionary];
   info[MPMediaItemPropertyTitle] = title.length ? title : (self.station ?: @"Frekans");
   info[MPMediaItemPropertyArtist] = artist.length ? artist : (self.station ?: @"");
@@ -200,6 +236,7 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
     }
     if (self.item && self.item.status == AVPlayerItemStatusFailed) { return; }
     [self emit:@"onState" body:@{@"state": state}];
+    [self postNowPlaying];
   } else if (context == kItemStatusContext) {
     if (self.item.status == AVPlayerItemStatusFailed) {
       NSString *msg = self.item.error.localizedDescription ?: @"Yayın açılamadı";
@@ -237,6 +274,7 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
   }
   if (!title.length && !artist.length) { return; }
   [self updateNowPlayingTitle:title artist:artist];
+  [self postNowPlaying];
   [self emit:@"onMetadata" body:@{@"title": title ?: @"", @"artist": artist ?: @""}];
 }
 

@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     reactNativeDelegate = delegate
     reactNativeFactory = factory
 
+    LiveActivityManager.shared.start()
+
     return true
   }
 }

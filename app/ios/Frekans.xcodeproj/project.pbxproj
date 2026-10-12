@@ -9,12 +9,47 @@
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-Frekans.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-Frekans.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		148595DFF82020DD550CB45F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C756588FD2B8FB27B0B77E1 /* WidgetKit.framework */; };
+		47AA6B903E2D030B7908B125 /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC836E78289C259FCD04746A /* ActivityKit.framework */; };
 		6D7BBA23F49B860DD7E4E73F /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		6EC3AAE0976F5B57B49AB117 /* FrekansActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA44FAAB19CBF32129C59E6B /* FrekansActivityAttributes.swift */; };
+		750FEE6A28EACE50701EB3DB /* FrekansLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0731FB0AB39828E84FC109 /* FrekansLiveActivity.swift */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		7822968A2E1228F3FEC8AC07 /* FrekansActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA44FAAB19CBF32129C59E6B /* FrekansActivityAttributes.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		92C7DE5C5B342887101A0098 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80C468EB5C2421A508DD416B /* Foundation.framework */; };
+		B6D8002E170C5B5EDEF67ACA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E696C004DCB403AEAD8E4D89 /* SwiftUI.framework */; };
+		C5BA459B23E778C1D73A3F7A /* FrekansIslandBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3230762CF965932FC68370C /* FrekansIslandBundle.swift */; };
+		F709EC97511DCE8FA5F6CFDD /* FrekansIsland.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 90A56B4623D62B00C7AC1B29 /* FrekansIsland.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F9EB8EE8046FEA62B99DEE67 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765506F5E89DA46D3E255077 /* LiveActivityManager.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		1FBE05894CF6511A16365BCB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97FC1D91D1A022EDF4FF4710;
+			remoteInfo = FrekansIsland;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6D8DDCBDDD2D8A7A63F5CFA9 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F709EC97511DCE8FA5F6CFDD /* FrekansIsland.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0C756588FD2B8FB27B0B77E1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
 		13B07F961A680F5B00A75B9A /* Frekans.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Frekans.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Frekans/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Frekans/Info.plist; sourceTree = "<group>"; };
@@ -23,8 +58,17 @@
 		5709B34CF0A7D63546082F79 /* Pods-Frekans.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Frekans.release.xcconfig"; path = "Target Support Files/Pods-Frekans/Pods-Frekans.release.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-Frekans.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Frekans.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Frekans/AppDelegate.swift; sourceTree = "<group>"; };
+		765506F5E89DA46D3E255077 /* LiveActivityManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Frekans/LiveActivityManager.swift; sourceTree = "<group>"; };
+		80C468EB5C2421A508DD416B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Frekans/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		85F2BB5981FA6BCF8E2A590B /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		90A56B4623D62B00C7AC1B29 /* FrekansIsland.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FrekansIsland.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC836E78289C259FCD04746A /* ActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActivityKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/ActivityKit.framework; sourceTree = DEVELOPER_DIR; };
+		CA44FAAB19CBF32129C59E6B /* FrekansActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Frekans/FrekansActivityAttributes.swift; sourceTree = "<group>"; };
+		D3230762CF965932FC68370C /* FrekansIslandBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FrekansIslandBundle.swift; sourceTree = "<group>"; };
+		E696C004DCB403AEAD8E4D89 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		EE0731FB0AB39828E84FC109 /* FrekansLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FrekansLiveActivity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +77,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C80B921A6F3F58F76C31292 /* libPods-Frekans.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		147233AA0E8AF09F4894D07D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92C7DE5C5B342887101A0098 /* Foundation.framework in Frameworks */,
+				148595DFF82020DD550CB45F /* WidgetKit.framework in Frameworks */,
+				B6D8002E170C5B5EDEF67ACA /* SwiftUI.framework in Frameworks */,
+				47AA6B903E2D030B7908B125 /* ActivityKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,8 +102,21 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				CA44FAAB19CBF32129C59E6B /* FrekansActivityAttributes.swift */,
+				765506F5E89DA46D3E255077 /* LiveActivityManager.swift */,
 			);
 			name = Frekans;
+			sourceTree = "<group>";
+		};
+		260A2C25F64173C1E6FD0C67 /* FrekansIsland */ = {
+			isa = PBXGroup;
+			children = (
+				D3230762CF965932FC68370C /* FrekansIslandBundle.swift */,
+				EE0731FB0AB39828E84FC109 /* FrekansLiveActivity.swift */,
+				85F2BB5981FA6BCF8E2A590B /* Info.plist */,
+			);
+			name = FrekansIsland;
+			path = FrekansIsland;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -56,6 +124,7 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5DCACB8F33CDC322A6C60F78 /* libPods-Frekans.a */,
+				B6884BB8E21859066848162F /* iOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -75,6 +144,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				260A2C25F64173C1E6FD0C67 /* FrekansIsland */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -85,8 +155,20 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* Frekans.app */,
+				90A56B4623D62B00C7AC1B29 /* FrekansIsland.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B6884BB8E21859066848162F /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				80C468EB5C2421A508DD416B /* Foundation.framework */,
+				0C756588FD2B8FB27B0B77E1 /* WidgetKit.framework */,
+				E696C004DCB403AEAD8E4D89 /* SwiftUI.framework */,
+				AC836E78289C259FCD04746A /* ActivityKit.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -112,15 +194,34 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				6D8DDCBDDD2D8A7A63F5CFA9 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E3F96BBCCD7C6FC847ED214B /* PBXTargetDependency */,
 			);
 			name = Frekans;
 			productName = Frekans;
 			productReference = 13B07F961A680F5B00A75B9A /* Frekans.app */;
 			productType = "com.apple.product-type.application";
+		};
+		97FC1D91D1A022EDF4FF4710 /* FrekansIsland */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E8177024AA1D8120603C2C7 /* Build configuration list for PBXNativeTarget "FrekansIsland" */;
+			buildPhases = (
+				E1C6EB295109FF0EDE81604F /* Sources */,
+				147233AA0E8AF09F4894D07D /* Frameworks */,
+				A00102F509A54B5545C3A80B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FrekansIsland;
+			productName = FrekansIsland;
+			productReference = 90A56B4623D62B00C7AC1B29 /* FrekansIsland.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -149,6 +250,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* Frekans */,
+				97FC1D91D1A022EDF4FF4710 /* FrekansIsland */,
 			);
 		};
 /* End PBXProject section */
@@ -161,6 +263,13 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				6D7BBA23F49B860DD7E4E73F /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A00102F509A54B5545C3A80B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,10 +356,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+				7822968A2E1228F3FEC8AC07 /* FrekansActivityAttributes.swift in Sources */,
+				F9EB8EE8046FEA62B99DEE67 /* LiveActivityManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1C6EB295109FF0EDE81604F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C5BA459B23E778C1D73A3F7A /* FrekansIslandBundle.swift in Sources */,
+				750FEE6A28EACE50701EB3DB /* FrekansLiveActivity.swift in Sources */,
+				6EC3AAE0976F5B57B49AB117 /* FrekansActivityAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E3F96BBCCD7C6FC847ED214B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = FrekansIsland;
+			target = 97FC1D91D1A022EDF4FF4710 /* FrekansIsland */;
+			targetProxy = 1FBE05894CF6511A16365BCB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
@@ -262,7 +392,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Frekans/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -289,7 +419,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = Frekans/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -453,6 +583,55 @@
 			};
 			name = Release;
 		};
+		8C457A5670478B40EFAC6FC8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = FrekansIsland/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Frekans.FrekansIsland;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		90C311AA7B33EFBAFE3261FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = FrekansIsland/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Frekans.FrekansIsland;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -461,6 +640,15 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3E8177024AA1D8120603C2C7 /* Build configuration list for PBXNativeTarget "FrekansIsland" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C457A5670478B40EFAC6FC8 /* Release */,
+				90C311AA7B33EFBAFE3261FC /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

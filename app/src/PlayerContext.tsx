@@ -116,7 +116,7 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
       // Uygulama paylaşılan bir bağlantıyla açıldıysa native taraf çalmaya başlamış olabilir
       const playing = await Native?.getCurrent?.();
       if (playing?.id) {
-        adopt({id: playing.id, name: playing.name, url: ''});
+        adopt({id: playing.id, name: playing.name, url: playing.url ?? ''});
       }
     })();
   }, []);
@@ -141,7 +141,7 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     setHistory([]);
     setError(null);
     setStatus('buffering');
-    Native?.play(s.streamUrl, s.name, s.id);
+    Native?.play(s.streamUrl, s.name, s.id, s.color, s.short);
   }, []);
 
   // Native tarafta zaten çalan (paylaşılan bağlantıyla açılan) radyoyu arayüze yansıt; yeniden çalmaz
@@ -159,6 +159,7 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
       categoryName: 'Paylaşılan',
       languageCode: 'tr',
     };
+    Native?.setStyle?.(station.color, station.short);
     setCurrent(station);
     setMeta(null);
     metaRef.current = null;
