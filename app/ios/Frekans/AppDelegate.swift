@@ -40,6 +40,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let window = UIWindow(windowScene: windowScene)
     self.window = window
     factory.startReactNative(withModuleName: "Frekans", in: window, launchOptions: nil)
+
+    // Uygulama bir bağlantıyla soğuk açıldıysa
+    if let url = connectionOptions.urlContexts.first?.url {
+      FrekansLinks.deliver(url)
+    }
+  }
+
+  // Uygulama açıkken gelen bağlantı
+  func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+    if let url = URLContexts.first?.url {
+      FrekansLinks.deliver(url)
+    }
   }
 }
 
@@ -54,5 +66,13 @@ class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
 #else
     Bundle.main.url(forResource: "main", withExtension: "jsbundle")
 #endif
+  }
+}
+
+// Paylaşılan frekans:// bağlantısını kaydeder; native oynatıcı modülü alıp çalar.
+enum FrekansLinks {
+  static func deliver(_ url: URL) {
+    UserDefaults.standard.set(url.absoluteString, forKey: "frekans.pendingURL")
+    NotificationCenter.default.post(name: Notification.Name("FrekansOpenURL"), object: nil)
   }
 }

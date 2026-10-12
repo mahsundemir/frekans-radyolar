@@ -7,6 +7,7 @@
 @property (nonatomic, strong) AVPlayerItem *item;
 @property (nonatomic, strong) AVPlayerItemMetadataOutput *metaOutput;
 @property (nonatomic, copy) NSString *station;
+@property (nonatomic, copy) NSString *stationId;
 @property (nonatomic, assign) BOOL hasListeners;
 @property (nonatomic, assign) BOOL remoteReady;
 @end
@@ -19,8 +20,19 @@ static void *kTimeControlContext = &kTimeControlContext;
 RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup { return YES; }
+
+- (instancetype)init {
+  if ((self = [super init])) {
+    // Swift tarafı (SceneDelegate / AppDelegate) frekans:// bağlantısını kaydedip bildirim gönderir.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePendingURL) name:@"FrekansOpenURL" object:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{ [self handlePendingURL]; });
+  }
+  return self;
+}
+
+- (void)dealloc { [[NSNotificationCenter defaultCenter] removeObserver:self]; }
 - (dispatch_queue_t)methodQueue { return dispatch_get_main_queue(); }
-- (NSArray<NSString *> *)supportedEvents { return @[@"onState", @"onMetadata", @"onRemote"]; }
+- (NSArray<NSString *> *)supportedEvents { return @[@"onState", @"onMetadata", @"onRemote", @"onPlayRequest"]; }
 - (void)startObserving { self.hasListeners = YES; }
 - (void)stopObserving { self.hasListeners = NO; }
 
@@ -33,10 +45,22 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - JS API
 
-RCT_EXPORT_METHOD(play:(NSString *)urlString station:(NSString *)station) {
+RCT_EXPORT_METHOD(play:(NSString *)urlString station:(NSString *)station stationId:(NSString *)stationId) {
+  [self startURL:urlString station:station stationId:stationId];
+}
+
+// Şu an native tarafta çalan radyo (JS sonradan açıldığında arayüzü eşitlemek için)
+RCT_EXPORT_METHOD(getCurrent:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+  if (!self.stationId.length) { resolve([NSNull null]); return; }
+  resolve(@{@"id": self.stationId, @"name": self.station ?: @"",
+            @"playing": @(self.player.timeControlStatus != AVPlayerTimeControlStatusPaused)});
+}
+
+- (void)startURL:(NSString *)urlString station:(NSString *)station stationId:(NSString *)stationId {
   NSURL *url = [NSURL URLWithString:urlString];
   if (!url) { [self emit:@"onState" body:@{@"state": @"error", @"message": @"Geçersiz adres"}]; return; }
   self.station = station;
+  self.stationId = stationId;
   [self configureSession];
   [self teardownItem];
 
@@ -60,6 +84,26 @@ RCT_EXPORT_METHOD(play:(NSString *)urlString station:(NSString *)station) {
   [self emit:@"onState" body:@{@"state": @"buffering"}];
 }
 
+// frekans://radyo/<id>?u=<https yayın adresi>&n=<ad>
+- (void)handlePendingURL {
+  NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
+  NSString *s = [d stringForKey:@"frekans.pendingURL"];
+  if (!s.length) { return; }
+  [d removeObjectForKey:@"frekans.pendingURL"];
+  NSURLComponents *c = [NSURLComponents componentsWithString:s];
+  if (![c.scheme isEqualToString:@"frekans"] || ![c.host isEqualToString:@"radyo"]) { return; }
+  NSString *rid = [c.path hasPrefix:@"/"] ? [c.path substringFromIndex:1] : c.path;
+  NSString *stream = nil, *name = nil;
+  for (NSURLQueryItem *q in c.queryItems) {
+    if ([q.name isEqualToString:@"u"]) { stream = q.value; }
+    if ([q.name isEqualToString:@"n"]) { name = q.value; }
+  }
+  // Yalnızca https yayınları kabul edilir
+  if (!rid.length || ![stream hasPrefix:@"https://"]) { return; }
+  [self startURL:stream station:(name.length ? name : rid) stationId:rid];
+  [self emit:@"onPlayRequest" body:@{@"id": rid, @"name": name ?: rid, @"url": stream}];
+}
+
 RCT_EXPORT_METHOD(pause) { [self.player pause]; }
 
 RCT_EXPORT_METHOD(resume) {
@@ -71,6 +115,7 @@ RCT_EXPORT_METHOD(stop) {
   [self teardownItem];
   [self.player replaceCurrentItemWithPlayerItem:nil];
   MPNowPlayingInfoCenter.defaultCenter.nowPlayingInfo = nil;
+  self.stationId = nil;
   [self emit:@"onState" body:@{@"state": @"stopped"}];
 }
 

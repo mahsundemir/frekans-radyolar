@@ -1,15 +1,19 @@
 import {Share} from 'react-native';
 import type {FlatStation, NowPlaying} from './types';
 
-// Arkadaşa anında paylaşım: radyo, çalan şarkı ve doğrudan yayın adresi.
-// Yayın adresi herhangi bir oynatıcıda açılır, arkadaşın uygulamaya sahip olması gerekmez.
+// Arkadaşa anında paylaşım: radyo, çalan şarkı ve tıklanınca açılan bir bağlantı.
+// Bağlantı bir web sayfasıdır (docs: depo kökündeki index.html): uygulaması olmayan da tarayıcıda dinler,
+// uygulaması olan "Uygulamada aç" ile frekans:// bağlantısıyla radyoyu açar.
+export const SHARE_BASE = 'https://mahsundemir.github.io/frekans-radyolar/';
+
+export const shareUrl = (id: string) => `${SHARE_BASE}?r=${encodeURIComponent(id)}`;
 export function shareMessage(st: FlatStation, meta: NowPlaying | null): string {
   const song = meta && [meta.artist, meta.title].filter(Boolean).join(' — ');
   const lines = [
     song
       ? `Şu an ${st.name} dinliyorum: ${song}`
       : `Şu an ${st.name} dinliyorum.`,
-    `Sen de dinle: ${st.streamUrl}`,
+    `Sen de dinle: ${shareUrl(st.id)}`,
   ];
   return lines.join('\n');
 }

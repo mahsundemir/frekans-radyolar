@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frekans · Radyo</title>
+<meta name="description" content="Frekans ile paylaşılan radyoyu hemen dinle.">
+<style>
+  :root { --bg:#15131c; --text:#f4f2fa; --muted:#a29eb5; --accent:#ff5b4a; --ink:#17141f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: var(--accent); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    transition: background .5s, color .5s;
+  }
+  body.list { background: var(--bg); color: var(--text); }
+  main { max-width: 480px; margin: 0 auto; min-height: 100vh; padding: 28px 24px 36px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+  .kicker { font-size: 11px; font-weight: 700; letter-spacing: .14em; opacity: .85; }
+  .live { display: inline-flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px; border-radius: 13px; background: rgba(23,20,31,.13); font-size: 11px; font-weight: 700; letter-spacing: .12em; }
+  body.light-ink .live { background: rgba(255,255,255,.22); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 1.4s ease-in-out infinite; }
+  .paused .dot { animation: none; opacity: .4; }
+  h1 { margin: 12px 0 0; font-size: clamp(44px, 14vw, 64px); line-height: .95; letter-spacing: -.035em; font-weight: 800; }
+  .wave { height: 150px; display: flex; align-items: center; justify-content: space-between; }
+  .wave i { display: block; width: 5px; border-radius: 3px; background: currentColor; transform-origin: center; animation: eq 1.3s ease-in-out infinite; }
+  .paused .wave i { animation: none; transform: scaleY(.18); }
+  .actions { display: flex; flex-direction: column; gap: 12px; }
+  button, .btn { font: inherit; cursor: pointer; border: 0; border-radius: 18px; height: 56px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 17px; text-decoration: none; }
+  #play { background: var(--ink); color: var(--accent); }
+  body.light-ink #play { background: #fff; color: var(--accent); }
+  .open { background: rgba(23,20,31,.13); color: inherit; }
+  body.light-ink .open { background: rgba(255,255,255,.22); }
+  .msg { min-height: 20px; font-size: 14px; opacity: .85; text-align: center; }
+  a:focus-visible, button:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+  /* liste görünümü */
+  .grp { margin: 22px 0 8px; font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .grp b { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: #1d1a26; margin-bottom: 6px; color: var(--text); text-decoration: none; font-weight: 700; }
+  .item span { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-size: 12px; font-weight: 800; color: #17141f; }
+  @keyframes eq { 0%,100% { transform: scaleY(.18); } 50% { transform: scaleY(1); } }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(.65); } }
+  @media (prefers-reduced-motion: reduce) { .wave i, .dot { animation: none; } }
+</style>
+</head>
+<body class="paused">
+<main id="app" aria-live="polite"></main>
+<audio id="audio" preload="none"></audio>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js" crossorigin="anonymous" defer></script>
+<script>
+(function () {
+  var app = document.getElementById('app');
+  var audio = document.getElementById('audio');
+  var params = new URLSearchParams(location.search);
+  var wantedId = params.get('r');
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function inkFor(hex) {
+    var n = parseInt(hex.replace('#', ''), 16);
+    var c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(function (v) {
+      v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2] > 0.2 ? '#17141f' : '#ffffff';
+  }
+
+  // Yayın adresi yalnızca stations.json'daki kayıttan alınır (adres çubuğundan gelen değerle çalınmaz).
+  fetch('stations.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (data) {
+    var all = [];
+    data.languages.forEach(function (l) {
+      l.categories.forEach(function (c) {
+        c.stations.forEach(function (s) { all.push({ s: s, c: c }); });
+      });
+    });
+    var hit = all.filter(function (x) { return x.s.id === wantedId; })[0];
+    if (hit) { showStation(hit.s, hit.c); } else { showList(data); }
+  }).catch(function () {
+    app.appendChild(el('p', 'msg', 'Radyo listesi yüklenemedi. Biraz sonra tekrar dene.'));
+  });
+
+  function showStation(st, cat) {
+    document.title = st.name + ' · Frekans';
+    var ink = inkFor(cat.color);
+    document.documentElement.style.setProperty('--accent', cat.color);
+    document.documentElement.style.setProperty('--ink', ink === '#ffffff' ? '#ffffff' : '#17141f');
+    if (ink === '#ffffff') document.body.classList.add('light-ink');
+    app.textContent = '';
+
+    var top = el('div');
+    top.appendChild(el('div', 'kicker', 'SENİN İÇİN PAYLAŞILDI · ' + cat.name.toLocaleUpperCase('tr')));
+    var live = el('div', 'live'); live.style.marginTop = '14px';
+    live.appendChild(el('span', 'dot')); live.appendChild(document.createTextNode('CANLI'));
+    top.appendChild(live);
+    top.appendChild(el('h1', '', st.name));
+
+    var wave = el('div', 'wave'); wave.setAttribute('aria-hidden', 'true');
+    for (var i = 0; i < 32; i++) {
+      var b = document.createElement('i');
+      b.style.height = (26 + ((i * 53) % 74)) + '%';
+      b.style.animationDelay = (-(i * 0.15)).toFixed(2) + 's';
+      b.style.animationDuration = (1 + ((i * 7) % 5) * 0.19).toFixed(2) + 's';
+      wave.appendChild(b);
+    }
+
+    var actions = el('div', 'actions');
+    var msg = el('div', 'msg');
+    var play = el('button', '', 'Dinle'); play.id = 'play'; play.type = 'button';
+    var open = el('a', 'btn open', 'Frekans uygulamasında aç');
+    open.href = 'frekans://radyo/' + encodeURIComponent(st.id) + '?u=' + encodeURIComponent(st.streamUrl) + '&n=' + encodeURIComponent(st.name);
+    actions.appendChild(play); actions.appendChild(open); actions.appendChild(msg);
+    app.appendChild(top); app.appendChild(wave); app.appendChild(actions);
+
+    var hls = null;
+    function setPlaying(on) {
+      document.body.classList.toggle('paused', !on);
+      play.textContent = on ? 'Duraklat' : 'Dinle';
+    }
+    play.addEventListener('click', function () {
+      if (!audio.paused) { audio.pause(); setPlaying(false); return; }
+      msg.textContent = 'Bağlanıyor…';
+      var url = st.streamUrl;
+      var isHls = /\.m3u8(\?|$)/i.test(url);
+      function start() {
+        audio.play().then(function () { msg.textContent = ''; setPlaying(true); })
+          .catch(function () { msg.textContent = 'Bu yayın tarayıcıda açılmadı. Uygulamayla dinleyebilirsin.'; setPlaying(false); });
+      }
+      if (isHls && !audio.canPlayType('application/vnd.apple.mpegurl')) {
+        if (window.Hls && window.Hls.isSupported()) {
+          if (hls) hls.destroy();
+          hls = new window.Hls();
+          hls.on(window.Hls.Events.ERROR, function (_e, d) {
+            if (d.fatal) { msg.textContent = 'Bu yayın tarayıcıda açılmadı. Uygulamayla dinleyebilirsin.'; setPlaying(false); }
+          });
+          hls.loadSource(url); hls.attachMedia(audio); start();
+        } else {
+          msg.textContent = 'Bu tarayıcı yayını açamıyor. Uygulamayla dinleyebilirsin.';
+        }
+      } else {
+        audio.src = url; start();
+      }
+    });
+    audio.addEventListener('pause', function () { setPlaying(false); });
+    audio.addEventListener('playing', function () { setPlaying(true); });
+  }
+
+  function showList(data) {
+    document.body.classList.add('list');
+    app.textContent = '';
+    app.style.justifyContent = 'flex-start';
+    app.appendChild(el('h1', '', 'Frekans'));
+    app.appendChild(el('p', 'msg', 'Bir radyo seç, hemen dinle.'));
+    data.languages.forEach(function (l) {
+      l.categories.forEach(function (c) {
+        var g = el('div', 'grp'); var dot = el('b'); dot.style.background = c.color;
+        g.appendChild(dot); g.appendChild(document.createTextNode(l.name.toLocaleUpperCase('tr') + ' · ' + c.name.toLocaleUpperCase('tr')));
+        app.appendChild(g);
+        c.stations.forEach(function (s) {
+          var a = el('a', 'item'); a.href = '?r=' + encodeURIComponent(s.id);
+          var m = el('span', '', s.short); m.style.background = c.color; m.style.color = inkFor(c.color);
+          a.appendChild(m); a.appendChild(document.createTextNode(s.name));
+          app.appendChild(a);
+        });
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

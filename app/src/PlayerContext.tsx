@@ -76,6 +76,8 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   fileRef.current = file;
 
   const all = useMemo(() => flatten(file), [file]);
+  const allRef = useRef(all);
+  allRef.current = all;
   const stations = useMemo(
     () => all.filter(s => enabled[s.id] !== false),
     [all, enabled],
@@ -110,6 +112,12 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
         }
       }
       setHydrated(true);
+
+      // Uygulama paylaşılan bir bağlantıyla açıldıysa native taraf çalmaya başlamış olabilir
+      const playing = await Native?.getCurrent?.();
+      if (playing?.id) {
+        adopt({id: playing.id, name: playing.name, url: ''});
+      }
     })();
   }, []);
 
@@ -133,7 +141,30 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     setHistory([]);
     setError(null);
     setStatus('buffering');
-    Native?.play(s.streamUrl, s.name);
+    Native?.play(s.streamUrl, s.name, s.id);
+  }, []);
+
+  // Native tarafta zaten çalan (paylaşılan bağlantıyla açılan) radyoyu arayüze yansıt; yeniden çalmaz
+  const adopt = useCallback((req: {id: string; name: string; url: string}) => {
+    const known = allRef.current.find(s => s.id === req.id);
+    const station: FlatStation = known ?? {
+      id: req.id,
+      name: req.name,
+      short: req.name.slice(0, 2).toLocaleUpperCase('tr'),
+      streamUrl: req.url,
+      metadata: 'none',
+      color: '#FF5B4A',
+      ink: '#17141F',
+      categoryId: 'shared',
+      categoryName: 'Paylaşılan',
+      languageCode: 'tr',
+    };
+    setCurrent(station);
+    setMeta(null);
+    metaRef.current = null;
+    setHistory([]);
+    setError(null);
+    setStatus('buffering');
   }, []);
 
   const step = useCallback(
@@ -216,6 +247,8 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   // Native olaylar
   const stepRef = useRef(step);
   stepRef.current = step;
+  const adoptRef = useRef(adopt);
+  adoptRef.current = adopt;
   useEffect(() => {
     if (!emitter) {
       return;
@@ -240,6 +273,9 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
         }
         metaRef.current = next;
         setMeta(next);
+      }),
+      emitter.addListener('onPlayRequest', (e: any) => {
+        adoptRef.current({id: e.id, name: e.name, url: e.url});
       }),
       emitter.addListener('onRemote', (e: any) => {
         stepRef.current(e.command === 'previous' ? -1 : 1);

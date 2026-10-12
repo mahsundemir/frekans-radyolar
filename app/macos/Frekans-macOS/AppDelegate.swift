@@ -40,6 +40,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     super.init()
   }
 
+  // frekans:// bağlantısı (paylaşılan radyo)
+  func application(_ application: NSApplication, open urls: [URL]) {
+    if let url = urls.first {
+      FrekansLinks.deliver(url)
+    }
+  }
+
   func applicationDidFinishLaunching(_ notification: Notification) {
 #if DEBUG
     startDebugProbe()
@@ -110,3 +117,11 @@ extension AppDelegate {
   }
 }
 #endif
+
+// Paylaşılan frekans:// bağlantısını kaydeder; native oynatıcı modülü alıp çalar.
+enum FrekansLinks {
+  static func deliver(_ url: URL) {
+    UserDefaults.standard.set(url.absoluteString, forKey: "frekans.pendingURL")
+    NotificationCenter.default.post(name: Notification.Name("FrekansOpenURL"), object: nil)
+  }
+}
