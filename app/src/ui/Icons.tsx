@@ -51,6 +51,12 @@ export const ChevronDown = ({size = 22, color}: P) => (
   </Svg>
 );
 
+export const CheckIcon = ({size = 20, color}: P) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24">
+    <Path d="M5 12.5l4.5 4.5L19 7.5" {...stroke(color, 2.6)} />
+  </Svg>
+);
+
 export const ChevronLeft = ({size = 20, color}: P) => (
   <Svg width={size} height={size} viewBox="0 0 24 24">
     <Path d="M15 6l-6 6 6 6" {...stroke(color, 2.4)} />

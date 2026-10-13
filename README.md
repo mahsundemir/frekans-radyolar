@@ -1,6 +1,6 @@
 # Frekans
 
-Türkiye'deki popüler online radyoları dinleten, minimal ve renkli bir radyo uygulaması. Mac'te menü çubuğundan açılan bir panel, iPhone'da tam ekran bir oynatıcı olarak çalışır. Radyo listesi bu depodaki [`stations.json`](stations.json) dosyasından gelir. Dosya güncellenince uygulama güncellenmeden liste değişir.
+Online radyoları dinleten, minimal ve renkli bir radyo uygulaması: Türkçe, İngilizce, İspanyolca, Arapça, Almanca, Fransızca ve Rusça yayın yapan radyolar. Yayın dilini seçince uygulamanın dili de değişir. Mac'te menü çubuğundan açılan bir panel, iPhone'da tam ekran bir oynatıcı olarak çalışır. Radyo listesi bu depodaki [`stations.json`](stations.json) dosyasından gelir. Dosya güncellenince uygulama güncellenmeden liste değişir.
 
 Bu proje Claude (yapay zekâ ajanı) ile birlikte geliştirildi. Tasarım, radyo araştırması ve kod aynı çalışmanın parçası. Aşağıda ne yapıldığı ve ne yapılmadığı açıkça yazıyor.
 
@@ -23,11 +23,27 @@ Bu proje Claude (yapay zekâ ajanı) ile birlikte geliştirildi. Tasarım, radyo
 - **Uyku zamanlayıcı:** 15, 30, 45, 60 ve 90 dakika. Süre dolunca ses 5 saniyede kısılır ve yayın durur. Zamanlayıcı native tarafta çalışır, panel ya da ekran kapalıyken de işler.
 - **Yazı tipi:** Başlıklarda Bricolage Grotesque ExtraBold (SIL Open Font License, [assets/fonts](app/assets/fonts)).
 - **Liste güncelleme:** Açılışta, uygulama öne gelince (30 dakikadan eskiyse) ve 6 saatte bir `stations.json` çekilir. İnternet yoksa önbellekteki ya da uygulamayla gelen kopya kullanılır.
-- **Dil > Kategori > Radyolar:** Ayarlar ekranı listeyi bu hiyerarşiyle gösterir. Her radyo ayrı ayrı açılıp kapatılabilir.
+- **Yayın dili:** Ayarlar > Radyolar ekranındaki açılır listeden (Türkçe, English, Español, العربية, Deutsch, Français, Русский) yayın dili seçilir. Seçim hem gezilen radyoları (ana ekran, önceki/sonraki, hızlı seçim, adadaki liste) hem uygulamanın dilini belirler. İlk açılışta cihaz dili desteklenen bir dilse o seçilir, değilse Türkçe. Çalan yayın dil değişince kesilmez; başka dilden bir radyo (paylaşılan bağlantı) açılırsa dil de o radyonun diline geçer. Seçim cihazda saklanır. Arapça metinler sağdan sola yazılır ama ekran düzeni (düğme yerleri) sağdan sola çevrilmez.
+- **Dil > Kategori > Radyolar:** Ayarlar ekranı seçili dilin radyolarını kategori hiyerarşisiyle gösterir. Her radyo ayrı ayrı açılıp kapatılabilir.
 
 ## Radyo listesi
 
-[`stations.json`](stations.json) şu an 68 radyo içeriyor (24'ünün logosu var): Türkçe (12 kategori) ve Kürtçe (2 kategori).
+[`stations.json`](stations.json) şu an 247 radyo içeriyor (98'inin logosu var). Dil başına sayılar:
+
+| Dil | Kod | Radyo | Kategori |
+|---|---|---|---|
+| Türkçe | `tr` | 66 | 12 |
+| English | `en` | 33 | 7 |
+| Español | `es` | 30 | 6 |
+| العربية | `ar` | 24 | 5 |
+| Deutsch | `de` | 33 | 6 |
+| Français | `fr` | 32 | 7 |
+| Русский | `ru` | 27 | 6 |
+| Kürtçe | `ku` | 2 | 2 |
+
+Her dilin kategorileri o dilde adlandırılır. Kategori kimlikleri dosya genelinde benzersizdir (Türkçe dışındakiler dil koduyla başlar: `en-pop`), radyo kimlikleri de öyle (`en-capital`). Kürtçe (`ku`) arayüz çevirisi olmadığı için Türkçe arayüzle gösterilir.
+
+**Yeni dil/radyo kaynağı:** Radyolar topluluk dizini [radio-browser.info](https://www.radio-browser.info) ile resmî yayın adreslerinden derlendi. Her adres eklenirken `https` olarak açıldığı, ses verisi (ya da HLS parçası) geldiği ve HTML sayfası olmadığı denetlendi. Bu, yayının gerçekten o radyo olduğunu ya da her ülkeden açılacağını doğrulamaz: BBC'nin Birleşik Krallık dışına kapalı yayınları listeye alınmadı, bazı Alman ARD kenar sunucuları ise Türkiye'den bağlanırken zaman zaman kopuyor.
 
 ```
 version, updatedAt
@@ -65,6 +81,7 @@ app/                     React Native 0.83 projesi (iOS + macOS)
 ├─ src/
 │  ├─ PlayerContext.tsx  Durum: oynatıcı, favoriler, ayarlar, liste güncelleme
 │  ├─ stations.ts        Listeyi çekme, doğrulama, düzleştirme
+│  ├─ i18n.ts            Arayüz çevirileri (7 dil) ve cihaz dili algılama
 │  ├─ filter.ts          Arama ve kategori/favori filtresi
 │  ├─ share.ts           Paylaşım metni
 │  ├─ storage.ts         Küçük JSON deposu (native)
@@ -151,6 +168,8 @@ Release derlemesi imzasız cihaz hedefi için derlendi ve JS paketi, eklenti ve 
 - Depo adı `frekans-radyolar` olarak kaldı. Raw adres bozulmasın diye değiştirilmedi.
 
 ## Henüz yapılmayanlar
+
+- **Dil değişimi yalnızca React Native arayüzünü çevirir.** iPhone canlı etkinliğindeki ("Canlı yayın") ve Mac menü çubuğu menüsündeki ("Adayı sabitle", "Frekans'tan çık") native metinler Türkçe kaldı. Paylaşım sayfası (`index.html`) ve gizlilik sayfası da Türkçe/İngilizce. Yeni dillerdeki arayüz çevirileri ve yeni radyolar simülatörde/cihazda gözle denenmedi; yalnızca tip denetimi, Jest ve yayın adreslerinin ses verdiği doğrulandı.
 
 - **Mac çentik adasında fare ile üzerine gelme denenmedi.** Daralmış ve genişlemiş hal görüntüleri alındı (genişleme kodla tetiklendi). Gerçek fare ile üzerine gelince açılıp kapanması, çentiğin hizası ve menü çubuğu simgesi gerçek ekranda gözle kontrol edilmeli.
 - **Dynamic Island'ın görünüşü ve düğmeleri adadan denenmedi.** Eklenti derleniyor, uygulamaya gömülüyor, canlı etkinlik başarıyla başlıyor. Düğmelerin komutları (oynat/duraklat, önceki, sonraki, radyo seç) native oynatıcıya iletilince çalışıyor (simülatörde komut göndererek doğrulandı). Ancak simülatör ekran görüntüsü Dynamic Island'ı çizmediği ve uzun basılamadığı için adanın görünüşü ve gerçek dokunuşla tetiklenmesi gerçek iPhone'da denenmeli.

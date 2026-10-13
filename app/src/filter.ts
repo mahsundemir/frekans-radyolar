@@ -1,12 +1,12 @@
 import type {FlatStation} from './types';
 
-// Türkçe harflere duyarsız arama: "nagme" → "Nağme", "super" → "Süper"
+// Aksan ve Türkçe harflere duyarsız arama: "nagme" → "Nağme", "super" → "Süper", "cafe" → "Café"
 export function norm(s: string): string {
   return s
     .toLocaleLowerCase('tr')
     .replace(/ı/g, 'i')
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '');
+    .replace(/[̀-ͯ\u064B-\u065F\u0670\u0640]/g, ''); // aksanlar ve Arapça harekeler
 }
 
 export const FAVORITES = 'fav';

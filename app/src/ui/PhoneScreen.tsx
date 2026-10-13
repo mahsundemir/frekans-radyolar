@@ -58,10 +58,10 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
 
   const title =
     p.status === 'error'
-      ? p.error ?? 'Yayın açılamadı'
+      ? p.error ?? p.t('streamFailed')
       : p.status === 'buffering'
-      ? 'Bağlanıyor…'
-      : p.meta?.title || 'Canlı yayın';
+      ? p.t('connecting')
+      : p.meta?.title || p.t('liveStream');
   const artist = p.meta?.artist || st.categoryName;
 
   return (
@@ -72,17 +72,17 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
       ]}>
       <View style={styles.topBar}>
         <Pressable
-          accessibilityLabel="Arkadaşınla paylaş"
+          accessibilityLabel={p.t('share')}
           onPress={() => shareStation(st, p.meta)}
           style={[styles.round, {backgroundColor: chip}]}>
           <ShareIcon color={ink} />
         </Pressable>
         <View style={{alignItems: 'center'}}>
-          <Text style={[styles.kicker, {color: ink}]}>ŞU AN DİNLENİYOR</Text>
+          <Text style={[styles.kicker, {color: ink}]}>{p.t('nowListening')}</Text>
           <Text style={[styles.cat, {color: ink}]}>{st.categoryName}</Text>
         </View>
         <Pressable
-          accessibilityLabel="Radyo ayarları"
+          accessibilityLabel={p.t('radioSettings')}
           onPress={onOpenList}
           style={[styles.round, {backgroundColor: chip}]}>
           <MenuIcon color={ink} />
@@ -92,7 +92,7 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
       <View>
         <View style={[styles.livePill, {backgroundColor: chip}]}>
           <View style={[styles.dot, {backgroundColor: ink, opacity: live ? 1 : 0.4}]} />
-          <Text style={[styles.liveText, {color: ink}]}>CANLI</Text>
+          <Text style={[styles.liveText, {color: ink}]}>{p.t('liveBadge')}</Text>
         </View>
         <Text
           numberOfLines={2}
@@ -105,7 +105,7 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
       <Waveform count={32} barWidth={6} height={170} color={ink} active={p.status === 'playing'} />
 
       <View>
-        <Text style={[styles.kicker, {color: ink}]}>ŞU AN ÇALIYOR</Text>
+        <Text style={[styles.kicker, {color: ink}]}>{p.t('nowPlaying')}</Text>
         <Text numberOfLines={2} style={[styles.track, FONT_DISPLAY, {color: ink}]}>
           {title}
         </Text>
@@ -116,7 +116,7 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
           <View style={[styles.history, {borderTopColor: chip}]}>
             {p.history.map((h, i) => (
               <Text key={i} numberOfLines={1} style={[styles.histLine, {color: ink}]}>
-                {i === 0 ? 'Az önce' : 'Daha önce'} · {[h.title, h.artist].filter(Boolean).join(' — ')}
+                {i === 0 ? p.t('justNow') : p.t('earlier')} · {[h.title, h.artist].filter(Boolean).join(' — ')}
               </Text>
             ))}
           </View>
@@ -125,25 +125,25 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
 
       <View style={styles.controls}>
         <Pressable
-          accessibilityLabel={fav ? 'Favorilerden çıkar' : 'Favorilere ekle'}
+          accessibilityLabel={fav ? p.t('favRemove') : p.t('favAdd')}
           onPress={() => p.toggleFavorite(st.id)}
           style={styles.side}>
           <HeartIcon color={ink} filled={fav} />
         </Pressable>
-        <Pressable accessibilityLabel="Önceki radyo" onPress={p.prev} style={styles.skip}>
+        <Pressable accessibilityLabel={p.t('prevRadio')} onPress={p.prev} style={styles.skip}>
           <PrevIcon size={30} color={ink} />
         </Pressable>
         <Pressable
-          accessibilityLabel={live ? 'Duraklat' : 'Oynat'}
+          accessibilityLabel={live ? p.t('pause') : p.t('play')}
           onPress={p.toggle}
           style={[styles.play, {backgroundColor: ink}]}>
           {live ? <PauseIcon size={34} color={st.color} /> : <PlayIcon size={34} color={st.color} />}
         </Pressable>
-        <Pressable accessibilityLabel="Sonraki radyo" onPress={p.next} style={styles.skip}>
+        <Pressable accessibilityLabel={p.t('nextRadio')} onPress={p.next} style={styles.skip}>
           <NextIcon size={30} color={ink} />
         </Pressable>
         <Pressable
-          accessibilityLabel="Uyku zamanlayıcı"
+          accessibilityLabel={p.t('sleepTimer')}
           onPress={() => setSleepOpen(o => !o)}
           style={styles.side}>
           <MoonIcon color={ink} filled={!!p.sleepEnd} />
@@ -170,7 +170,7 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
             );
           })}
           <Pressable
-            accessibilityLabel="Tüm radyo listesini aç"
+            accessibilityLabel={p.t('openAll')}
             onPress={() => setListOpen(true)}
             style={[styles.dialItem, {backgroundColor: chip, borderColor: 'transparent'}]}>
             <MenuIcon size={18} color={ink} />

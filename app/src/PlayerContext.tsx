@@ -366,6 +366,17 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     );
   }, [stations, favorites]);
 
+  // Yayın dili değişince, çalmıyorsa ekrandaki radyo yeni dilin ilk radyosu olsun.
+  // Çalan yayın kesilmez; durunca yeni dile geçilir.
+  useEffect(() => {
+    const idle = status !== 'playing' && status !== 'buffering';
+    if (idle && currentRaw && currentRaw.languageCode !== language && stations[0]) {
+      setCurrent(stations[0]);
+    }
+  }, [language, status, currentRaw, stations]);
+
+  const setLanguage = useCallback((code: string) => setLanguageState(code), []);
+
   // Çalan radyonun rengi değişirse canlı etkinlik de güncellensin
   useEffect(() => {
     if (current) {
@@ -391,7 +402,11 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
           return;
         }
         setStatus(e.state);
-        setError(e.state === 'error' ? e.message ?? 'Yayın açılamadı' : null);
+        setError(
+          e.state === 'error'
+            ? e.message ?? translate(languageRef.current, 'streamFailed')
+            : null,
+        );
       }),
       emitter.addListener('onMetadata', (e: any) => {
         const prev = metaRef.current;
@@ -427,6 +442,9 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
 
   const value: Ctx = {
     file,
+    language,
+    setLanguage,
+    t,
     stations,
     all,
     enabled,

@@ -8,19 +8,22 @@ import {
   View,
 } from 'react-native';
 import {filterStations, FAVORITES, norm} from '../filter';
+import {localeOf} from '../i18n';
 import {usePlayer} from '../PlayerContext';
 import {colors} from '../theme';
 import {FONT_DISPLAY, Toggle} from './Common';
 import Badge from './Badge';
 import Waveform from './Waveform';
-import {ChevronLeft, HeartIcon, RefreshIcon, SearchIcon} from './Icons';
+import {CheckIcon, ChevronDown, ChevronLeft, HeartIcon, RefreshIcon, SearchIcon} from './Icons';
 
 // Ayarlar › Radyolar: Dil > Kategori > Radyolar (stations.json'dan)
 export default function StationsScreen({onBack}: {onBack: () => void}) {
   const p = usePlayer();
-  const [lang, setLang] = useState(p.file.languages[0]?.code ?? 'tr');
   const [query, setQuery] = useState('');
-  const language = p.file.languages.find(l => l.code === lang) ?? p.file.languages[0];
+  const [langOpen, setLangOpen] = useState(false);
+  // Yayın dili global tercih: radyolar ve uygulama dili buna göre değişir
+  const language = p.file.languages.find(l => l.code === p.language) ?? p.file.languages[0];
+  const countOf = (code: string) => p.all.filter(s => s.languageCode === code).length;
   const q = norm(query.trim());
   const live = p.status === 'playing' || p.status === 'buffering';
 
@@ -45,26 +48,22 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
   return (
     <View style={styles.root}>
       <View style={styles.nav}>
-        <Pressable onPress={onBack} style={styles.back} accessibilityLabel="Geri">
+        <Pressable onPress={onBack} style={styles.back} accessibilityLabel={p.t('back')}>
           <ChevronLeft color={colors.muted} />
-          <Text style={styles.backText}>Geri</Text>
+          <Text style={styles.backText}>{p.t('back')}</Text>
         </Pressable>
       </View>
 
       <View style={styles.titleRow}>
-        <Text style={[styles.title, FONT_DISPLAY]}>Radyolar</Text>
-        <View style={styles.seg}>
-          {p.file.languages.map(l => (
-            <Pressable
-              key={l.code}
-              onPress={() => setLang(l.code)}
-              style={[styles.segItem, l.code === lang && styles.segOn]}>
-              <Text style={[styles.segText, l.code === lang && styles.segTextOn]}>
-                {l.name}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
+        <Text style={[styles.title, FONT_DISPLAY]}>{p.t('radios')}</Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`${p.t('broadcastLanguage')}: ${language?.name ?? ''}`}
+          onPress={() => setLangOpen(o => !o)}
+          style={styles.langBtn}>
+          <Text numberOfLines={1} style={styles.langBtnText}>{language?.name}</Text>
+          <ChevronDown size={18} color={colors.ink} />
+        </Pressable>
       </View>
 
       <View style={styles.searchRow}>
@@ -74,13 +73,13 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
             {...({enableFocusRing: false} as object)}
             value={query}
             onChangeText={setQuery}
-            placeholder="Radyo ara"
+            placeholder={p.t('searchRadio')}
             placeholderTextColor={colors.muted}
             style={styles.input}
           />
         </View>
         <Pressable
-          accessibilityLabel="Radyo listesini yenile"
+          accessibilityLabel={p.t('refreshList')}
           onPress={p.refresh}
           style={styles.refresh}>
           <RefreshIcon color={p.refreshing ? colors.muted : colors.text} />
@@ -93,7 +92,7 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
           <View>
             <View style={styles.groupHead}>
               <HeartIcon size={14} color={colors.text} filled />
-              <Text style={styles.groupName}>FAVORİLER</Text>
+              <Text style={styles.groupName}>{p.t('favoritesCaps')}</Text>
               <Text style={styles.groupCount}>· {favs.length}</Text>
             </View>
             <View style={styles.card}>
@@ -109,7 +108,7 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
                       )}
                     </Pressable>
                     <Pressable
-                      accessibilityLabel={`${s.name} favorilerden çıkar`}
+                      accessibilityLabel={p.t('favRemoveNamed', {name: s.name})}
                       onPress={() => p.toggleFavorite(s.id)}
                       style={styles.heartBtn}>
                       <HeartIcon size={20} color={s.color} filled />
@@ -124,7 +123,7 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
           <View key={c.id}>
             <View style={styles.groupHead}>
               <View style={[styles.groupDot, {backgroundColor: c.color}]} />
-              <Text style={styles.groupName}>{c.name.toLocaleUpperCase('tr')}</Text>
+              <Text style={styles.groupName}>{c.name.toLocaleUpperCase(localeOf(p.language))}</Text>
               <Text style={styles.groupCount}>· {c.stations.length}</Text>
             </View>
             <View style={styles.card}>
@@ -148,8 +147,8 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
                       <Pressable
                         accessibilityLabel={
                           p.isFavorite(s.id)
-                            ? `${s.name} favorilerden çıkar`
-                            : `${s.name} favorilere ekle`
+                            ? p.t('favRemoveNamed', {name: s.name})
+                            : p.t('favAddNamed', {name: s.name})
                         }
                         onPress={() => p.toggleFavorite(s.id)}
                         style={styles.heartBtn}>
@@ -173,6 +172,43 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
           </View>
         ))}
       </ScrollView>
+
+      {langOpen && (
+        <View style={styles.langLayer} pointerEvents="box-none">
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={() => setLangOpen(false)}
+            accessibilityLabel={p.t('close')}
+          />
+          <View style={styles.langMenu}>
+            <Text style={styles.langHead}>{p.t('broadcastLanguage').toLocaleUpperCase(localeOf(p.language))}</Text>
+            <Text style={styles.langHint}>{p.t('languageHint')}</Text>
+            <ScrollView style={{maxHeight: 360}} showsVerticalScrollIndicator={false}>
+              {p.file.languages.map((l, i) => {
+                const on = l.code === language?.code;
+                return (
+                  <Pressable
+                    key={l.code}
+                    accessibilityRole="button"
+                    accessibilityState={{selected: on}}
+                    onPress={() => {
+                      p.setLanguage(l.code);
+                      setQuery('');
+                      setLangOpen(false);
+                    }}
+                    style={[styles.langRow, i > 0 && styles.langRowSep]}>
+                    <View style={{flex: 1}}>
+                      <Text style={[styles.langName, on && {color: colors.text}]}>{l.name}</Text>
+                      <Text style={styles.langCount}>{p.t('stationCount', {n: countOf(l.code)})}</Text>
+                    </View>
+                    {on && <CheckIcon color={colors.text} />}
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -189,22 +225,40 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   title: {color: colors.text, fontSize: 38},
-  seg: {
-    flexDirection: 'row',
-    padding: 3,
+  langBtn: {
+    height: 36,
+    maxWidth: 170,
+    paddingLeft: 14,
+    paddingRight: 10,
     borderRadius: 12,
-    backgroundColor: colors.surface2,
-  },
-  segItem: {
-    height: 32,
-    paddingHorizontal: 14,
-    borderRadius: 9,
+    backgroundColor: colors.text,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: 4,
   },
-  segOn: {backgroundColor: colors.text},
-  segText: {color: colors.muted, fontSize: 14, fontWeight: '700'},
-  segTextOn: {color: colors.ink},
+  langBtnText: {color: colors.ink, fontSize: 14, fontWeight: '700', flexShrink: 1},
+  langLayer: {...StyleSheet.absoluteFillObject, zIndex: 20},
+  langMenu: {
+    position: 'absolute',
+    top: 96,
+    right: 20,
+    width: 260,
+    borderRadius: 18,
+    backgroundColor: colors.surface3,
+    paddingTop: 14,
+    paddingHorizontal: 6,
+    paddingBottom: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowRadius: 24,
+    shadowOffset: {width: 0, height: 10},
+  },
+  langHead: {color: colors.muted, fontSize: 11, fontWeight: '700', letterSpacing: 1.4, paddingHorizontal: 10},
+  langHint: {color: colors.muted, fontSize: 12, paddingHorizontal: 10, paddingTop: 4, paddingBottom: 8, opacity: 0.85},
+  langRow: {flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 10, gap: 8},
+  langRowSep: {borderTopWidth: 1, borderTopColor: colors.line},
+  langName: {color: colors.muted, fontSize: 16, fontWeight: '700'},
+  langCount: {color: colors.muted, fontSize: 12, marginTop: 1},
   searchRow: {flexDirection: 'row', gap: 10, marginTop: 14},
   search: {
     flex: 1,

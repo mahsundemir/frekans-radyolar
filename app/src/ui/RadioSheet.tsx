@@ -86,7 +86,7 @@ export default function RadioSheet({open, onClose}: {open: boolean; onClose: () 
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
       <Animated.View
         style={[StyleSheet.absoluteFill, {backgroundColor: '#000', opacity: progress.interpolate({inputRange: [0, 1], outputRange: [0, 0.5]})}]}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Listeyi kapat" />
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel={p.t('closeList')} />
       </Animated.View>
       <Animated.View
         style={[
@@ -103,12 +103,12 @@ export default function RadioSheet({open, onClose}: {open: boolean; onClose: () 
             <Pressable onPress={() => setTab('fav')} style={[styles.segItem, tab === 'fav' && styles.segOn]}>
               <HeartIcon size={14} color={tab === 'fav' ? colors.ink : colors.muted} filled={tab === 'fav'} />
               <Text style={[styles.segText, tab === 'fav' && styles.segTextOn]}>
-                Favoriler{favList.length ? ` · ${favList.length}` : ''}
+                {p.t('favorites')}{favList.length ? ` · ${favList.length}` : ''}
               </Text>
             </Pressable>
             <Pressable onPress={() => setTab('all')} style={[styles.segItem, tab === 'all' && styles.segOn]}>
               <Text style={[styles.segText, tab === 'all' && styles.segTextOn]}>
-                Tümü · {p.stations.length}
+                {p.t('all')} · {p.stations.length}
               </Text>
             </Pressable>
           </View>
@@ -116,7 +116,7 @@ export default function RadioSheet({open, onClose}: {open: boolean; onClose: () 
 
         <ScrollView showsVerticalScrollIndicator={false}>
           {tab === 'fav' && favList.length === 0 && (
-            <Text style={styles.empty}>Henüz favori yok. Radyonun yanındaki kalbe dokun.</Text>
+            <Text style={styles.empty}>{p.t('noFavs')}</Text>
           )}
           {list.map(s => {
             const active = st?.id === s.id;
@@ -139,7 +139,7 @@ export default function RadioSheet({open, onClose}: {open: boolean; onClose: () 
                   <Waveform count={4} barWidth={3} height={16} gap={2} color={s.color} active={p.status === 'playing'} />
                 )}
                 <Pressable
-                  accessibilityLabel={isFav ? `${s.name} favorilerden çıkar` : `${s.name} favorilere ekle`}
+                  accessibilityLabel={p.t(isFav ? 'favRemoveNamed' : 'favAddNamed', {name: s.name})}
                   onPress={() => p.toggleFavorite(s.id)}
                   style={styles.rowHeart}>
                   <HeartIcon size={20} color={isFav ? s.color : colors.muted} filled={isFav} />
@@ -147,7 +147,7 @@ export default function RadioSheet({open, onClose}: {open: boolean; onClose: () 
               </Pressable>
             );
           })}
-          <Text style={styles.hint}>Rengi değiştirmek için radyoya basılı tut</Text>
+          <Text style={styles.hint}>{p.t('holdToColor')}</Text>
         </ScrollView>
       </Animated.View>
     </View>

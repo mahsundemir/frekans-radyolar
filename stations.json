@@ -1,6 +1,6 @@
 {
-  "version": 5,
-  "updatedAt": "2026-10-13T06:15:57Z",
+  "version": 6,
+  "updatedAt": "2026-10-13T07:38:30Z",
   "languages": [
     {
       "code": "tr",
@@ -572,6 +572,1628 @@
               "short": "DK",
               "streamUrl": "https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c14192aa92.smil/playlist.m3u8",
               "metadata": "hls"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "en",
+      "name": "English",
+      "categories": [
+        {
+          "id": "en-pop",
+          "name": "Pop",
+          "color": "#FF5B4A",
+          "stations": [
+            {
+              "id": "en-capital",
+              "name": "Capital FM",
+              "short": "CF",
+              "streamUrl": "https://media-ssl.musicradio.com/CapitalUK",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-heart",
+              "name": "Heart",
+              "short": "HE",
+              "streamUrl": "https://media-ssl.musicradio.com/HeartUK",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-hits-radio",
+              "name": "Hits Radio",
+              "short": "HR",
+              "streamUrl": "https://stream-al.hellorayo.co.uk/key.aac?aw_0_1st.skey=1602676850&direct=true",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-kiis-fm",
+              "name": "102.7 KIIS FM",
+              "short": "KI",
+              "streamUrl": "https://stream.revma.ihrhls.com/zc185",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-z100",
+              "name": "Z100 New York",
+              "short": "Z1",
+              "streamUrl": "https://stream.revma.ihrhls.com/zc1469",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "en-rock",
+          "name": "Rock & Alternative",
+          "color": "#6A47FF",
+          "stations": [
+            {
+              "id": "en-planet-rock",
+              "name": "Planet Rock",
+              "short": "PR",
+              "streamUrl": "https://stream-mz.hellorayo.co.uk/planetrock.aac?aw_0_1st.skey=1602676850&direct=true",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-radio-x",
+              "name": "Radio X",
+              "short": "RX",
+              "streamUrl": "https://media-ssl.musicradio.com/RadioXLondonMP3",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-kerrang",
+              "name": "Kerrang! Radio",
+              "short": "KR",
+              "logo": "https://media.bauerradio.com/image/upload/c_crop,g_custom/v1679564543/brand_manager/stations/dx4kf5ptwfycmb4fydxa.png",
+              "streamUrl": "https://stream-al.hellorayo.co.uk/kerrang.aac?aw_0_1st.skey=1602676850&direct=true",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-virgin-uk",
+              "name": "Virgin Radio UK",
+              "short": "VR",
+              "logo": "https://www.celsoazevedo.com/files/2022/virgin-radio-uk.jpg",
+              "streamUrl": "https://radio.virginradio.co.uk/stream",
+              "metadata": "none"
+            },
+            {
+              "id": "en-kexp",
+              "name": "KEXP Seattle",
+              "short": "KX",
+              "streamUrl": "https://kexp.streamguys1.com/kexp160.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-radio-paradise",
+              "name": "Radio Paradise",
+              "short": "RP",
+              "streamUrl": "https://stream.radioparadise.com/aac-320",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "en-old",
+          "name": "Oldies",
+          "color": "#FF8A3D",
+          "stations": [
+            {
+              "id": "en-heart-80s",
+              "name": "Heart 80s",
+              "short": "H8",
+              "logo": "https://www.heart.co.uk/assets_v4r/heart/img/favicon-196x196.png",
+              "streamUrl": "https://media-ssl.musicradio.com/Heart80sMP3",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-heart-90s",
+              "name": "Heart 90s",
+              "short": "H9",
+              "logo": "https://www.heart.co.uk/assets_v4r/heart/img/favicon-196x196.png",
+              "streamUrl": "https://media-ssl.musicradio.com/Heart90sMP3",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-gold",
+              "name": "Gold",
+              "short": "GO",
+              "logo": "https://www.mygoldmusic.co.uk/assets_v4r/gold/img/favicon-196x196.png",
+              "streamUrl": "https://media-ssl.musicradio.com/GoldMP3",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-magic",
+              "name": "Magic Radio",
+              "short": "MG",
+              "logo": "https://www.celsoazevedo.com/files/2025/magic.png",
+              "streamUrl": "https://stream-mz.hellorayo.co.uk/magicnational.mp3?aw_0_1st.skey=1602676850&direct=true",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-greatest-hits",
+              "name": "Greatest Hits Radio",
+              "short": "GH",
+              "streamUrl": "https://stream-mz.hellorayo.co.uk/net2westmidlands.aac?aw_0_1st.skey=1602676850&direct=true",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-absolute-80s",
+              "name": "Absolute Radio 80s",
+              "short": "A8",
+              "streamUrl": "https://stream-ar.hellorayo.co.uk/absolute80shigh.aac?aw_0_1st.skey=1602676850&direct=true",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "en-news",
+          "name": "News & Talk",
+          "color": "#34C8FF",
+          "stations": [
+            {
+              "id": "en-bbc-world-service",
+              "name": "BBC World Service",
+              "short": "BW",
+              "streamUrl": "https://stream.live.vc.bbcmedia.co.uk/bbc_world_service",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-lbc",
+              "name": "LBC",
+              "short": "LB",
+              "streamUrl": "https://media-ssl.musicradio.com/LBCUKMP3",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-times-radio",
+              "name": "Times Radio",
+              "short": "TR",
+              "logo": "https://play-lh.googleusercontent.com/SSmTtYYV5SkMMJ6_ojBDxHkprncSfh_jrhfn8f7rj3tnDOUIaNA9Vf28FqVS1zrTvE9_",
+              "streamUrl": "https://timesradio.wireless.radio/stream",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-talksport-2",
+              "name": "talkSPORT 2",
+              "short": "T2",
+              "streamUrl": "https://talksport.live.stream.broadcasting.news/stream2",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-npr",
+              "name": "NPR",
+              "short": "NP",
+              "streamUrl": "https://npr-ice.streamguys1.com/live.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-cnn",
+              "name": "CNN",
+              "short": "CN",
+              "streamUrl": "https://tunein.cdnstream1.com/2868_96.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-fox-news-radio",
+              "name": "Fox News Radio",
+              "short": "FN",
+              "logo": "https://static.foxnews.com/radio.foxnews.com/content/uploads/2017/10/default_logo-150x150.png",
+              "streamUrl": "https://live.amperwave.net/direct/foxnewsradio-foxnewsradioaac-imc",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "en-dance",
+          "name": "Dance",
+          "color": "#E040FB",
+          "stations": [
+            {
+              "id": "en-kiss",
+              "name": "Kiss",
+              "short": "KS",
+              "streamUrl": "https://live-bauerkiss.sharp-stream.com/kissnational.aac?aw_0_1st.skey=1602676850&direct=true",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-capital-dance",
+              "name": "Capital Dance",
+              "short": "CD",
+              "streamUrl": "https://media-ssl.musicradio.com/CapitalDance",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-heart-dance",
+              "name": "Heart Dance",
+              "short": "HD",
+              "logo": "https://www.heart.co.uk/assets_v4r/heart/img/favicon-196x196.png",
+              "streamUrl": "https://media-ssl.musicradio.com/HeartDanceMP3",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "en-chill",
+          "name": "Chill",
+          "color": "#FF6FB5",
+          "stations": [
+            {
+              "id": "en-groove-salad",
+              "name": "SomaFM Groove Salad",
+              "short": "GS",
+              "logo": "https://somafm.com/img3/groovesalad-400.jpg",
+              "streamUrl": "https://ice5.somafm.com/groovesalad-128-mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-secret-agent",
+              "name": "SomaFM Secret Agent",
+              "short": "SA",
+              "logo": "https://somafm.com/img3/secretagent-400.jpg",
+              "streamUrl": "https://ice5.somafm.com/secretagent-128-mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-smooth-chill",
+              "name": "Smooth Chill",
+              "short": "SC",
+              "logo": "https://www.smoothradio.com/assets_v4r/smooth/img/favicon-196x196.png",
+              "streamUrl": "https://media-ssl.musicradio.com/ChillMP3",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "en-classic",
+          "name": "Classical & Jazz",
+          "color": "#9AA5FF",
+          "stations": [
+            {
+              "id": "en-classic-fm",
+              "name": "Classic FM",
+              "short": "CL",
+              "streamUrl": "https://media-ssl.musicradio.com/ClassicFM",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-kdfc",
+              "name": "Classical California",
+              "short": "KD",
+              "streamUrl": "https://15233.live.streamtheworld.com/KDFCFMAAC96_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "en-jazz24",
+              "name": "Jazz24",
+              "short": "J2",
+              "streamUrl": "https://knkx-live-a.edge.audiocdn.com/6285_128k",
+              "metadata": "icy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "es",
+      "name": "Español",
+      "categories": [
+        {
+          "id": "es-pop",
+          "name": "Pop",
+          "color": "#FF5B4A",
+          "stations": [
+            {
+              "id": "es-los40",
+              "name": "LOS40",
+              "short": "L4",
+              "logo": "https://los40es00.epimg.net/iconos/v1.x/v1.0/touch-apple.png",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/Los40.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-los40-urban",
+              "name": "LOS40 Urban",
+              "short": "LU",
+              "logo": "https://los40es00.epimg.net/iconos/v1.x/v1.0/promos/promo_og_los40.png",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_URBAN.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-cadena-100",
+              "name": "Cadena 100",
+              "short": "C1",
+              "logo": "https://www.cadena100.es/estaticos/apple-touch-icon-192x192.png",
+              "streamUrl": "https://cadena100-cope.flumotion.com/chunks.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "es-rac105",
+              "name": "RAC105",
+              "short": "RA",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/RAC105.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-la-ke-buena",
+              "name": "La Ke Buena",
+              "short": "KB",
+              "logo": "https://recursosweb.prisaradio.com/fotos/original/010002851440.jpg",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/KEBUENAAAC.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-alfa-913",
+              "name": "Alfa 91.3",
+              "short": "AL",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/XHFAJ_FMAAC.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-universal-881",
+              "name": "Universal 88.1",
+              "short": "UN",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/XHFO_FMAAC.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-amor-953",
+              "name": "Amor 95.3",
+              "short": "AM",
+              "streamUrl": "https://14093.live.streamtheworld.com/XHSHFMAAC.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-la-100",
+              "name": "La 100 Buenos Aires",
+              "short": "L1",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/FM999_56.mp3",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "es-rock",
+          "name": "Rock",
+          "color": "#6A47FF",
+          "stations": [
+            {
+              "id": "es-rock-fm",
+              "name": "Rock FM",
+              "short": "RF",
+              "streamUrl": "https://rockfm-cope.flumotion.com/chunks.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "es-rock-en-espanol",
+              "name": "Rock en Español",
+              "short": "RE",
+              "streamUrl": "https://18193.live.streamtheworld.com/ACIR20_S01AAC.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-convoy",
+              "name": "Convoy",
+              "short": "CV",
+              "streamUrl": "https://live.convoynetwork.com/stream",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-rock-and-pop",
+              "name": "Rock & Pop Buenos Aires",
+              "short": "RP",
+              "logo": "https://fmrockandpop.com/pwa/ios_192x192.png",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/ROCKANDPOPAAC.aac",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "es-news",
+          "name": "Noticias",
+          "color": "#34C8FF",
+          "stations": [
+            {
+              "id": "es-onda-cero",
+              "name": "Onda Cero",
+              "short": "OC",
+              "streamUrl": "https://atres-live.ondacero.es/live/ondacero/bitrate_1.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "es-cope",
+              "name": "COPE",
+              "short": "CO",
+              "logo": "https://static.mytuner.mobi/media/tvos_radios/871/cope-madrid.51d780e3.png",
+              "streamUrl": "https://net1-cope-rrcast.flumotion.com/cope/net1-low.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-rac1",
+              "name": "RAC1",
+              "short": "R1",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/RAC_1.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-radio-marca",
+              "name": "Radio Marca",
+              "short": "RM",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIOMARCA_NACIONAL_SC",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-esradio",
+              "name": "esRadio",
+              "short": "ER",
+              "streamUrl": "https://libertaddigital-radio-live1.flumotion.com/libertaddigital/ld-live1-high.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-w-radio",
+              "name": "W Radio México",
+              "short": "WR",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/W_RADIOAAC.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-radio-formula",
+              "name": "Radio Fórmula",
+              "short": "FO",
+              "streamUrl": "https://mdstrm.com/audio/61e1dfd2658baf082814e25d/live.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "es-caracol-radio",
+              "name": "Caracol Radio Colombia",
+              "short": "CR",
+              "logo": "https://caracol.com.co/pf/resources/caracol-colombia/touch-icon-ipad.png?d=174",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/CARACOL_RADIOAAC.aac",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "es-old",
+          "name": "Clásicos",
+          "color": "#FF8A3D",
+          "stations": [
+            {
+              "id": "es-los40-classic",
+              "name": "LOS40 Classic",
+              "short": "LC",
+              "logo": "https://los40es00.epimg.net/estaticos/recursosgraficos/v1/img/app/los40_192.png",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_CLASSIC.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-radio-felicidad",
+              "name": "Radio Felicidad",
+              "short": "FE",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/XEFRAMAAC.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-la-100-clasicos",
+              "name": "La 100 Clásicos",
+              "short": "CL",
+              "logo": "https://cloudfront-arc.cienradios.com/la100/favicons/android-icon-192x192.png",
+              "streamUrl": "https://27323.live.streamtheworld.com/FCLASICOS_56AAC.aac",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "es-folk",
+          "name": "Música mexicana",
+          "color": "#2DD4A8",
+          "stations": [
+            {
+              "id": "es-la-z",
+              "name": "La Z",
+              "short": "LZ",
+              "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/XEQR_FMAAC.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-cumbias-inmortales",
+              "name": "Cumbias Inmortales",
+              "short": "CU",
+              "streamUrl": "https://panel.retrolandigital.com/listen/cumbias_inmortales_radio/listen",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-fiesta-mexicana",
+              "name": "Fiesta Mexicana",
+              "short": "FM",
+              "streamUrl": "https://stream.promomedios.com:8002/stream",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "es-chill",
+          "name": "Chill & Dance",
+          "color": "#FF6FB5",
+          "stations": [
+            {
+              "id": "es-cafe-del-mar",
+              "name": "Café del Mar",
+              "short": "CM",
+              "logo": "https://cafedelmar.com/apple-touch-icon.png",
+              "streamUrl": "https://streams.radio.co/se1a320b47/listen",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-flaix-fm",
+              "name": "Flaix FM",
+              "short": "FF",
+              "streamUrl": "https://stream.flaixfm.cat/icecast",
+              "metadata": "icy"
+            },
+            {
+              "id": "es-pure-ibiza",
+              "name": "Pure Ibiza Radio",
+              "short": "PI",
+              "streamUrl": "https://pureibizaradio.clubbingradios.com:9518/PureIbizaRadio",
+              "metadata": "icy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "ar",
+      "name": "العربية",
+      "categories": [
+        {
+          "id": "ar-pop",
+          "name": "موسيقى",
+          "color": "#FF5B4A",
+          "stations": [
+            {
+              "id": "ar-nogoum-fm",
+              "name": "نجوم FM",
+              "short": "نج",
+              "streamUrl": "https://stream.zeno.fm/qb1zvsykm98uv",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-mix-fm",
+              "name": "ميكس FM",
+              "short": "مك",
+              "logo": "https://promix.neocities.org/FM.png",
+              "streamUrl": "https://stream.zeno.fm/na3vpvn10qruv",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-radio-hits",
+              "name": "راديو هيتس",
+              "short": "هت",
+              "streamUrl": "https://radiohits882.radioca.st/;",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-shaabi-fm",
+              "name": "شعبي FM",
+              "short": "شع",
+              "streamUrl": "https://radio95.radioca.st/;",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-mazaj-fm",
+              "name": "مزاج FM",
+              "short": "مز",
+              "streamUrl": "https://mazajfm.ice.infomaniak.ch/mazajfm-192.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-virgin-lebanon",
+              "name": "فيرجن راديو لبنان",
+              "short": "فر",
+              "streamUrl": "https://stream.zeno.fm/dwxw3p9vea0uv",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-sawt-el-ghad",
+              "name": "صوت الغد",
+              "short": "صغ",
+              "logo": "https://www.sawtelghad.com/seg.png",
+              "streamUrl": "https://l3.itworkscdn.net/itwaudio/9030/stream",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-radio-orient",
+              "name": "راديو أورينت",
+              "short": "أو",
+              "streamUrl": "https://stream.rcs.revma.com/7hnrkawf4p8uv.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-hit-radio-maroc",
+              "name": "هيت راديو المغرب",
+              "short": "هم",
+              "streamUrl": "https://hitradio-maroc.ice.infomaniak.ch/hitradio-maroc-128.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-aswat-fm",
+              "name": "أصوات FM",
+              "short": "أص",
+              "streamUrl": "https://broadcast.ice.infomaniak.ch/aswat-high.mp3",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "ar-old",
+          "name": "طرب وكلاسيك",
+          "color": "#FF8A3D",
+          "stations": [
+            {
+              "id": "ar-om-kalthoum",
+              "name": "أم كلثوم",
+              "short": "أك",
+              "logo": "https://proxy.zeno.fm/content/stations/agxzfnplbm8tc3RhdHNyMgsSCkF1dGhDbGllbnQYgICwmLXj6gkMCxIOU3RhdGlvblByb2ZpbGUYgICwnNazygoMogEEemVubw/image/?u=1660862760000",
+              "streamUrl": "https://stream.zeno.fm/zsgrfxg71s8uv",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-abdel-halim",
+              "name": "عبد الحليم حافظ",
+              "short": "عح",
+              "logo": "https://proxy.zeno.fm/content/stations/agxzfnplbm8tc3RhdHNyMgsSCkF1dGhDbGllbnQYgIDwzeSctQkMCxIOU3RhdGlvblByb2ZpbGUYgICI2cGI5gsMogEEemVubw/image/?u=1661122932000",
+              "streamUrl": "https://stream.zeno.fm/8a4eqkd0pnhvv",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-fairuz",
+              "name": "فيروز",
+              "short": "فز",
+              "logo": "https://proxy.zeno.fm/content/stations/agxzfnplbm8tc3RhdHNyMgsSCkF1dGhDbGllbnQYgICQr4HTxQsMCxIOU3RhdGlvblByb2ZpbGUYgICw9euSvggMogEEemVubw/image/?u=166170323300",
+              "streamUrl": "https://stream.zeno.fm/xkhnk4vee18uv",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-amr-diab",
+              "name": "عمرو دياب",
+              "short": "عد",
+              "streamUrl": "https://stream.zeno.fm/xa4yhh4k838uv",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "ar-news",
+          "name": "أخبار",
+          "color": "#34C8FF",
+          "stations": [
+            {
+              "id": "ar-al-arabiya-fm",
+              "name": "العربية FM",
+              "short": "عر",
+              "streamUrl": "https://fm.alarabiya.net/fm/myStream/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "ar-mc-doualiya",
+              "name": "مونت كارلو الدولية",
+              "short": "مو",
+              "streamUrl": "https://montecarlodoualiya128k.ice.infomaniak.ch/mc-doualiya.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-bbc-arabic",
+              "name": "بي بي سي عربي",
+              "short": "بب",
+              "streamUrl": "https://stream.live.vc.bbcmedia.co.uk/bbc_arabic_radio",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-sky-news-arabia",
+              "name": "سكاي نيوز عربية",
+              "short": "سك",
+              "streamUrl": "https://stream.skynewsarabia.com/hls/sna.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "ar-medi1",
+              "name": "ميدي 1 راديو",
+              "short": "م1",
+              "logo": "https://radiolive.ma/icons/MEDI%201%20RADIO.jpg",
+              "streamUrl": "https://cdn.live.easybroadcast.io/live/83_medi1radio-maghreb_8s9i4bn/playlist.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "ar-al-jazeera",
+              "name": "الجزيرة",
+              "short": "جز",
+              "logo": "https://www.aljazeera.net/wp-content/uploads/2025/05/arabic-live-1747222223.jpg",
+              "streamUrl": "https://live-hls-web-aja-gcp.thehlive.com/VOICE-AJA/index.m3u8",
+              "metadata": "hls"
+            }
+          ]
+        },
+        {
+          "id": "ar-sport",
+          "name": "رياضة",
+          "color": "#4ADE80",
+          "stations": [
+            {
+              "id": "ar-on-sport-fm",
+              "name": "ON Sport FM",
+              "short": "OS",
+              "streamUrl": "https://carina.streamerr.co:2020/stream/OnSportFM",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-radio-mars",
+              "name": "راديو مارس",
+              "short": "مر",
+              "streamUrl": "https://radiomars.ice.infomaniak.ch/radiomars-128.mp3",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "ar-rel",
+          "name": "القرآن الكريم",
+          "color": "#B8C0CC",
+          "stations": [
+            {
+              "id": "ar-quran-cairo",
+              "name": "إذاعة القرآن الكريم (القاهرة)",
+              "short": "قق",
+              "logo": "https://i.pinimg.com/564x/5e/92/4d/5e924dbe9f53f8611cb9d15828205ff9.jpg",
+              "streamUrl": "https://stream.radiojar.com/8s5u5tpdtwzuv",
+              "metadata": "icy"
+            },
+            {
+              "id": "ar-quran-makkah",
+              "name": "إذاعة القرآن الكريم (مكة)",
+              "short": "قم",
+              "logo": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.ggpht.com%2Fa%2FAGF-l7-P-EYqU6nvNkyJreIBeeU5YrB2Yl7NlLZH7Q%3Ds900-mo-c-c0xffffffff-rj-k-no&f=1&nofb=1&ipt=be99841f3a5400a88c7503f144430b73989924c3b2990e794b76c06b1cc36491",
+              "streamUrl": "https://edge.mixlr.com/channel/rwumx",
+              "metadata": "icy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "de",
+      "name": "Deutsch",
+      "categories": [
+        {
+          "id": "de-pop",
+          "name": "Pop & Hits",
+          "color": "#FF5B4A",
+          "stations": [
+            {
+              "id": "de-swr3",
+              "name": "SWR3",
+              "short": "S3",
+              "streamUrl": "https://dispatcher.rndfnk.com/swr/swr3/live/mp3/128/stream.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-bayern-3",
+              "name": "Bayern 3",
+              "short": "B3",
+              "logo": "https://api.ardmediathek.de/image-service/images/urn:ard:image:52fd25fc45de7c6a?w=512",
+              "streamUrl": "https://dispatcher.rndfnk.com/br/br3/live/mp3/mid",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-1live",
+              "name": "1LIVE",
+              "short": "1L",
+              "logo": "https://www1.wdr.de/radio/1live/resources/img/favicon/apple-touch-icon.png",
+              "streamUrl": "https://wdr-1live-live.icecastssl.wdr.de/wdr/1live/live/mp3/128/stream.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-n-joy",
+              "name": "N-JOY",
+              "short": "NJ",
+              "logo": "https://www.phonostar.de/images/auto_created/NJOY3184x184.png",
+              "streamUrl": "https://icecast.ndr.de/ndr/njoy/live/mp3/128/stream.mp3",
+              "metadata": "none"
+            },
+            {
+              "id": "de-bigfm",
+              "name": "bigFM",
+              "short": "BF",
+              "logo": "https://image.atsw.de/atsw/production/2024-12/600x600_px.jpg",
+              "streamUrl": "https://stream.bigfm.de/deutschland/mp3-128/radio-browser",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-antenne-bayern",
+              "name": "Antenne Bayern",
+              "short": "AB",
+              "streamUrl": "https://stream.antenne.de/antenne/stream/mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-radio-ffn",
+              "name": "radio ffn",
+              "short": "FN",
+              "logo": "https://www.ffn.de/fileadmin/ffn.de/musik/streams/ffn.png",
+              "streamUrl": "https://player.ffn.de/radioffn.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-radio-hamburg",
+              "name": "Radio Hamburg",
+              "short": "RH",
+              "logo": "https://www.radiohamburg.de/assets/icons/apple-touch-icon.png",
+              "streamUrl": "https://frontend.streamonkey.net/rhh-1036",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-oe3",
+              "name": "Hitradio Ö3",
+              "short": "Ö3",
+              "logo": "https://tubestatic.orf.at/mojo/1_3/storyserver//tube/common/images/apple-icons/oe3.png",
+              "streamUrl": "https://ors-sn03.ors-shoutcast.at/oe3-q1a",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-srf3",
+              "name": "SRF 3",
+              "short": "S3",
+              "logo": "https://www.srf.ch/static-assets/images/srf-apple-touch-icon.png",
+              "streamUrl": "https://stream.srg-ssr.ch/srgssr/srf3/aac/192",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "de-rock",
+          "name": "Rock",
+          "color": "#6A47FF",
+          "stations": [
+            {
+              "id": "de-rock-antenne",
+              "name": "Rock Antenne",
+              "short": "RA",
+              "streamUrl": "https://stream.rockantenne.de/rockantenne/stream/mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-rock-antenne-alternative",
+              "name": "Rock Antenne Alternative",
+              "short": "RL",
+              "logo": "https://www.rockantenne.de/logos/station-rock-antenne/apple-touch-icon.png",
+              "streamUrl": "https://stream.rockantenne.de/alternative/stream/mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-fm4",
+              "name": "FM4",
+              "short": "F4",
+              "logo": "https://tubestatic.orf.at/mojo/1_3/storyserver//tube/fm4/images/touch-icon-iphone-retina.png",
+              "streamUrl": "https://orf-live.ors-shoutcast.at/fm4-q2a",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-rock-antenne-at",
+              "name": "Rock Antenne Österreich",
+              "short": "RÖ",
+              "logo": "https://www.rockantenne.at/logos/rock-antenne-at/apple-touch-icon.png",
+              "streamUrl": "https://s6-webradio.rockantenne.at/rockantenne-oesterreich/stream/aacp",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "de-news",
+          "name": "Nachrichten & Kultur",
+          "color": "#34C8FF",
+          "stations": [
+            {
+              "id": "de-deutschlandfunk",
+              "name": "Deutschlandfunk",
+              "short": "DF",
+              "logo": "https://www.deutschlandfunk.de/static/img/deutschlandfunk/icons/apple-touch-icon-128x128.png",
+              "streamUrl": "https://st01.sslstream.dlf.de/dlf/01/mid/aac/stream.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-dlf-kultur",
+              "name": "Deutschlandfunk Kultur",
+              "short": "DK",
+              "logo": "https://www.deutschlandfunkkultur.de/static/img/deutschlandfunk_kultur/icons/apple-touch-icon-128x128.png",
+              "streamUrl": "https://st02.sslstream.dlf.de/dlf/02/128/mp3/stream.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-dlf-nova",
+              "name": "Deutschlandfunk Nova",
+              "short": "DN",
+              "logo": "https://www.deutschlandfunknova.de/apple-touch-icon.png",
+              "streamUrl": "https://st03.sslstream.dlf.de/dlf/03/128/mp3/stream.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-wdr-5",
+              "name": "WDR 5",
+              "short": "W5",
+              "streamUrl": "https://wdr-wdr5-live.icecastssl.wdr.de/wdr/wdr5/live/mp3/128/stream.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-oe1",
+              "name": "Ö1",
+              "short": "Ö1",
+              "logo": "https://oe1.orf.at/static/img/logo_oe1.png",
+              "streamUrl": "https://orf-live-oe1.mdn.ors.at/out/u/oe1/q3a/manifest.m3u8",
+              "metadata": "hls"
+            }
+          ]
+        },
+        {
+          "id": "de-old",
+          "name": "Oldies & Schlager",
+          "color": "#FF8A3D",
+          "stations": [
+            {
+              "id": "de-wdr-4",
+              "name": "WDR 4",
+              "short": "W4",
+              "streamUrl": "https://wdr-wdr4-live.icecastssl.wdr.de/wdr/wdr4/live/mp3/128/stream.mp3",
+              "metadata": "none"
+            },
+            {
+              "id": "de-oldie-antenne",
+              "name": "Oldie Antenne",
+              "short": "OA",
+              "logo": "https://www.oldie-antenne.de/logos/oldie-antenne/apple-touch-icon.png",
+              "streamUrl": "https://s1-webradio.oldie-antenne.de/oldie-antenne",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-swr1-bw",
+              "name": "SWR1 Baden-Württemberg",
+              "short": "S1",
+              "logo": "https://www.swr.de/assets/swr/swr1/apple-touch-icon-180x180.png",
+              "streamUrl": "https://liveradio.swr.de/sw282p3/swr1bw/play.mp3",
+              "metadata": "none"
+            },
+            {
+              "id": "de-bayern-1",
+              "name": "Bayern 1",
+              "short": "B1",
+              "logo": "https://api.ardmediathek.de/image-service/images/urn:ard:image:b366004f6196d70c?w=512",
+              "streamUrl": "https://dispatcher.rndfnk.com/br/br1/franken/mp3/mid",
+              "metadata": "none"
+            },
+            {
+              "id": "de-ndr-schlager",
+              "name": "NDR Schlager",
+              "short": "NS",
+              "logo": "https://www.phonostar.de/images/auto_created/NDR_Schlager184x184.png",
+              "streamUrl": "https://icecast.ndr.de/ndr/ndrschlager/live/mp3/128/stream.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-schlagerparadies",
+              "name": "Schlagerparadies",
+              "short": "SP",
+              "streamUrl": "https://webstream.schlagerparadies.de/schlager30842",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-radio-paloma",
+              "name": "Radio Paloma",
+              "short": "RP",
+              "streamUrl": "https://stream.silvacast.com/RPLive/mp3-128/RadioPaloma_Homepage",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-arabella-austropop",
+              "name": "Arabella Austropop",
+              "short": "AA",
+              "logo": "https://arabella.at/static/base/img/apple-touch-icon.a3ce28a2756f.png",
+              "streamUrl": "https://frontend.streams.arabella.at/arabella-austropop/stream/mp3",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "de-dance",
+          "name": "Dance & Electronic",
+          "color": "#E040FB",
+          "stations": [
+            {
+              "id": "de-sunshine-live-techno",
+              "name": "sunshine live Techno",
+              "short": "ST",
+              "streamUrl": "https://stream.sunshine-live.de/techno/mp3-192/stream.sunshine-live.de/",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-sunshine-live-melodic",
+              "name": "sunshine live Melodic Beats",
+              "short": "SM",
+              "streamUrl": "https://stream.sunshine-live.de/MelodicB/mp3-192/stream.sunshine-live.de/",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-technolovers-edm",
+              "name": "Technolovers EDM",
+              "short": "TE",
+              "logo": "https://i.ibb.co/TmRLJsp/EDM-TL.jpg",
+              "streamUrl": "https://stream.technolovers.fm/edm",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "de-classic",
+          "name": "Klassik & Entspannung",
+          "color": "#9AA5FF",
+          "stations": [
+            {
+              "id": "de-klassik-radio",
+              "name": "Klassik Radio",
+              "short": "KR",
+              "logo": "https://klassikradio.de/img/ms-mediumtile.png",
+              "streamUrl": "https://live.streams.klassikradio.de/klassikradio-deutschland/stream/mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-absolut-relax",
+              "name": "Absolut Relax",
+              "short": "AR",
+              "streamUrl": "https://absolut-relax.live-sm.absolutradio.de/absolut-relax",
+              "metadata": "icy"
+            },
+            {
+              "id": "de-1live-chillout",
+              "name": "1LIVE Chillout",
+              "short": "1C",
+              "logo": "https://www1.wdr.de/radio/1live/resources-v5.143.2/img/favicon/apple-touch-icon.png",
+              "streamUrl": "https://wdr-1live-chillout.icecast.wdr.de/wdr/1live/chillout/mp3/128/stream.mp3",
+              "metadata": "icy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "fr",
+      "name": "Français",
+      "categories": [
+        {
+          "id": "fr-pop",
+          "name": "Pop & Hits",
+          "color": "#FF5B4A",
+          "stations": [
+            {
+              "id": "fr-nrj",
+              "name": "NRJ",
+              "short": "NR",
+              "streamUrl": "https://streaming.nrjaudio.fm/ou7xugf3s5gi",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-fun-radio",
+              "name": "Fun Radio",
+              "short": "FU",
+              "streamUrl": "https://icecast.funradio.fr/fun-1-44-128",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-virgin-radio",
+              "name": "Virgin Radio",
+              "short": "VI",
+              "streamUrl": "https://virginradio.ice.infomaniak.ch/virgin-radio.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-cherie-fm",
+              "name": "Chérie FM",
+              "short": "CH",
+              "logo": "https://media.info/l/o/6/6812.1503485369.png",
+              "streamUrl": "https://cdnradio.streamakaci.com/cheriefm1.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-rfm",
+              "name": "RFM",
+              "short": "RF",
+              "streamUrl": "https://stream.rfm.fr/rfm-wr10.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-skyrock",
+              "name": "Skyrock",
+              "short": "SK",
+              "streamUrl": "https://icecast.skyrock.net/s/natio_mp3_128k",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-rfm-100-francais",
+              "name": "RFM 100% Français",
+              "short": "RF",
+              "streamUrl": "https://wr.lmn.fm/rfm-wr11.aac",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "fr-rock",
+          "name": "Rock",
+          "color": "#6A47FF",
+          "stations": [
+            {
+              "id": "fr-oui-fm",
+              "name": "OUI FM",
+              "short": "OU",
+              "streamUrl": "https://ouifm.ice.infomaniak.ch/ouifm-high.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-oui-fm-classic-rock",
+              "name": "OUI FM Classic Rock",
+              "short": "OC",
+              "logo": "https://bocir-prod-bucket.s3.amazonaws.com/radios/oui-fm/radiostream/3qhtSltZ27/vignette.png",
+              "streamUrl": "https://ouifm3.ice.infomaniak.ch/ouifm3.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-radio-nova",
+              "name": "Radio Nova",
+              "short": "NO",
+              "logo": "https://www.nova.fr/wp-content/thumbnails/uploads/sites/2/2024/05/NOVA-nova-400x496-1-t-1700x1030.png",
+              "streamUrl": "https://novazz.ice.infomaniak.ch/novazz-128.mp3",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "fr-news",
+          "name": "Info & Talk",
+          "color": "#34C8FF",
+          "stations": [
+            {
+              "id": "fr-france-inter",
+              "name": "France Inter",
+              "short": "FI",
+              "streamUrl": "https://stream.radiofrance.fr/franceinter/franceinter_hifi.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "fr-franceinfo",
+              "name": "franceinfo",
+              "short": "IN",
+              "streamUrl": "https://stream.radiofrance.fr/franceinfo/franceinfo_hifi.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "fr-rtl",
+              "name": "RTL",
+              "short": "RT",
+              "logo": "https://duckduckgo.com/i/035a5e15d396c67a.png",
+              "streamUrl": "https://live.m6radio.quortex.io/webM89Hc99XApzgfhXNX8ASN5/grouprtl/national/short/audio-64000/index.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "fr-rmc",
+              "name": "RMC",
+              "short": "RM",
+              "logo": "https://rmc.bfmtv.com/apple-icon-228x228.png",
+              "streamUrl": "https://audio.bfmtv.com/rmcradio_128.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-europe-1",
+              "name": "Europe 1",
+              "short": "E1",
+              "streamUrl": "https://stream.europe1.fr/europe1.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-bfm",
+              "name": "BFM Radio",
+              "short": "BF",
+              "logo": "https://www.bfmtv.com/android-icon-192x192.png",
+              "streamUrl": "https://audio.bfmtv.com/bfmradio_128.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-france-culture",
+              "name": "France Culture",
+              "short": "FC",
+              "streamUrl": "https://stream.radiofrance.fr/franceculture/franceculture_hifi.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "fr-sud-radio",
+              "name": "Sud Radio",
+              "short": "SU",
+              "logo": "https://www.sudradio.fr/wp-content/uploads/2019/06/cropped-favicon-180x180.png",
+              "streamUrl": "https://ice.creacast.com/sudradio",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "fr-old",
+          "name": "Nostalgie",
+          "color": "#FF8A3D",
+          "stations": [
+            {
+              "id": "fr-nostalgie",
+              "name": "Nostalgie",
+              "short": "NO",
+              "streamUrl": "https://streaming.nrjaudio.fm/oua8a3w2dqao",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-nostalgie-80-90",
+              "name": "Nostalgie 80-90",
+              "short": "N8",
+              "logo": "https://players.nrjaudio.fm/live-metadata/player/img/player-files/nosta/logos/640x640/NOSTA-WR--80-90.jpg",
+              "streamUrl": "https://streaming.nrjaudio.fm/ou62iyxp336f",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-made-in-80",
+              "name": "Made in 80",
+              "short": "M8",
+              "logo": "https://madein80.fr/wp-content/uploads/2020/12/Logo-Made-in-80-V2-blanc-400-ssslog.png",
+              "streamUrl": "https://madein80.leswebradios.fr/",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-rfm-party-90",
+              "name": "RFM Party 90",
+              "short": "R9",
+              "streamUrl": "https://rfm.lmn.fm/rfm-wr5.aac",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "fr-folk",
+          "name": "Chanson française",
+          "color": "#2DD4A8",
+          "stations": [
+            {
+              "id": "fr-ici-chanson",
+              "name": "ici 100% Chanson française",
+              "short": "IC",
+              "streamUrl": "https://icecast.radiofrance.fr/fbchansonfrancaise-hifi.aac",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-rire-et-chansons",
+              "name": "Rire et Chansons",
+              "short": "RC",
+              "streamUrl": "https://streaming.nrjaudio.fm/ou8o8xgk7oiu",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "fr-dance",
+          "name": "Dance & Electro",
+          "color": "#E040FB",
+          "stations": [
+            {
+              "id": "fr-radio-fg",
+              "name": "Radio FG",
+              "short": "FG",
+              "streamUrl": "https://radiofg.impek.com/ufg.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-eurodance-90",
+              "name": "EuroDance 90",
+              "short": "ED",
+              "streamUrl": "https://stream-eurodance90.fr/radio/8000/128.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-radio-meuh",
+              "name": "Radio Meuh",
+              "short": "ME",
+              "logo": "https://www.radiomeuh.com/android-icon-192x192.png",
+              "streamUrl": "https://radiomeuh2.ice.infomaniak.ch/radiomeuh2-128.mp3",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "fr-classic",
+          "name": "Classique & Jazz",
+          "color": "#9AA5FF",
+          "stations": [
+            {
+              "id": "fr-radio-classique",
+              "name": "Radio Classique",
+              "short": "RC",
+              "streamUrl": "https://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "fr-france-musique",
+              "name": "France Musique",
+              "short": "FM",
+              "streamUrl": "https://stream.radiofrance.fr/francemusique/francemusique_hifi.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "fr-fip",
+              "name": "FIP",
+              "short": "FP",
+              "logo": "https://www.radiofrance.fr/s3/cruiser-production/2023/03/3a1422a4-6f1f-4e17-874c-bad21e67f39b/300x300_sc_fip-avatar.jpg",
+              "streamUrl": "https://stream.radiofrance.fr/fip/fip_hifi.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "fr-fip-jazz",
+              "name": "FIP Jazz",
+              "short": "FJ",
+              "logo": "https://www.radiofrance.fr/s3/cruiser-production/2019/06/840a4431-0db0-4a94-aa28-53f8de011ab6/300x300_fip-jazz-01.jpg",
+              "streamUrl": "https://stream.radiofrance.fr/fipjazz/fipjazz_hifi.m3u8",
+              "metadata": "hls"
+            },
+            {
+              "id": "fr-jazz-radio-lounge",
+              "name": "Jazz Radio Lounge",
+              "short": "JL",
+              "streamUrl": "https://jazzlounge.ice.infomaniak.ch/jazzlounge-high.aac",
+              "metadata": "icy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "ru",
+      "name": "Русский",
+      "categories": [
+        {
+          "id": "ru-pop",
+          "name": "Поп",
+          "color": "#FF5B4A",
+          "stations": [
+            {
+              "id": "ru-russkoe-radio",
+              "name": "Русское Радио",
+              "short": "РР",
+              "streamUrl": "https://rusradio.hostingradio.ru/rusradio96.aacp",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-hit-fm",
+              "name": "Хит FM",
+              "short": "ХФ",
+              "streamUrl": "https://hitfm.hostingradio.ru/hitfm128.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-europa-plus",
+              "name": "Европа Плюс",
+              "short": "ЕП",
+              "streamUrl": "https://ep128.hostingradio.ru:8030/ep128",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-radio-record-russian-mix",
+              "name": "Record Russian Mix",
+              "short": "RM",
+              "streamUrl": "https://radiorecord.hostingradio.ru/rus96.aacp",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-montecarlo",
+              "name": "Радио Монте-Карло",
+              "short": "МК",
+              "streamUrl": "https://montecarlo.hostingradio.ru/montecarlo128.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-radio-vanya",
+              "name": "Радио Ваня",
+              "short": "РВ",
+              "streamUrl": "https://icecast-radiovanya.cdnvideo.ru/radiovanya",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-dorozhnoe",
+              "name": "Дорожное радио",
+              "short": "ДР",
+              "streamUrl": "https://dorognoe.hostingradio.ru/dorognoe_acc",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-shokolad",
+              "name": "Радио Шоколад",
+              "short": "РШ",
+              "streamUrl": "https://choco.hostingradio.ru:10010/fm",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "ru-rock",
+          "name": "Рок",
+          "color": "#6A47FF",
+          "stations": [
+            {
+              "id": "ru-nashe-radio",
+              "name": "Наше Радио",
+              "short": "НР",
+              "logo": "https://www.nashe.ru/favicons/apple-touch-icon.png",
+              "streamUrl": "https://nashe1.hostingradio.ru:80/nashe-128.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-russkiy-rock",
+              "name": "Русский рок",
+              "short": "РК",
+              "streamUrl": "https://rmg.hostingradio.ru:80/russkijrok96.aacp",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "ru-news",
+          "name": "Новости",
+          "color": "#34C8FF",
+          "stations": [
+            {
+              "id": "ru-mayak",
+              "name": "Маяк",
+              "short": "МЯ",
+              "streamUrl": "https://icecast-vgtrk.cdnvideo.ru/mayakfm",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-vesti-fm",
+              "name": "Вести FM",
+              "short": "ВФ",
+              "streamUrl": "https://icecast-vgtrk.cdnvideo.ru/vestifm_aac_64kbps",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-business-fm",
+              "name": "Business FM",
+              "short": "БФ",
+              "streamUrl": "https://bfm.hostingradio.ru/bfm256.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-kp",
+              "name": "Комсомольская правда",
+              "short": "КП",
+              "logo": "https://radiokp.ru/modules/custom/dna_kpradio/modules/kp_favicon/img/favicon-194x194.png?v=1.1",
+              "streamUrl": "https://kpradio.hostingradio.ru:8000/64",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "ru-old",
+          "name": "Ретро",
+          "color": "#FF8A3D",
+          "stations": [
+            {
+              "id": "ru-retro-fm-80",
+              "name": "Ретро FM 80-х",
+              "short": "Р8",
+              "logo": "https://www.radiogrom.com/paint_new/logo_big/radio-retro-fm-80e.jpg",
+              "streamUrl": "https://retro80.hostingradio.ru:8025/retro80-128.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-dfm-disco-90",
+              "name": "DFM Дискач 90-х",
+              "short": "Д9",
+              "streamUrl": "https://dfm-disc90.hostingradio.ru/disc9096.aacp",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-russian-gold",
+              "name": "Record Russian Gold",
+              "short": "RG",
+              "logo": "https://www.radiorecord.ru/icons/apple-touch-icon.png",
+              "streamUrl": "https://radiorecord.hostingradio.ru/russiangold96.aacp",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-sovetskaya-estrada",
+              "name": "Советская эстрада",
+              "short": "СЭ",
+              "logo": "https://disco-radio.ru/logo-se512.jpg",
+              "streamUrl": "https://evcast.mediacp.eu:2075/stream",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-sovetskaya-klassika",
+              "name": "Советская классика",
+              "short": "СК",
+              "logo": "https://radio-24.ru/img/logo/logo-415.jpg",
+              "streamUrl": "https://rr-sovclass.hostingradio.ru/sovclass96.aacp",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "ru-dance",
+          "name": "Танцевальная",
+          "color": "#E040FB",
+          "stations": [
+            {
+              "id": "ru-record-main",
+              "name": "Radio Record",
+              "short": "RR",
+              "logo": "https://www.radiorecord.ru/icons/apple-touch-icon.png",
+              "streamUrl": "https://radiorecord.hostingradio.ru/rr_main96.aacp",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-dfm-russian-dance",
+              "name": "DFM Russian Dance",
+              "short": "ДД",
+              "streamUrl": "https://dfm-dfmrusdance.hostingradio.ru/dfmrusdance96.aacp",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-mixadance",
+              "name": "Mixadance FM",
+              "short": "MX",
+              "streamUrl": "https://stream.mixadance.fm/mixadance",
+              "metadata": "icy"
+            }
+          ]
+        },
+        {
+          "id": "ru-classic",
+          "name": "Джаз и классика",
+          "color": "#9AA5FF",
+          "stations": [
+            {
+              "id": "ru-orfey",
+              "name": "Радио Орфей",
+              "short": "ОР",
+              "logo": "https://orpheusradio.ru/apple-touch-icon.png",
+              "streamUrl": "https://orfeyfm.hostingradio.ru:8034/orfeyfm192.mp3",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-radio-jazz",
+              "name": "Радио Jazz",
+              "short": "JZ",
+              "streamUrl": "https://nashe1.hostingradio.ru/jazz-256",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-montecarlo-jazz",
+              "name": "Монте-Карло Джаз",
+              "short": "МД",
+              "streamUrl": "https://mc-mcjazz.hostingradio.ru/mcjazz96.aacp",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-relax-fm",
+              "name": "Relax FM",
+              "short": "RX",
+              "streamUrl": "https://pub0201.101.ru/stream/trust/mp3/128/24",
+              "metadata": "icy"
+            },
+            {
+              "id": "ru-spokoynoe-radio",
+              "name": "Спокойное радио",
+              "short": "СР",
+              "streamUrl": "https://listen9.myradio24.com/6262",
+              "metadata": "icy"
             }
           ]
         }

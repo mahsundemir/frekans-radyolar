@@ -30,16 +30,16 @@ export default function ColorSheet() {
 
   return (
     <View style={styles.fill} pointerEvents="box-none">
-      <Pressable style={styles.backdrop} onPress={p.closeColorPicker} accessibilityLabel="Kapat" />
+      <Pressable style={styles.backdrop} onPress={p.closeColorPicker} accessibilityLabel={p.t('close')} />
       <View style={styles.card}>
         <View style={styles.head}>
           <Badge station={station} active size={44} />
           <View style={{flex: 1}}>
             <Text style={styles.title}>
-              {target.fresh ? 'Favorilere eklendi' : 'Radyo rengi'}
+              {target.fresh ? p.t('colorAdded') : p.t('colorTitle')}
             </Text>
             <Text numberOfLines={1} style={styles.sub}>
-              {station.name} için bir renk seç
+              {p.t('colorPick', {name: station.name})}
             </Text>
           </View>
         </View>
@@ -49,7 +49,7 @@ export default function ColorSheet() {
             return (
               <Pressable
                 key={c}
-                accessibilityLabel={`Renk ${c}`}
+                accessibilityLabel={p.t('colorLabel', {color: c})}
                 onPress={() => p.setStationColor(station.id, c)}
                 style={[
                   styles.swatch,
@@ -66,14 +66,14 @@ export default function ColorSheet() {
             <Pressable
               onPress={() => p.setStationColor(station.id, null)}
               style={[styles.btn, styles.btnGhost]}>
-              <Text style={[styles.btnText, {color: colors.text}]}>Varsayılana dön</Text>
+              <Text style={[styles.btnText, {color: colors.text}]}>{p.t('colorReset')}</Text>
             </Pressable>
           ) : (
             <View style={{flex: 1}} />
           )}
           <Pressable onPress={p.closeColorPicker} style={[styles.btn, {backgroundColor: station.color}]}>
             <Text style={[styles.btnText, {color: station.ink}]}>
-              {target.fresh && !custom ? 'Atla' : 'Tamam'}
+              {target.fresh && !custom ? p.t('skip') : p.t('done')}
             </Text>
           </Pressable>
         </View>

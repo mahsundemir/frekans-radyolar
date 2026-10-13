@@ -5,12 +5,16 @@ import {colors} from '../theme';
 
 const OPTIONS = [15, 30, 45, 60, 90];
 
-export function remainingText(sleepEnd: number | null, now: number): string {
+export function remainingText(
+  sleepEnd: number | null,
+  now: number,
+  fmt: (mins: number) => string = m => `${m} dk`,
+): string {
   if (!sleepEnd) {
     return '';
   }
   const mins = Math.max(0, Math.ceil((sleepEnd - now) / 60000));
-  return mins <= 1 ? '1 dk' : `${mins} dk`;
+  return fmt(Math.max(1, mins));
 }
 
 // Çalan radyonun renginde seçili süre; seçince kapanır
@@ -33,34 +37,36 @@ export default function SleepSheet({
   return (
     <View style={styles.card}>
       <View style={styles.head}>
-        <Text style={styles.title}>Uyku zamanlayıcı</Text>
+        <Text style={styles.title}>{p.t('sleepTimer')}</Text>
         <Text style={styles.sub}>
           {p.sleepEnd
-            ? `${remainingText(p.sleepEnd, now)} sonra duracak`
-            : 'Süre dolunca ses kısılır ve yayın durur'}
+            ? p.t('sleepRemaining', {
+                time: remainingText(p.sleepEnd, now, n => p.t('minutesShort', {n})),
+              })
+            : p.t('sleepHint')}
         </Text>
       </View>
       <View style={styles.row}>
         {OPTIONS.map(m => (
           <Pressable
             key={m}
-            accessibilityLabel={`${m} dakika`}
+            accessibilityLabel={p.t('minutesLabel', {n: m})}
             onPress={() => {
               p.setSleep(m);
               onClose();
             }}
             style={[styles.chip, {backgroundColor: color}]}>
-            <Text style={[styles.chipText, {color: ink}]}>{m} dk</Text>
+            <Text style={[styles.chipText, {color: ink}]}>{p.t('minutesShort', {n: m})}</Text>
           </Pressable>
         ))}
         <Pressable
-          accessibilityLabel="Zamanlayıcıyı kapat"
+          accessibilityLabel={p.t('turnOffTimer')}
           onPress={() => {
             p.setSleep(0);
             onClose();
           }}
           style={[styles.chip, styles.off]}>
-          <Text style={[styles.chipText, {color: colors.text}]}>Kapat</Text>
+          <Text style={[styles.chipText, {color: colors.text}]}>{p.t('off')}</Text>
         </Pressable>
       </View>
     </View>

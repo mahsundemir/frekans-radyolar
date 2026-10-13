@@ -22,13 +22,13 @@ export default function MacCompact({
   const song = [p.meta?.artist, p.meta?.title].filter(Boolean).join(' — ');
   const line =
     p.status === 'error'
-      ? 'Yayın açılamadı'
+      ? p.t('streamFailed')
       : p.status === 'buffering'
-      ? `${st.name} · bağlanıyor…`
+      ? p.t('connectingNamed', {name: st.name})
       : song
       ? `${st.name} · ${song}`
       : p.status === 'playing'
-      ? `${st.name} · canlı yayın`
+      ? p.t('liveNamed', {name: st.name})
       : st.name;
   const ear = notchWidth > 0 ? (width - notchWidth) / 2 : width;
 

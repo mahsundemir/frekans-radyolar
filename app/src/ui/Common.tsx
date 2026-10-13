@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import {usePlayer} from '../PlayerContext';
 import {colors} from '../theme';
 
 // Başlık yazı tipi: Bricolage Grotesque ExtraBold (assets/fonts, her iki uygulamaya gömülü)
@@ -115,6 +116,7 @@ export function VolumeBar({
   color: string;
   onChange: (v: number) => void;
 }) {
+  const p = usePlayer();
   const [w, setW] = useState(1);
   const start = useRef(0);
   const live = useRef({w: 1, value, onChange});
@@ -137,7 +139,7 @@ export function VolumeBar({
   return (
     <View
       accessibilityRole="adjustable"
-      accessibilityLabel="Ses"
+      accessibilityLabel={p.t('volume')}
       onLayout={(e: LayoutChangeEvent) => setW(e.nativeEvent.layout.width)}
       {...pan.panHandlers}
       style={{flex: 1, height: 28, justifyContent: 'center'}}>

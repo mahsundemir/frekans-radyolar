@@ -55,17 +55,17 @@ export default function MacIsland({
   const song = [p.meta?.artist, p.meta?.title].filter(Boolean).join(' — ');
   const line =
     p.status === 'error'
-      ? p.error ?? 'Yayın açılamadı'
+      ? p.error ?? p.t('streamFailed')
       : p.status === 'buffering'
-      ? 'Bağlanıyor…'
-      : song || 'Canlı yayın';
+      ? p.t('connecting')
+      : song || p.t('liveStream');
 
   // Hızlı radyolar: çalan radyo başta, sonra favoriler / ilk radyolar (en çok 5)
   const chips = [st, ...p.quick.filter(s => s.id !== st.id)].slice(0, 5);
 
   const cats = [
-    {id: ALL, name: 'Tümü'},
-    {id: FAVORITES, name: `Favoriler${p.favorites.length ? ` · ${p.favorites.length}` : ''}`},
+    {id: ALL, name: p.t('all')},
+    {id: FAVORITES, name: `${p.t('favorites')}${p.favorites.length ? ` · ${p.favorites.length}` : ''}`},
     ...Array.from(new Map(p.stations.map(s => [s.categoryId, s.categoryName])).entries()).map(
       ([id, name]) => ({id, name}),
     ),
@@ -80,7 +80,7 @@ export default function MacIsland({
           <View style={styles.titleCol}>
             <View style={styles.liveRow}>
               <View style={[styles.dot, {backgroundColor: st.color, opacity: live ? 1 : 0.4}]} />
-              <Text style={[styles.live, {color: st.color}]}>CANLI</Text>
+              <Text style={[styles.live, {color: st.color}]}>{p.t('liveBadge')}</Text>
               <Text style={styles.cat}>· {st.categoryName}</Text>
             </View>
             <Text numberOfLines={1} style={[styles.name, FONT_DISPLAY]}>
@@ -89,7 +89,7 @@ export default function MacIsland({
             <Marquee text={line} style={styles.song} />
           </View>
           <Pressable
-            accessibilityLabel={fav ? 'Favorilerden çıkar' : 'Favorilere ekle'}
+            accessibilityLabel={fav ? p.t('favRemove') : p.t('favAdd')}
             onPress={() => p.toggleFavorite(st.id)}
             style={styles.heart}>
             <HeartIcon size={22} color={fav ? st.color : colors.text} filled={fav} />
@@ -110,22 +110,22 @@ export default function MacIsland({
             <VolumeBar value={p.volume} color={colors.text} onChange={p.setVolume} />
           </View>
           <View style={styles.transport}>
-            <Pressable accessibilityLabel="Önceki radyo" onPress={p.prev} style={styles.skip}>
+            <Pressable accessibilityLabel={p.t('prevRadio')} onPress={p.prev} style={styles.skip}>
               <PrevIcon size={24} color="#FFFFFF" />
             </Pressable>
             <Pressable
-              accessibilityLabel={live ? 'Duraklat' : 'Oynat'}
+              accessibilityLabel={live ? p.t('pause') : p.t('play')}
               onPress={p.toggle}
               style={[styles.play, {backgroundColor: st.color}]}>
               {live ? <PauseIcon size={22} color={st.ink} /> : <PlayIcon size={22} color={st.ink} />}
             </Pressable>
-            <Pressable accessibilityLabel="Sonraki radyo" onPress={p.next} style={styles.skip}>
+            <Pressable accessibilityLabel={p.t('nextRadio')} onPress={p.next} style={styles.skip}>
               <NextIcon size={24} color="#FFFFFF" />
             </Pressable>
           </View>
           <View style={styles.listBtnWrap}>
             <Pressable
-              accessibilityLabel={tall ? 'Listeyi kapat' : 'Tüm radyolar ve arama'}
+              accessibilityLabel={tall ? p.t('closeList') : p.t('listAndSearch')}
               onPress={onToggleList}
               style={[styles.listBtn, tall && {backgroundColor: colors.text}]}>
               {tall ? (
@@ -169,13 +169,13 @@ export default function MacIsland({
                   {...({enableFocusRing: false} as object)}
                   value={query}
                   onChangeText={setQuery}
-                  placeholder="Radyo ara"
+                  placeholder={p.t('searchRadio')}
                   placeholderTextColor={colors.muted}
                   style={styles.input}
                 />
                 {query.length > 0 && (
-                  <Pressable accessibilityLabel="Aramayı temizle" onPress={() => setQuery('')}>
-                    <Text style={styles.clear}>Temizle</Text>
+                  <Pressable accessibilityLabel={p.t('clearSearch')} onPress={() => setQuery('')}>
+                    <Text style={styles.clear}>{p.t('clear')}</Text>
                   </Pressable>
                 )}
               </View>
@@ -195,8 +195,8 @@ export default function MacIsland({
                 {rows.length === 0 && (
                   <Text style={styles.empty}>
                     {cat === FAVORITES && !query
-                      ? 'Henüz favori yok. Radyonun yanındaki kalbe dokun.'
-                      : 'Sonuç bulunamadı.'}
+                      ? p.t('noFavs')
+                      : p.t('noResults')}
                   </Text>
                 )}
                 {rows.map(s => {
@@ -217,7 +217,7 @@ export default function MacIsland({
                         <Waveform count={4} barWidth={3} height={14} gap={2} color={s.color} active={p.status === 'playing'} />
                       )}
                       <Pressable
-                        accessibilityLabel={isFav ? `${s.name} favorilerden çıkar` : `${s.name} favorilere ekle`}
+                        accessibilityLabel={p.t(isFav ? 'favRemoveNamed' : 'favAddNamed', {name: s.name})}
                         onPress={() => p.toggleFavorite(s.id)}
                         style={styles.rowHeart}>
                         <HeartIcon size={18} color={isFav ? s.color : colors.muted} filled={isFav} />
@@ -230,16 +230,16 @@ export default function MacIsland({
               <View style={styles.footer}>
                 <Pressable onPress={() => setSettings(true)} style={styles.footBtn}>
                   <SlidersIcon color={colors.muted} />
-                  <Text style={styles.footText}>Ayarlar</Text>
+                  <Text style={styles.footText}>{p.t('settings')}</Text>
                 </Pressable>
                 <Pressable onPress={() => setSleepOpen(o => !o)} style={styles.footBtn}>
                   <MoonIcon size={18} color={p.sleepEnd ? st.color : colors.muted} />
                   <Text style={[styles.footText, p.sleepEnd ? {color: st.color} : null]}>
-                    {p.sleepEnd ? 'Uyku zamanlayıcı açık' : 'Uyku zamanlayıcı'}
+                    {p.sleepEnd ? p.t('sleepTimerOn') : p.t('sleepTimer')}
                   </Text>
                 </Pressable>
                 <Pressable onPress={() => NativeModules.FrekansAudio?.quit()} style={styles.footBtn}>
-                  <Text style={styles.footText}>Çık</Text>
+                  <Text style={styles.footText}>{p.t('quit')}</Text>
                 </Pressable>
               </View>
             </>
