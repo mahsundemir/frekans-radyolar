@@ -68,6 +68,7 @@ export default function MacCard({onOpenList}: {onOpenList: () => void}) {
               key={s.id}
               accessibilityLabel={s.name}
               onPress={() => p.select(s)}
+              onLongPress={() => p.pickColor(s.id)}
               style={[styles.quickItem, active && {borderColor: colors.text}]}>
               <Badge station={s} active={active} size={32} circle />
             </Pressable>

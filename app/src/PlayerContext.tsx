@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import {AppState, NativeEventEmitter, NativeModules} from 'react-native';
 import {loadJson, saveJson} from './storage';
+import {inkFor} from './theme';
 import {bundledStations, fetchStations, flatten} from './stations';
 import type {
   FlatStation,
@@ -30,6 +31,7 @@ type Prefs = {
   volume: number;
   lastId: string | null;
   saver?: boolean;
+  colors?: Record<string, string>;
 };
 
 type Ctx = {
@@ -46,6 +48,11 @@ type Ctx = {
   volume: number;
   refreshing: boolean;
   quick: FlatStation[]; // adadaki hızlı seçim: favoriler önce, en çok 5
+  colorOf: Record<string, string>; // radyo başına seçilen renkler
+  colorTarget: {id: string; fresh: boolean} | null; // renk seçici açık olan radyo
+  pickColor: (id: string) => void;
+  closeColorPicker: () => void;
+  setStationColor: (id: string, hex: string | null) => void;
   saver: boolean; // pil tasarrufu: animasyonlar ve canlı etkinlik güncellemeleri kapalı
   setSaver: (on: boolean) => void;
   sleepEnd: number | null;
@@ -68,7 +75,9 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   const [file, setFile] = useState<StationsFile>(bundledStations());
   const [enabled, setEnabledMap] = useState<Record<string, boolean>>({});
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [current, setCurrent] = useState<FlatStation | null>(null);
+  const [currentRaw, setCurrent] = useState<FlatStation | null>(null);
+  const [colorOf, setColorOf] = useState<Record<string, string>>({});
+  const [colorTarget, setColorTarget] = useState<{id: string; fresh: boolean} | null>(null);
   const [status, setStatus] = useState<PlayerStatus>('idle');
   const [error, setError] = useState<string | null>(null);
   const [meta, setMeta] = useState<NowPlaying | null>(null);
@@ -83,7 +92,18 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   const fileRef = useRef(file);
   fileRef.current = file;
 
-  const all = useMemo(() => flatten(file), [file]);
+  // Kullanıcının seçtiği renkler kategori renginin yerine geçer
+  const all = useMemo(
+    () =>
+      flatten(file).map(s =>
+        colorOf[s.id] ? {...s, color: colorOf[s.id], ink: inkFor(colorOf[s.id])} : s,
+      ),
+    [file, colorOf],
+  );
+  const current = useMemo(
+    () => (currentRaw ? all.find(s => s.id === currentRaw.id) ?? currentRaw : null),
+    [currentRaw, all],
+  );
   const allRef = useRef(all);
   allRef.current = all;
   const stations = useMemo(
@@ -110,6 +130,7 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
         setEnabledMap(prefs.enabled ?? {});
         setFavorites(prefs.favorites ?? []);
         setSaverState(!!prefs.saver);
+        setColorOf(prefs.colors ?? {});
         Native?.setEnergySaver?.(!!prefs.saver);
         if (typeof prefs.volume === 'number') {
           setVolumeState(prefs.volume);
@@ -142,8 +163,9 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
       volume,
       lastId: current?.id ?? null,
       saver,
+      colors: colorOf,
     } satisfies Prefs);
-  }, [hydrated, enabled, favorites, volume, current, saver]);
+  }, [hydrated, enabled, favorites, volume, current, saver, colorOf]);
 
   const select = useCallback((s: FlatStation) => {
     setCurrent(s);
@@ -231,8 +253,28 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     [favorites],
   );
 
+  const favRef = useRef(favorites);
+  favRef.current = favorites;
   const toggleFavorite = useCallback((id: string) => {
+    const adding = !favRef.current.includes(id);
     setFavorites(f => (f.includes(id) ? f.filter(x => x !== id) : [...f, id]));
+    if (adding) {
+      setColorTarget({id, fresh: true}); // favoriye eklerken renk seçilebilir
+    }
+  }, []);
+
+  const pickColor = useCallback((id: string) => setColorTarget({id, fresh: false}), []);
+  const closeColorPicker = useCallback(() => setColorTarget(null), []);
+  const setStationColor = useCallback((id: string, hex: string | null) => {
+    setColorOf(m => {
+      const next = {...m};
+      if (hex) {
+        next[id] = hex;
+      } else {
+        delete next[id];
+      }
+      return next;
+    });
   }, []);
 
   const refresh = useCallback(async () => {
@@ -277,6 +319,13 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   useEffect(() => {
     Native?.setQuick?.(quick.map(s => ({id: s.id, short: s.short, color: s.color})));
   }, [quick]);
+
+  // Çalan radyonun rengi değişirse canlı etkinlik de güncellensin
+  useEffect(() => {
+    if (current) {
+      Native?.setStyle?.(current.color, current.short);
+    }
+  }, [current?.color]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Native olaylar
   const stepRef = useRef(step);
@@ -344,6 +393,11 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     volume,
     refreshing,
     quick,
+    colorOf,
+    colorTarget,
+    pickColor,
+    closeColorPicker,
+    setStationColor,
     saver,
     setSaver,
     sleepEnd,

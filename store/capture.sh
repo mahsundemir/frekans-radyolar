@@ -34,7 +34,8 @@ shoot() {
   local name="$1" id="$2" favs="$3" st="$4" wait="$5"
   sim terminate "$UDID" $BID 2>/dev/null || true
   prefs "$id" "$favs"
-  shotstate "$st"
+  # favoriler ve ekran durumu, geçici shotHarness üzerinden uygulanır
+  shotstate "$(python3 -c 'import json,sys; d=json.loads(sys.argv[1]); d["favs"]=sys.argv[2].split(","); print(json.dumps(d))' "$st" "$favs")"
   # Radyoyu frekans:// bağlantısıyla başlat: bağlantı açılışta kayıtlı beklediği için
   # simctl openurl'ün "Açılsın mı?" penceresi çıkmaz
   dw frekans.pendingURL -string "$(python3 "$HERE/station-url.py" "$id")"

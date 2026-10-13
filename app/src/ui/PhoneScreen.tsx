@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {usePlayer} from '../PlayerContext';
-import {useShot} from '../shotHarness';
 import {shareStation} from '../share';
 import {chipFor, colors} from '../theme';
 import Badge from './Badge';
@@ -33,8 +32,6 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
   const insets = useSafeAreaInsets();
   const {height} = useWindowDimensions();
   const [sleepOpen, setSleepOpen] = useState(false);
-  const shot = useShot();
-  React.useEffect(() => { if (shot.sleep !== undefined) { setSleepOpen(shot.sleep); } }, [shot.sleep]);
   const st = p.current ?? p.stations[0];
   const bg = useColorTransition(st?.color ?? '#FF5B4A');
   if (!st) {
@@ -150,6 +147,7 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
             {showFavs ? 'Favoriler' : 'Tüm radyolar'}
           </Text>
           <Text style={styles.sheetCount}>· {list.length}</Text>
+          <Text style={styles.sheetHint}>renk için basılı tut</Text>
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           {list.map(s => {
@@ -159,6 +157,7 @@ export default function PhoneScreen({onOpenList}: {onOpenList: () => void}) {
               <Pressable
                 key={s.id}
                 onPress={() => p.select(s)}
+                onLongPress={() => p.pickColor(s.id)}
                 style={[styles.row, active && {backgroundColor: colors.surface2}]}>
                 <Badge station={s} active={active} size={40} />
                 <View style={{flex: 1}}>
@@ -241,6 +240,7 @@ const styles = StyleSheet.create({
   sheetHead: {flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 8, paddingBottom: 8},
   sheetTitle: {color: colors.text, fontSize: 13, fontWeight: '700', letterSpacing: 1.2, textTransform: 'uppercase'},
   sheetCount: {color: colors.muted, fontSize: 13},
+  sheetHint: {color: colors.muted, fontSize: 11, marginLeft: 'auto', opacity: 0.8},
   row: {height: 56, flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 8, paddingRight: 4, borderRadius: 14},
   rowName: {color: colors.text, fontSize: 15, fontWeight: '700'},
   rowSub: {color: colors.muted, fontSize: 12},

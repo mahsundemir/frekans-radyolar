@@ -56,32 +56,26 @@ def background(accent):
     for y in range(H):
         g.putpixel((0, y), mix(top, bot, y / (H - 1)))
     img = g.resize((W, H))
-    # dev ses çubukları: aynı rengin biraz açığı, sayfa boyunca
-    ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(ov)
-    ink = ink_for(accent)
-    tone = (*ink, 22)
-    n, bw, gap = 9, 92, 58
-    x0 = (W - (n * bw + (n - 1) * gap)) // 2
-    heights = [520, 900, 1300, 1000, 1700, 1100, 1450, 800, 560]
-    for i, hh in enumerate(heights):
-        x = x0 + i * (bw + gap)
-        cy = int(H * 0.62)
-        d.rounded_rectangle((x, cy - hh // 2, x + bw, cy + hh // 2), bw // 2, fill=tone)
-    img = Image.alpha_composite(img.convert("RGBA"), ov)
+    # telefonun arkasında yumuşak ışık
+    glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ImageDraw.Draw(glow).ellipse((-200, 1000, W + 200, 2700), fill=(*mix(accent, (255, 255, 255), 0.35), 70))
+    img = Image.alpha_composite(img.convert("RGBA"), glow.filter(ImageFilter.GaussianBlur(220)))
     return img
 
 
 def phone(shot_path, width, notch=True):
     """Ekran görüntüsünü ince siyah çerçeveli cihaz içine koyar. RGBA döner."""
     shot = Image.open(shot_path).convert("RGB")
+    if notch:  # Dynamic Island: simülatör görüntülerinde her zaman çizilmiyor, hepsine aynısını koy
+        m = rr_mask((284, 112), 56)
+        shot.paste(Image.new("RGB", (284, 112), (0, 0, 0)), (517, 41), m)
     bez = round(width * 0.018)
     sw = width - 2 * bez
     sh = round(shot.height * sw / shot.width)
     shot = shot.resize((sw, sh), Image.LANCZOS)
     full = (width, sh + 2 * bez)
     out = Image.new("RGBA", full, (0, 0, 0, 0))
-    body = Image.new("RGBA", full, (14, 13, 18, 255))
+    body = Image.new("RGBA", (full[0] - 4, full[1] - 4), (14, 13, 18, 255))
     # çerçeve dış kenar çizgisi (titanyum hissi)
     edge = Image.new("RGBA", full, (70, 68, 78, 255))
     outer_r = round(width * 0.135)
@@ -89,11 +83,6 @@ def phone(shot_path, width, notch=True):
     inner = (full[0] - 4, full[1] - 4)
     out.paste(body, (2, 2), rr_mask(inner, outer_r - 2))
     out.paste(shot, (bez, bez), rr_mask((sw, sh), round(outer_r - bez * 0.9)))
-    if notch:  # Dynamic Island (donanım): ekranın üstünde siyah hap
-        pw, ph = round(sw * 0.285), round(sw * 0.083)
-        px, py = bez + (sw - pw) // 2, bez + round(sw * 0.026)
-        pill = Image.new("RGBA", (pw, ph), (0, 0, 0, 255))
-        out.paste(pill, (px, py), rr_mask((pw, ph), ph // 2))
     return out
 
 
@@ -114,7 +103,7 @@ def place(canvas, ph, x, y, angle=0):
     canvas.alpha_composite(ph, (x, y))
 
 
-def text_block(canvas, lines, accent, y, size=132, sub=None):
+def text_block(canvas, lines, accent, y, size=114, sub=None):
     ink = ink_for(accent)
     d = ImageDraw.Draw(canvas)
     f = ImageFont.truetype(str(FONT), size)
@@ -123,48 +112,51 @@ def text_block(canvas, lines, accent, y, size=132, sub=None):
         d.text(((W - w) / 2, y), ln, font=f, fill=ink)
         y += round(size * 1.04)
     if sub:
-        fs = ImageFont.truetype(str(FONT), round(size * 0.34))
+        fs = ImageFont.truetype(str(FONT), round(size * 0.37))
         w = d.textlength(sub, font=fs)
-        d.text(((W - w) / 2, y + 18), sub, font=fs, fill=(*ink, 255) if False else mix(ink, accent, 0.25))
+        d.text(((W - w) / 2, y + 26), sub, font=fs, fill=mix(ink, accent, 0.22))
+        y += 26 + fs.size
     return y
 
 
 # ---- Slayt tanımları -------------------------------------------------------
 # kind "single": tek telefon;  "trio": üç telefon (renk dizisi)
 SLIDES = [
-    dict(name="01-canli-radyo", kind="single", raw="player-pop", accent="#FF5B4A",
-         lines=["Türkiye'nin radyoları", "tek dokunuşta"], sub="68 canlı radyo, ücretsiz"),
-    dict(name="02-calan-sarki", kind="single", raw="player-metro", accent="#FFB020",
-         lines=["Şu an çalan", "şarkıyı gör"], sub="Yayının kendi bilgisinden, anında"),
-    dict(name="03-renkli", kind="trio", raws=["player-slow", "player-rock", "player-halk"],
-         accent="#6A47FF", lines=["Her tür", "kendi renginde"], sub="Radyo değişince ekran da değişir"),
+    dict(name="01-canli-radyo", kind="single", raw="player-pop", accent="#1B1826",
+         lines=["Türkiye'nin radyoları", "tek dokunuşta"], sub="Pop'tan arabeske, haberden spora"),
+    dict(name="02-calan-sarki", kind="single", raw="player-metro", accent="#6A47FF",
+         lines=["Şu an çalan", "şarkıyı gör"], sub="Şarkı ve sanatçı, yayından anında"),
+    dict(name="03-renkli", kind="trio", raws=["player-arabesk", "player-virgin", "player-retro"],
+         accent="#1B1826", lines=["Her tür", "kendi renginde"], sub="Radyo değişince ekran da değişir"),
     dict(name="04-liste", kind="single", raw="list", accent="#2DD4A8",
-         lines=["Tüm radyolar", "tek yerde"], sub="Pop, rock, arabesk, haber, spor ve daha fazlası"),
-    dict(name="05-favoriler", kind="single", raw="player-fav", accent="#FF6FB5",
-         lines=["Favorilerin", "hep elinin altında"], sub="Kalp'e dokun, listene ekle"),
+         lines=["Tüm radyolar", "tek listede"], sub="Ara, aç, kapat: liste senin"),
+    dict(name="05-favoriler", kind="single", raw="player-halk", accent="#FF6FB5",
+         lines=["Favorilerin hep", "elinin altında"], sub="Kalbe dokun, listene eklensin"),
     dict(name="06-uyku", kind="single", raw="player-sleep", accent="#34C8FF",
-         lines=["Müzikle uykuya dal"], sub="Uyku zamanlayıcı: ses yavaşça kısılır"),
+         lines=["Müzikle", "uykuya dal"], sub="Süre dolunca ses yavaşça kısılır"),
 ]
+
+
 
 
 def build(slide):
     acc = hexrgb(slide["accent"])
     canvas = background(acc)
     y = text_block(canvas, slide["lines"], acc, 200, sub=slide.get("sub"))
-    top = y + 220
+    top = y + 150
     if slide["kind"] == "single":
         pw = 1060
         ph = phone(RAW / f"{slide['raw']}.png", pw)
         place(canvas, ph, (W - pw) // 2, top)
     else:
         a, b, c = slide["raws"]
-        side_w, mid_w = 800, 1000
+        side_w, mid_w = 820, 1060
         pl = phone(RAW / f"{a}.png", side_w)
         pr = phone(RAW / f"{c}.png", side_w)
         pm = phone(RAW / f"{b}.png", mid_w)
-        place(canvas, pl, -150, top + 160, angle=7)
-        place(canvas, pr, W - side_w + 150, top + 160, angle=-7)
-        place(canvas, pm, (W - mid_w) // 2, top - 10)
+        place(canvas, pl, -170, top + 230, angle=7)
+        place(canvas, pr, W - side_w + 170, top + 230, angle=-7)
+        place(canvas, pm, (W - mid_w) // 2, top + 20)
     return canvas.convert("RGB")
 
 

@@ -171,6 +171,7 @@ export default function MacPanel({onCollapse}: {onCollapse?: () => void}) {
             <Pressable
               key={s.id}
               onPress={() => p.select(s)}
+              onLongPress={() => p.pickColor(s.id)}
               style={[styles.row, active && {backgroundColor: colors.surface2}]}>
               <Badge station={s} active={active} />
               <View style={{flex: 1}}>

@@ -4,7 +4,7 @@ import {SafeAreaProvider, useSafeAreaInsets} from 'react-native-safe-area-contex
 import {PlayerProvider} from './src/PlayerContext';
 import {colors} from './src/theme';
 import {useIsland} from './src/island';
-import {useShot} from './src/shotHarness';
+import ColorSheet from './src/ui/ColorSheet';
 import MacCard from './src/ui/MacCard';
 import MacCompact from './src/ui/MacCompact';
 import MacPanel from './src/ui/MacPanel';
@@ -36,8 +36,7 @@ function MacApp() {
 function PhoneApp() {
   const [screen, setScreen] = useState<'player' | 'stations'>('player');
   const insets = useSafeAreaInsets();
-  const shot = useShot();
-  if ((shot.screen ?? screen) === 'stations') {
+  if (screen === 'stations') {
     return (
       <View style={{flex: 1, backgroundColor: colors.bg, paddingTop: insets.top}}>
         <StationsScreen onBack={() => setScreen('player')} />
@@ -53,6 +52,7 @@ export default function App() {
       <StatusBar barStyle="dark-content" />
       <PlayerProvider>
         {Platform.OS === 'macos' ? <MacApp /> : <PhoneApp />}
+        <ColorSheet />
       </PlayerProvider>
     </SafeAreaProvider>
   );
