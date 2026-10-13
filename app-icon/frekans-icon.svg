@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#282434"/><stop offset="1" stop-color="#0D0B13"/></linearGradient>
+    <radialGradient id="sh" cx="512" cy="0" r="780" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".13"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gl"><stop offset="0" stop-color="#FF5B4A" stop-opacity=".34"/><stop offset="1" stop-color="#FF5B4A" stop-opacity="0"/></radialGradient>
+    <linearGradient id="iv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#D6D1E6"/></linearGradient>
+    <linearGradient id="se" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <rect width="1024" height="1024" fill="url(#sh)"/>
+  <ellipse cx="512" cy="512" rx="340" ry="440" fill="url(#gl)"/>
+  <rect x="160" y="388" width="96" height="248" rx="48" fill="url(#iv)"/>
+  <rect x="312" y="292" width="96" height="440" rx="48" fill="url(#iv)"/>
+  <rect x="464" y="192" width="96" height="640" rx="48" fill="#FF5B4A"/>
+  <rect x="464" y="192" width="96" height="640" rx="48" fill="url(#se)"/>
+  <rect x="616" y="316" width="96" height="392" rx="48" fill="url(#iv)"/>
+  <rect x="768" y="418" width="96" height="188" rx="48" fill="url(#iv)"/>
+</svg>

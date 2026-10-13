@@ -13,7 +13,8 @@ import {ALL, FAVORITES, filterStations} from '../filter';
 import {usePlayer} from '../PlayerContext';
 import {shareStation} from '../share';
 import {colors} from '../theme';
-import {FONT_DISPLAY, Mono, useColorTransition, VolumeBar} from './Common';
+import {FONT_DISPLAY, useColorTransition, VolumeBar} from './Common';
+import Badge from './Badge';
 import {
   HeartIcon,
   MoonIcon,
@@ -170,7 +171,7 @@ export default function MacPanel() {
               key={s.id}
               onPress={() => p.select(s)}
               style={[styles.row, active && {backgroundColor: colors.surface2}]}>
-              <Mono text={s.short} color={s.color} ink={s.ink} />
+              <Badge station={s} active={active} />
               <View style={{flex: 1}}>
                 <Text style={styles.rowName}>{s.name}</Text>
                 <Text numberOfLines={1} style={styles.rowSub}>

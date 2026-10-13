@@ -2910,7 +2910,7 @@ SPEC CHECKSUMS:
   fast_float: b32c788ed9c6a8c584d114d0047beda9664e7cc6
   FBLazyVector: 07433c4ab85da44d0b5ceac374ff4e1d57c7aa23
   fmt: 530618a01105dae0fa3a2f27c81ae11fa8f67eac
-  FrekansAudio: 9e32bb703f269feb953cf98d768465700549946e
+  FrekansAudio: fa4214bf2174543bff32bf14f3c7ab00ab2067bb
   glog: 0456694f3aaf09460b660ea327cfc11defbeea4c
   hermes-engine: f37e1d6f1eb198649a60b3f17b6f685a6ac12470
   RCT-Folly: b29feb752b08042c62badaef7d453f3bb5e6ae23

@@ -9,8 +9,11 @@ import {
 } from 'react-native';
 import {filterStations, FAVORITES, norm} from '../filter';
 import {usePlayer} from '../PlayerContext';
+import {useShot} from '../shotHarness';
 import {colors} from '../theme';
-import {FONT_DISPLAY, Mono, Toggle} from './Common';
+import {FONT_DISPLAY, Toggle} from './Common';
+import Badge from './Badge';
+import Waveform from './Waveform';
 import {ChevronLeft, HeartIcon, RefreshIcon, SearchIcon} from './Icons';
 
 // Ayarlar › Radyolar: Dil > Kategori > Radyolar (stations.json'dan)
@@ -18,8 +21,13 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
   const p = usePlayer();
   const [lang, setLang] = useState(p.file.languages[0]?.code ?? 'tr');
   const [query, setQuery] = useState('');
+  const shot = useShot();
+  const scrollRef = React.useRef<ScrollView>(null);
+  React.useEffect(() => { setQuery(shot.query ?? ''); }, [shot.query]);
+  React.useEffect(() => { scrollRef.current?.scrollTo({y: shot.scroll ?? 0, animated: false}); }, [shot.scroll]);
   const language = p.file.languages.find(l => l.code === lang) ?? p.file.languages[0];
   const q = norm(query.trim());
+  const live = p.status === 'playing' || p.status === 'buffering';
 
   const groups = useMemo(
     () =>
@@ -84,7 +92,7 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={styles.list}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.list}>
         {favs.length > 0 && (
           <View>
             <View style={styles.groupHead}>
@@ -98,8 +106,11 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
                   {i > 0 && <View style={styles.sep} />}
                   <View style={styles.row}>
                     <Pressable style={styles.rowMain} onPress={() => p.select(s)}>
-                      <Mono text={s.short} color={s.color} ink={s.ink} />
+                      <Badge station={s} active={p.current?.id === s.id} />
                       <Text style={styles.rowName}>{s.name}</Text>
+                      {p.current?.id === s.id && live && (
+                        <Waveform count={3} barWidth={3} height={14} gap={2} color={s.color} active={p.status === 'playing'} />
+                      )}
                     </Pressable>
                     <Pressable
                       accessibilityLabel={`${s.name} favorilerden çıkar`}
@@ -131,12 +142,11 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
                       <Pressable
                         style={styles.rowMain}
                         onPress={() => flat && p.select(flat)}>
-                        <Mono
-                          text={s.short}
-                          color={c.color}
-                          ink={flat?.ink ?? colors.ink}
-                        />
+                        {flat && <Badge station={flat} active={p.current?.id === s.id} />}
                         <Text style={styles.rowName}>{s.name}</Text>
+                        {p.current?.id === s.id && live && (
+                          <Waveform count={3} barWidth={3} height={14} gap={2} color={c.color} active={p.status === 'playing'} />
+                        )}
                       </Pressable>
                       <Pressable
                         accessibilityLabel={

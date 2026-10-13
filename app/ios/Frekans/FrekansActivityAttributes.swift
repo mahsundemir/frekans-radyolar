@@ -18,5 +18,9 @@ struct FrekansActivityAttributes: ActivityAttributes {
     var artist: String
     var playing: Bool
     var quick: [Quick]
+    // Kayan yazı ve ses dalgası animasyonu için uygulama tarafından periyodik güncellenir
+    var eq: Int = 0
+    var ticker: String = ""
+    var tickerShort: String = ""
   }
 }

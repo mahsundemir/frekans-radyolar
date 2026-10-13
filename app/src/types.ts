@@ -4,6 +4,7 @@ export type Station = {
   id: string;
   name: string;
   short: string;
+  logo?: string; // isteğe bağlı; yoksa ya da açılmazsa baş harfler görünür
   streamUrl: string;
   metadata: Metadata;
 };

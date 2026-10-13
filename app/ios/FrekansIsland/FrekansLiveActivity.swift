@@ -36,13 +36,24 @@ struct Monogram: View {
   }
 }
 
+// Oynarken kare kare değişen ses dalgası (durum güncellemeleriyle ilerler); duraklatılınca düz.
 struct WaveGlyph: View {
   let state: FrekansActivityAttributes.ContentState
 
+  private static let frames: [[CGFloat]] = [
+    [5, 12, 8, 14], [11, 6, 14, 7], [7, 14, 5, 11], [13, 8, 12, 5],
+  ]
+
   var body: some View {
-    Image(systemName: state.playing ? "waveform" : "pause.fill")
-      .font(.system(size: 14, weight: .bold))
-      .foregroundStyle(Color(hex: state.colorHex))
+    let heights = state.playing ? Self.frames[state.eq % 4] : [3, 3, 3, 3]
+    HStack(alignment: .center, spacing: 2) {
+      ForEach(0..<4, id: \.self) { i in
+        Capsule()
+          .fill(Color(hex: state.colorHex))
+          .frame(width: 3, height: heights[i])
+      }
+    }
+    .frame(width: 20, height: 16)
   }
 }
 
@@ -54,8 +65,8 @@ struct NowPlayingText: View {
       Text(state.name)
         .font(.system(size: 16, weight: .bold))
         .lineLimit(1)
-      Text(subtitle)
-        .font(.system(size: 13))
+      Text(state.ticker.isEmpty ? subtitle : state.ticker)
+        .font(.system(size: 13, weight: .medium, design: .monospaced))
         .foregroundStyle(.secondary)
         .lineLimit(1)
     }
@@ -131,10 +142,12 @@ struct LockScreenView: View {
         .background(ink, in: RoundedRectangle(cornerRadius: 13))
       VStack(alignment: .leading, spacing: 2) {
         Text(state.name).font(.system(size: 17, weight: .heavy)).lineLimit(1)
-        Text(song.isEmpty ? "Canlı yayın" : song)
-          .font(.system(size: 14)).lineLimit(1).opacity(0.85)
+        Text(state.ticker.isEmpty ? (song.isEmpty ? "Canlı yayın" : song) : state.ticker)
+          .font(.system(size: 13, weight: .medium, design: .monospaced)).lineLimit(1).opacity(0.85)
       }
       Spacer()
+      WaveGlyph(state: state)
+        .colorMultiply(ink)
       Button(intent: TogglePlaybackIntent()) {
         Image(systemName: state.playing ? "pause.fill" : "play.fill")
           .font(.system(size: 18, weight: .bold))
@@ -178,7 +191,13 @@ struct FrekansLiveActivity: Widget {
       } compactLeading: {
         Monogram(state: c, size: 22)
       } compactTrailing: {
-        WaveGlyph(state: c)
+        HStack(spacing: 4) {
+          WaveGlyph(state: c)
+          Text(c.tickerShort)
+            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+            .lineLimit(1)
+            .frame(width: 44, alignment: .leading)
+        }
       } minimal: {
         WaveGlyph(state: c)
       }

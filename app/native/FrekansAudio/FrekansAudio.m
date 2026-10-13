@@ -1,6 +1,9 @@
 #import "FrekansAudio.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <ImageIO/ImageIO.h>
+#import <CommonCrypto/CommonDigest.h>
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
 @interface FrekansAudio () <AVPlayerItemMetadataOutputPushDelegate>
 @property (nonatomic, strong) AVPlayer *player;
@@ -34,6 +37,8 @@ RCT_EXPORT_MODULE()
   if ((self = [super init])) {
     // Swift tarafı (SceneDelegate / AppDelegate) frekans:// bağlantısını kaydedip bildirim gönderir.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePendingURL) name:@"FrekansOpenURL" object:nil];
+    // macOS çentik adası: genişleme/daralma ve çentik ölçüleri (Swift tarafı bildirir)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIsland:) name:@"FrekansIsland" object:nil];
     // Dynamic Island / kilit ekranı düğmeleri (iOS): oynat-duraklat, önceki, sonraki, radyo seç
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleRemote:) name:@"FrekansRemote" object:nil];
     dispatch_async(dispatch_get_main_queue(), ^{ [self handlePendingURL]; });
@@ -43,7 +48,7 @@ RCT_EXPORT_MODULE()
 
 - (void)dealloc { [[NSNotificationCenter defaultCenter] removeObserver:self]; }
 - (dispatch_queue_t)methodQueue { return dispatch_get_main_queue(); }
-- (NSArray<NSString *> *)supportedEvents { return @[@"onState", @"onMetadata", @"onRemote", @"onPlayRequest", @"onSleep"]; }
+- (NSArray<NSString *> *)supportedEvents { return @[@"onState", @"onMetadata", @"onRemote", @"onPlayRequest", @"onSleep", @"onIsland"]; }
 - (void)startObserving { self.hasListeners = YES; }
 - (void)stopObserving { self.hasListeners = NO; }
 
@@ -109,6 +114,16 @@ RCT_EXPORT_METHOD(getCurrent:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseR
   [self postNowPlaying];
 }
 
+- (void)handleIsland:(NSNotification *)n {
+  if (n.userInfo) { [self emit:@"onIsland" body:n.userInfo]; }
+}
+
+// macOS çentik adasının son durumu (JS açıldığında düzeni kurmak için)
+RCT_EXPORT_METHOD(getIslandInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+  NSDictionary *info = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"frekans.islandInfo"];
+  resolve(info ?: [NSNull null]);
+}
+
 - (void)handleRemote:(NSNotification *)n {
   dispatch_async(dispatch_get_main_queue(), ^{
     NSString *cmd = n.userInfo[@"command"];
@@ -153,6 +168,58 @@ RCT_EXPORT_METHOD(setQuick:(NSArray *)list) {
 
 // Uyku zamanlayıcı: native taraf zamanlar, böylece panel/ekran kapalıyken de çalışır.
 // 0 dakika zamanlayıcıyı iptal eder. Süre dolunca ses 5 saniyede kısılır ve yayın durur.
+// Radyo logosunun siyah-beyaz kopyasını üretir (iOS ve macOS ortak; ImageIO + CoreGraphics).
+// İndirilen görsel önbelleğe yazılır, sonuç file:// adresi olarak döner. Açılmayan görselde hata verir.
+RCT_EXPORT_METHOD(grayLogo:(NSString *)urlString
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  NSURL *url = [NSURL URLWithString:urlString];
+  if (!url || ![url.scheme isEqualToString:@"https"]) { reject(@"bad_url", @"Geçersiz logo adresi", nil); return; }
+  unsigned char digest[CC_SHA1_DIGEST_LENGTH];
+  NSData *keyData = [urlString dataUsingEncoding:NSUTF8StringEncoding];
+  CC_SHA1(keyData.bytes, (CC_LONG)keyData.length, digest);
+  NSMutableString *name = [NSMutableString string];
+  for (int i = 0; i < 10; i++) { [name appendFormat:@"%02x", digest[i]]; }
+  NSString *dir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject stringByAppendingPathComponent:@"FrekansLogos"];
+  [[NSFileManager defaultManager] createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
+  NSString *path = [dir stringByAppendingPathComponent:[name stringByAppendingString:@"-bw.png"]];
+  if ([[NSFileManager defaultManager] fileExistsAtPath:path]) { resolve([NSURL fileURLWithPath:path].absoluteString); return; }
+
+  NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *resp, NSError *err) {
+    if (!data.length || err) { reject(@"download", @"Logo indirilemedi", err); return; }
+    CGImageSourceRef src = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
+    if (!src) { reject(@"decode", @"Logo açılamadı", nil); return; }
+    NSDictionary *opts = @{(id)kCGImageSourceCreateThumbnailFromImageAlways: @YES,
+                           (id)kCGImageSourceCreateThumbnailWithTransform: @YES,
+                           (id)kCGImageSourceThumbnailMaxPixelSize: @256};
+    CGImageRef img = CGImageSourceCreateThumbnailAtIndex(src, 0, (__bridge CFDictionaryRef)opts);
+    CFRelease(src);
+    if (!img) { reject(@"decode", @"Logo açılamadı", nil); return; }
+    size_t w = CGImageGetWidth(img), h = CGImageGetHeight(img);
+    CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+    CGContextRef ctx = CGBitmapContextCreate(NULL, w, h, 8, w * 4, cs, (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
+    CGColorSpaceRelease(cs);
+    CGContextDrawImage(ctx, CGRectMake(0, 0, w, h), img);
+    CGImageRelease(img);
+    uint8_t *px = CGBitmapContextGetData(ctx);
+    for (size_t i = 0; i < w * h; i++) {
+      uint8_t *p = px + i * 4;  // önceden çarpılmış RGBA: parlaklık aynı oranda korunur
+      uint8_t g = (uint8_t)(0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]);
+      p[0] = p[1] = p[2] = g;
+    }
+    CGImageRef out = CGBitmapContextCreateImage(ctx);
+    CGContextRelease(ctx);
+    CGImageDestinationRef dst = CGImageDestinationCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:path], (__bridge CFStringRef)UTTypePNG.identifier, 1, NULL);
+    CGImageDestinationAddImage(dst, out, NULL);
+    BOOL ok = CGImageDestinationFinalize(dst);
+    CFRelease(dst);
+    CGImageRelease(out);
+    if (ok) { resolve([NSURL fileURLWithPath:path].absoluteString); }
+    else { reject(@"write", @"Logo kaydedilemedi", nil); }
+  }];
+  [task resume];
+}
+
 RCT_EXPORT_METHOD(startSleepTimer:(double)minutes) {
   [self.sleepTimer invalidate];
   self.sleepTimer = nil;

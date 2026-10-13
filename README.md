@@ -8,12 +8,16 @@ Bu proje Claude (yapay zekâ ajanı) ile birlikte geliştirildi. Tasarım, radyo
 
 - **Oynatıcı:** Radyonun canlı yayını, arka planda çalma, uzaktan kontrol (kulaklık ve kilit ekranı tuşları: sonraki, önceki, oynat/duraklat).
 - **Şu an çalan şarkı:** Yayının kendi bilgisinden (ICY ve HLS ID3) okunur ve ekranda gösterilir. Bilgi vermeyen radyolarda radyo adı görünür.
+- **Mac çentik adası:** Mac'te uygulama ekranın üst ortasında, çentiğin bulunduğu yerde bir "ada" olarak durur. Daralmışken çentiğin solunda çalan radyo ve kayan şarkı adı, sağında ses dalgası görünür. Üzerine gelince genişleyip oynatıcıyı, aramayı ve radyo listesini açar. Menü çubuğundaki simgeye tıklayınca ada açık kalır (sabitlenir), sağ tık menüsünde "Çık" var. Çentiksiz Mac'lerde üst ortada küçük bir hap olarak görünür.
+- **iPhone ana ekranı:** Oynatıcının altında radyo listesi durur. Favori yoksa tüm radyolar, favori varsa yalnızca favoriler görünür.
+- **Çalan radyo göstergesi:** Çalan radyonun yanında listelerde (iPhone, Mac, ayarlar) ses dalgası görünür.
+- **Uygulama simgesi:** Tasarım tuvalindeki simgeden üretildi ([assets/icon](app/assets/icon), `make-icon.swift`).
 - **Ses dalgaları:** Çalarken hareket eden, duraklatınca düzleşen dalga. Gerçek ses analizi değil, çalma durumuna bağlı animasyon.
 - **Renkli tasarım:** Her kategorinin kendi rengi var. Radyo değişince ekran o rengin tonuna geçer.
 - **Arama:** Radyo listesinin üzerinde arama. Türkçe harflere duyarsız ("nagme" yazınca "Nağme" bulunur).
 - **Favoriler:** Kalp simgesiyle favori ekleme, "Favoriler" filtresi ve ayarlarda favori grubu. Favoriler, ses seviyesi, kapattığın radyolar ve son dinlenen radyo cihazda saklanır.
 - **Arkadaşa paylaşım:** Paylaş düğmesi, çalan radyoyu ve şarkıyı bir bağlantıyla gönderir (`https://mahsundemir.github.io/frekans-radyolar/?r=<radyo>`). Bağlantı açılınca bir web sayfası gelir: uygulaması olmayan arkadaşın radyoyu tarayıcıda dinler, uygulaması olan "Frekans uygulamasında aç" ile radyoyu uygulamada başlatır (`frekans://radyo/...`). Sayfa yayın adresini yalnızca `stations.json` içindeki kayıttan alır.
-- **Dynamic Island:** Radyo çalarken iPhone'un Dynamic Island'ında ve kilit ekranında canlı etkinlik görünür: kompakt (kısaltma + dalga simgesi), minimal ve genişletilmiş hal. Genişletilmiş halde radyo adı, şarkı, sanatçı, oynat/duraklat, önceki/sonraki düğmeleri ve 5 radyoluk hızlı seçim (favoriler önce) var. Kilit ekranı kartında oynat/duraklat düğmesi var. Gerekli: iOS 17 ve Dynamic Island'lı iPhone (14 Pro ve sonrası), kilit ekranı kartı diğer iPhone'larda da çıkar.
+- **Dynamic Island:** Radyo çalarken iPhone'un Dynamic Island'ında ve kilit ekranında canlı etkinlik görünür: kompakt (kısaltma, hareketli ses dalgası ve kayan şarkı adı), minimal ve genişletilmiş hal. Genişletilmiş halde radyo adı, kayan şarkı adı, oynat/duraklat, önceki/sonraki düğmeleri ve 5 radyoluk hızlı seçim (favoriler önce) var. Kilit ekranı kartında kayan şarkı adı ve oynat/duraklat düğmesi var. Kayan yazı ve hareketli dalga, uygulama canlı etkinliği oynarken yaklaşık her 0,8 saniyede bir güncelleyerek yapılıyor (Live Activity'de sürekli animasyon yok). iOS bu sıklığı sınırlarsa kayma takılabilir; gerçek iPhone'da denenmeli. Gerekli: iOS 17 ve Dynamic Island'lı iPhone (14 Pro ve sonrası), kilit ekranı kartı diğer iPhone'larda da çıkar.
 - **Uyku zamanlayıcı:** 15, 30, 45, 60 ve 90 dakika. Süre dolunca ses 5 saniyede kısılır ve yayın durur. Zamanlayıcı native tarafta çalışır, panel ya da ekran kapalıyken de işler.
 - **Yazı tipi:** Başlıklarda Bricolage Grotesque ExtraBold (SIL Open Font License, [assets/fonts](app/assets/fonts)).
 - **Liste güncelleme:** Açılışta, uygulama öne gelince (30 dakikadan eskiyse) ve 6 saatte bir `stations.json` çekilir. İnternet yoksa önbellekteki ya da uygulamayla gelen kopya kullanılır.
@@ -21,17 +25,18 @@ Bu proje Claude (yapay zekâ ajanı) ile birlikte geliştirildi. Tasarım, radyo
 
 ## Radyo listesi
 
-[`stations.json`](stations.json) şu an 68 radyo içeriyor: Türkçe (12 kategori) ve Kürtçe (2 kategori).
+[`stations.json`](stations.json) şu an 68 radyo içeriyor (24'ünün logosu var): Türkçe (12 kategori) ve Kürtçe (2 kategori).
 
 ```
 version, updatedAt
 └─ languages[]   code, name
    └─ categories[]   id, name, color
-      └─ stations[]   id, name, short, streamUrl, metadata
+      └─ stations[]   id, name, short, logo (isteğe bağlı), streamUrl, metadata
 ```
 
 - `version`: Listeyi değiştirdiğinde artır. Uygulama eski sürümü yeni sürümün üzerine yazmaz.
 - `streamUrl`: Doğrudan yayın adresi. Hepsi `https` (iOS güvenlik kuralı yüzünden).
+- `logo`: İsteğe bağlı logo adresi (`https`). Logo varsa listelerde pasifken siyah-beyaz, çalan radyoda renkli görünür. Logo yoksa ya da açılmazsa baş harfler (`short`) görünür. Logolar radyoların kendi sitelerinden alındı, depoda kopyası tutulmuyor.
 - `metadata`: `icy`, `hls` veya `none`.
 - `color`: Kategori rengi. Yazı rengi (koyu ya da beyaz) renge göre otomatik seçilir.
 
@@ -132,7 +137,7 @@ Release derlemesi imzasız cihaz hedefi için derlendi ve JS paketi, eklenti ve 
 
 ## Henüz yapılmayanlar
 
-- **Mac menü çubuğu panelinin açılması gerçek menü çubuğunda doğrulanmadı.** Panelin içeriği (oynatma, şarkı bilgisi, favoriler, arama, paylaşım, bağlantıyla açma) normal pencerede doğrulandı. Menü çubuğu simgesine tıklayınca açıldığını sen de kontrol et. Panel hover'da değil tıklamada açılır.
+- **Mac çentik adasında fare ile üzerine gelme denenmedi.** Daralmış ve genişlemiş hal görüntüleri alındı (genişleme kodla tetiklendi). Gerçek fare ile üzerine gelince açılıp kapanması, çentiğin hizası ve menü çubuğu simgesi gerçek ekranda gözle kontrol edilmeli.
 - **Dynamic Island'ın görünüşü ve düğmeleri adadan denenmedi.** Eklenti derleniyor, uygulamaya gömülüyor, canlı etkinlik başarıyla başlıyor. Düğmelerin komutları (oynat/duraklat, önceki, sonraki, radyo seç) native oynatıcıya iletilince çalışıyor (simülatörde komut göndererek doğrulandı). Ancak simülatör ekran görüntüsü Dynamic Island'ı çizmediği ve uzun basılamadığı için adanın görünüşü ve gerçek dokunuşla tetiklenmesi gerçek iPhone'da denenmeli.
 - **Otomatik açılan paylaşım bağlantısı:** Şu an bağlantı bir web sayfası açıyor, uygulamada açmak için sayfadaki düğmeye dokunmak gerekiyor. iMessage ve benzerlerinde bağlantıya dokununca doğrudan uygulamanın açılması (universal link) için gerçek bir Apple Developer ekip kimliği ve alan adı dosyası lazım. Paket kimliğiyle birlikte yapılacak.
 - **Paylaşım sayfası gerçek tarayıcıda denenmedi.** Sayfa yayında ve komut dizisi sözdizimi doğrulandı. Çalma, tarayıcıya ve yayının CORS ayarına bağlı: HLS yayınları Safari dışında hls.js ile açılır, bazı yayınlar tarayıcıda açılmayabilir (sayfa o durumda uygulamayı öneriyor).

@@ -1,6 +1,6 @@
 {
-  "version": 4,
-  "updatedAt": "2026-10-12T21:09:53Z",
+  "version": 5,
+  "updatedAt": "2026-10-13T06:15:57Z",
   "languages": [
     {
       "code": "tr",
@@ -15,6 +15,7 @@
               "id": "power-turk",
               "name": "Power Türk",
               "short": "PT",
+              "logo": "https://www.powerapp.com.tr/i/favicov2/apple-icon-180x180.png?v=1013",
               "streamUrl": "https://live.powerapp.com.tr/powerturk/abr/powerturk/128/playlist.m3u8",
               "metadata": "hls"
             },
@@ -29,6 +30,7 @@
               "id": "super-fm",
               "name": "Süper FM",
               "short": "SF",
+              "logo": "https://mediacdns.karnaval.com/media/station_media/1/icons/apple-touch-icon-180x180.png",
               "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/SUPER_FM_SC",
               "metadata": "icy"
             },
@@ -50,6 +52,7 @@
               "id": "alem-fm",
               "name": "Alem FM",
               "short": "AF",
+              "logo": "https://www.alemfm.com/assets/img/alemfm-apple-touch-icon.png",
               "streamUrl": "https://turkmedya.radyotvonline.net/alemfmaac",
               "metadata": "icy"
             },
@@ -64,6 +67,7 @@
               "id": "kiss-turk",
               "name": "Kiss Türk",
               "short": "KT",
+              "logo": "https://kissfm.kissapp.com.tr/assets/favicon-705d80e2.png",
               "streamUrl": "https://kiss.radyotvonline.net/kissturk",
               "metadata": "icy"
             },
@@ -71,6 +75,7 @@
               "id": "best-fm",
               "name": "Best FM",
               "short": "BF",
+              "logo": "https://www.bestfm.com.tr/wp-content/uploads/2025/02/cropped-best-slider-180x180.png",
               "streamUrl": "https://ssldyg.radyotvonline.com/best/bestfm.stream/playlist.m3u8",
               "metadata": "hls"
             },
@@ -85,6 +90,7 @@
               "id": "show-radyo",
               "name": "Show Radyo",
               "short": "SR",
+              "logo": "https://www.showradyo.com.tr/show-favicon.png",
               "streamUrl": "https://moondigitaledge.radyotvonline.net/show/playlist.m3u8",
               "metadata": "hls"
             },
@@ -106,6 +112,7 @@
               "id": "trt-fm",
               "name": "TRT FM",
               "short": "TF",
+              "logo": "https://radyo.trt.net.tr/icons/apple-icon-precomposed.png",
               "streamUrl": "https://trt.radyotvonline.net/trtfm",
               "metadata": "icy"
             }
@@ -120,6 +127,7 @@
               "id": "metro-fm",
               "name": "Metro FM",
               "short": "MF",
+              "logo": "https://mediacdns.karnaval.com/media/station_media/2/icons/apple-touch-icon-180x180.png",
               "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM_SC",
               "metadata": "icy"
             },
@@ -127,6 +135,7 @@
               "id": "joy-fm",
               "name": "Joy FM",
               "short": "JF",
+              "logo": "https://mediacdns.karnaval.com/stationsites/joyfm/assets/styles/images/apple_touch-icon.png",
               "streamUrl": "https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FMAAC_SC",
               "metadata": "icy"
             },
@@ -155,6 +164,7 @@
               "id": "radyo-eksen",
               "name": "Radyo Eksen",
               "short": "RE",
+              "logo": "https://radioeksen.com/Content/Eksen/images/eksenLogoIcon.png",
               "streamUrl": "https://dygedge.radyotvonline.net/radyoeksen/playlist.m3u8",
               "metadata": "hls"
             },
@@ -183,6 +193,7 @@
               "id": "slow-turk",
               "name": "Slow Türk",
               "short": "ST",
+              "logo": "https://www.slowturk.com.tr/images/apple-icon-180x180.png",
               "streamUrl": "https://radyo.duhnet.tv/ak_dtvh_slowturk",
               "metadata": "icy"
             },
@@ -197,6 +208,7 @@
               "id": "hayatmix-slow",
               "name": "HayatMix Slow",
               "short": "HS",
+              "logo": "https://www.hayatmix.com/ico/apple-icon-180x180.png",
               "streamUrl": "https://radyo.yayin.com.tr:4090/mp3",
               "metadata": "icy"
             },
@@ -239,6 +251,7 @@
               "id": "radyo-seymen",
               "name": "Radyo Seymen",
               "short": "RS",
+              "logo": "https://radyoseymen.com.tr/wp-content/uploads/2026/03/cropped-radyoseymen-favicon-180x180.png",
               "streamUrl": "https://yayin.radyoseymen.com.tr:1070/stream",
               "metadata": "icy"
             },
@@ -253,6 +266,7 @@
               "id": "baba-radyo",
               "name": "Baba Radyo",
               "short": "BR",
+              "logo": "https://www.babaradyo.com/wp-content/uploads/2025/02/cropped-baba-slider-180x180.png",
               "streamUrl": "https://babaradyo.turkhosted.com/best/babaradyo.stream/playlist.m3u8",
               "metadata": "hls"
             }
@@ -288,6 +302,7 @@
               "id": "radyo-45-lik",
               "name": "Radyo 45'lik",
               "short": "R4",
+              "logo": "https://radyo45lik.com/wp-content/uploads/2022/11/45lik-logo_2020-sade_guncel-fav2.png",
               "streamUrl": "https://stream.radyo45lik.com:4545/",
               "metadata": "icy"
             },
@@ -372,6 +387,7 @@
               "id": "ntv-radyo",
               "name": "NTV Radyo",
               "short": "NR",
+              "logo": "https://cdn.ntvradyo.com.tr/touch-icon.png",
               "streamUrl": "https://dygedge.radyotvonline.net/ntvradyo/playlist.m3u8",
               "metadata": "hls"
             },
@@ -379,6 +395,7 @@
               "id": "a-haber",
               "name": "A Haber",
               "short": "AH",
+              "logo": "https://iahbr.tmgrup.com.tr/site/v2/i/apple-touch-icon-180x180.png",
               "streamUrl": "https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8",
               "metadata": "hls"
             },
@@ -393,6 +410,7 @@
               "id": "haberturk-radyo",
               "name": "Habertürk Radyo",
               "short": "HR",
+              "logo": "https://www.haberturkradyo.com.tr/wp-content/themes/musicclub-v1-06/images/favicons/apple-icon-180x180.png",
               "streamUrl": "https://haberturkradyo.radyotvonline.net/haberturkradyo",
               "metadata": "none"
             },
@@ -400,6 +418,7 @@
               "id": "cnn-turk-radyo",
               "name": "CNN Türk Radyo",
               "short": "CT",
+              "logo": "https://static.cnnturk.com/images/favicon/apple-cnn-favicon-180x180.png?v=azure-20261007.2",
               "streamUrl": "https://moondigitaledge2.radyotvonline.net/cnnturk/playlist.m3u8",
               "metadata": "hls"
             },
@@ -407,6 +426,7 @@
               "id": "bloomberg-ht-radyo",
               "name": "Bloomberg HT Radyo",
               "short": "BH",
+              "logo": "https://www.bloomberght.com/images/common/favicon/180x180.png",
               "streamUrl": "https://ciner-live.ercdn.net/bloombergradyo/bloombergradyo_1.m3u8",
               "metadata": "hls"
             },
@@ -421,6 +441,7 @@
               "id": "tgrt-fm",
               "name": "TGRT FM",
               "short": "TF",
+              "logo": "https://tgrtfm.com.tr/wp-content/uploads/2025/01/favicon_512.png",
               "streamUrl": "https://icecasttgrt.ihlasdigitalassets.com/tgrtfm",
               "metadata": "icy"
             }
@@ -435,6 +456,7 @@
               "id": "a-spor",
               "name": "A Spor",
               "short": "AS",
+              "logo": "https://iaspr.tmgrup.com.tr/site/v3/i/apple-touch-icon-180x180.png",
               "streamUrl": "https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8",
               "metadata": "hls"
             },
@@ -449,6 +471,7 @@
               "id": "radyo-gol",
               "name": "Radyo Gol",
               "short": "RG",
+              "logo": "https://www.radyogol.com.tr/wp-content/uploads/2022/04/favicon-w180.png",
               "streamUrl": "https://edge1.radyotvonline.net/shoutcast/play/radyogol",
               "metadata": "none"
             }
@@ -567,6 +590,7 @@
               "id": "trt-kurd",
               "name": "TRT Kurdî",
               "short": "TK",
+              "logo": "https://trtkurdi.com.tr/kurdi_assets/img/fav-logo/180x180_kurdi.png",
               "streamUrl": "https://radio-trtradyo6.medya.trt.com.tr/master.m3u8",
               "metadata": "hls"
             }
