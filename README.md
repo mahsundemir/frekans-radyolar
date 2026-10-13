@@ -43,7 +43,7 @@ Bu proje Claude (yapay zekâ ajanı) ile birlikte geliştirildi. Tasarım, radyo
 
 Her dilin kategorileri o dilde adlandırılır. Kategori kimlikleri dosya genelinde benzersizdir (Türkçe dışındakiler dil koduyla başlar: `en-pop`), radyo kimlikleri de öyle (`en-capital`). Kürtçe (`ku`) arayüz çevirisi olmadığı için Türkçe arayüzle gösterilir.
 
-**Yeni dil/radyo kaynağı:** Radyolar topluluk dizini [radio-browser.info](https://www.radio-browser.info) ile resmî yayın adreslerinden derlendi. Her adres eklenirken `https` olarak açıldığı, ses verisi (ya da HLS parçası) geldiği ve HTML sayfası olmadığı denetlendi. Bu, yayının gerçekten o radyo olduğunu ya da her ülkeden açılacağını doğrulamaz: BBC'nin Birleşik Krallık dışına kapalı yayınları listeye alınmadı, bazı Alman ARD kenar sunucuları ise Türkiye'den bağlanırken zaman zaman kopuyor.
+**Yeni dil/radyo kaynağı:** Radyolar topluluk dizini [radio-browser.info](https://www.radio-browser.info) ile resmî yayın adreslerinden derlendi. Her adres eklenirken `https` olarak açıldığı, ses verisi (ya da HLS parçası) geldiği ve HTML sayfası olmadığı denetlendi. Bu, yayının gerçekten o radyo olduğunu ya da her ülkeden açılacağını doğrulamaz: BBC'nin Birleşik Krallık dışına kapalı yayınları listeye alınmadı, bazı Alman ARD kenar sunucuları ise Türkiye'den bağlanırken zaman zaman kopuyor. `de-n-joy` ve `de-wdr-4` son toplu denetimde bu yüzden başarısız olmuş, tek tek denendiğinde çalışmıştı; yine de ilk bozulanlar arasında olabilirler.
 
 ```
 version, updatedAt
