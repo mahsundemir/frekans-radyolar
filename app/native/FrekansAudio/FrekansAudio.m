@@ -14,6 +14,8 @@
 @property (nonatomic, copy) NSString *streamURL;
 @property (nonatomic, copy) NSString *colorHex;
 @property (nonatomic, copy) NSString *shortName;
+@property (nonatomic, copy) NSString *logoURL;
+@property (nonatomic, strong) NSData *logoData;
 @property (nonatomic, copy) NSString *trackTitle;
 @property (nonatomic, copy) NSString *trackArtist;
 @property (nonatomic, copy) NSArray *quickStations;
@@ -22,6 +24,7 @@
 @property (nonatomic, assign) float volumeBeforeFade;
 @property (nonatomic, assign) BOOL hasListeners;
 @property (nonatomic, assign) BOOL remoteReady;
+@property (nonatomic, assign) BOOL carPlay;  // iOS: CarPlay bağlıyken sistem oynatıcısı (Now Playing) açılır
 @end
 
 static void *kItemStatusContext = &kItemStatusContext;
@@ -41,6 +44,8 @@ RCT_EXPORT_MODULE()
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIsland:) name:@"FrekansIsland" object:nil];
     // Dynamic Island / kilit ekranı düğmeleri (iOS): oynat-duraklat, önceki, sonraki, radyo seç
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleRemote:) name:@"FrekansRemote" object:nil];
+    // CarPlay sahnesi bağlandı / ayrıldı (iOS, CarPlaySceneDelegate bildirir)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCarPlay:) name:@"FrekansCarPlay" object:nil];
     dispatch_async(dispatch_get_main_queue(), ^{ [self handlePendingURL]; });
   }
   return self;
@@ -62,17 +67,40 @@ RCT_EXPORT_MODULE()
 #pragma mark - JS API
 
 RCT_EXPORT_METHOD(play:(NSString *)urlString station:(NSString *)station stationId:(NSString *)stationId
-                  color:(NSString *)color short:(NSString *)shortName) {
+                  color:(NSString *)color short:(NSString *)shortName logo:(NSString *)logo) {
   self.colorHex = color;
   self.shortName = shortName;
+  [self setLogoAndPrepare:logo];
   [self startURL:urlString station:station stationId:stationId];
 }
 
 // Paylaşılan bağlantıyla açılan radyonun rengi/kısaltması JS'ten sonradan bildirilir
-RCT_EXPORT_METHOD(setStyle:(NSString *)color short:(NSString *)shortName) {
+RCT_EXPORT_METHOD(setStyle:(NSString *)color short:(NSString *)shortName logo:(NSString *)logo) {
   self.colorHex = color;
   self.shortName = shortName;
+  [self setLogoAndPrepare:logo];
   [self postNowPlaying];
+}
+
+// Logoyu indirir (paylaşılan klasöre); hazır olunca canlı etkinlik güncellenir
+- (void)setLogoAndPrepare:(NSString *)logo {
+  self.logoURL = logo.length ? logo : nil;
+  self.logoData = nil;
+  if (!self.logoURL) { return; }
+  __weak FrekansAudio *weakSelf = self;
+  NSString *url = self.logoURL;
+  EnsureLogo(url, ^(NSString *key, NSError *err) {
+    if (!key) { return; }
+    NSData *thumb = LogoThumbData([LogosDir() stringByAppendingPathComponent:[key stringByAppendingString:@".png"]]);
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (![weakSelf.logoURL isEqualToString:url]) { return; }  // radyo bu arada değişti
+      weakSelf.logoData = thumb;
+#if DEBUG
+      NSLog(@"[FrekansAudio] logo küçük görsel: %lu bayt", (unsigned long)thumb.length);
+#endif
+      [weakSelf postNowPlaying];
+    });
+  });
 }
 
 // Şu an native tarafta çalan radyo (JS sonradan açıldığında arayüzü eşitlemek için)
@@ -150,6 +178,30 @@ RCT_EXPORT_METHOD(getIslandInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromi
   });
 }
 
+// Araç ekranları (CarPlay / Android Auto) için radyo listesi + favoriler (JSON).
+// Kalıcı saklanır: uygulama arka planda, yalnızca araçtan açıldığında da liste hazır olsun.
+RCT_EXPORT_METHOD(setCatalog:(NSString *)json) {
+  [[NSUserDefaults standardUserDefaults] setObject:json forKey:@"frekans.carCatalog"];
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"FrekansCatalog" object:nil];
+}
+
+// CarPlay bağlıyken sistem Now Playing bilgisi ve uzaktan komutlar açılır, ayrılınca kapanır.
+// (iPhone'da kilit ekranı oynatıcısı normalde kapalı; bkz. updateNowPlayingTitle)
+- (void)handleCarPlay:(NSNotification *)n {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    self.carPlay = [n.userInfo[@"connected"] boolValue];
+#if TARGET_OS_IOS
+    if (self.carPlay) {
+      [self setupRemoteCommands];
+      [self updateNowPlayingTitle:self.trackTitle artist:self.trackArtist];
+    } else {
+      MPNowPlayingInfoCenter.defaultCenter.nowPlayingInfo = nil;
+    }
+    [self setRemoteCommandsEnabled:self.carPlay];
+#endif
+  });
+}
+
 // Genişletilmiş adadaki hızlı seçim için radyolar (JS: favoriler önce)
 RCT_EXPORT_METHOD(setQuick:(NSArray *)list) {
   self.quickStations = list;
@@ -178,56 +230,127 @@ RCT_EXPORT_METHOD(setQuick:(NSArray *)list) {
 
 // Uyku zamanlayıcı: native taraf zamanlar, böylece panel/ekran kapalıyken de çalışır.
 // 0 dakika zamanlayıcıyı iptal eder. Süre dolunca ses 5 saniyede kısılır ve yayın durur.
-// Radyo logosunun siyah-beyaz kopyasını üretir (iOS ve macOS ortak; ImageIO + CoreGraphics).
-// İndirilen görsel önbelleğe yazılır, sonuç file:// adresi olarak döner. Açılmayan görselde hata verir.
-RCT_EXPORT_METHOD(grayLogo:(NSString *)urlString
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
-  NSURL *url = [NSURL URLWithString:urlString];
-  if (!url || ![url.scheme isEqualToString:@"https"]) { reject(@"bad_url", @"Geçersiz logo adresi", nil); return; }
+#pragma mark - Logolar
+
+static NSString *LogoKey(NSString *urlString) {
   unsigned char digest[CC_SHA1_DIGEST_LENGTH];
   NSData *keyData = [urlString dataUsingEncoding:NSUTF8StringEncoding];
   CC_SHA1(keyData.bytes, (CC_LONG)keyData.length, digest);
   NSMutableString *name = [NSMutableString string];
   for (int i = 0; i < 10; i++) { [name appendFormat:@"%02x", digest[i]]; }
-  NSString *dir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject stringByAppendingPathComponent:@"FrekansLogos"];
-  [[NSFileManager defaultManager] createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
-  NSString *path = [dir stringByAppendingPathComponent:[name stringByAppendingString:@"-bw.png"]];
-  if ([[NSFileManager defaultManager] fileExistsAtPath:path]) { resolve([NSURL fileURLWithPath:path].absoluteString); return; }
+  return name;
+}
 
-  NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *resp, NSError *err) {
-    if (!data.length || err) { reject(@"download", @"Logo indirilemedi", err); return; }
+static NSString *LogosDir(void) {
+  NSString *base = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject stringByAppendingPathComponent:@"FrekansLogos"];
+  [[NSFileManager defaultManager] createDirectoryAtPath:base withIntermediateDirectories:YES attributes:nil error:nil];
+  return base;
+}
+
+static BOOL WritePNG(CGImageRef img, NSString *path) {
+  CGImageDestinationRef dst = CGImageDestinationCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:path], (__bridge CFStringRef)UTTypePNG.identifier, 1, NULL);
+  if (!dst) { return NO; }
+  CGImageDestinationAddImage(dst, img, NULL);
+  BOOL ok = CGImageDestinationFinalize(dst);
+  CFRelease(dst);
+  return ok;
+}
+
+// Logoyu indirir, renkli ve siyah-beyaz PNG olarak yazar: <anahtar>.png ve <anahtar>-bw.png
+static void EnsureLogo(NSString *urlString, void (^done)(NSString *key, NSError *err)) {
+  NSURL *url = [NSURL URLWithString:urlString];
+  if (!url || ![url.scheme isEqualToString:@"https"]) {
+    done(nil, [NSError errorWithDomain:@"Frekans" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Geçersiz logo adresi"}]);
+    return;
+  }
+  NSString *key = LogoKey(urlString);
+  NSString *dir = LogosDir();
+  NSString *color = [dir stringByAppendingPathComponent:[key stringByAppendingString:@".png"]];
+  NSString *bw = [dir stringByAppendingPathComponent:[key stringByAppendingString:@"-bw.png"]];
+  NSFileManager *fm = [NSFileManager defaultManager];
+  if ([fm fileExistsAtPath:color] && [fm fileExistsAtPath:bw]) { done(key, nil); return; }
+
+  [[[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *resp, NSError *err) {
+    if (!data.length || err) { done(nil, err ?: [NSError errorWithDomain:@"Frekans" code:2 userInfo:nil]); return; }
     CGImageSourceRef src = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
-    if (!src) { reject(@"decode", @"Logo açılamadı", nil); return; }
+    if (!src) { done(nil, [NSError errorWithDomain:@"Frekans" code:3 userInfo:nil]); return; }
     NSDictionary *opts = @{(id)kCGImageSourceCreateThumbnailFromImageAlways: @YES,
                            (id)kCGImageSourceCreateThumbnailWithTransform: @YES,
                            (id)kCGImageSourceThumbnailMaxPixelSize: @256};
     CGImageRef img = CGImageSourceCreateThumbnailAtIndex(src, 0, (__bridge CFDictionaryRef)opts);
     CFRelease(src);
-    if (!img) { reject(@"decode", @"Logo açılamadı", nil); return; }
+    if (!img) { done(nil, [NSError errorWithDomain:@"Frekans" code:3 userInfo:nil]); return; }
     size_t w = CGImageGetWidth(img), h = CGImageGetHeight(img);
     CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
     CGContextRef ctx = CGBitmapContextCreate(NULL, w, h, 8, w * 4, cs, (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
     CGColorSpaceRelease(cs);
     CGContextDrawImage(ctx, CGRectMake(0, 0, w, h), img);
-    CGImageRelease(img);
+    CGImageRef colorImg = CGBitmapContextCreateImage(ctx);  // renkli kopya (normalleştirilmiş RGBA)
     uint8_t *px = CGBitmapContextGetData(ctx);
     for (size_t i = 0; i < w * h; i++) {
       uint8_t *p = px + i * 4;  // önceden çarpılmış RGBA: parlaklık aynı oranda korunur
       uint8_t g = (uint8_t)(0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]);
       p[0] = p[1] = p[2] = g;
     }
-    CGImageRef out = CGBitmapContextCreateImage(ctx);
+    CGImageRef bwImg = CGBitmapContextCreateImage(ctx);
     CGContextRelease(ctx);
-    CGImageDestinationRef dst = CGImageDestinationCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:path], (__bridge CFStringRef)UTTypePNG.identifier, 1, NULL);
-    CGImageDestinationAddImage(dst, out, NULL);
-    BOOL ok = CGImageDestinationFinalize(dst);
-    CFRelease(dst);
-    CGImageRelease(out);
-    if (ok) { resolve([NSURL fileURLWithPath:path].absoluteString); }
-    else { reject(@"write", @"Logo kaydedilemedi", nil); }
-  }];
-  [task resume];
+    CGImageRelease(img);
+    BOOL ok = WritePNG(colorImg, color) && WritePNG(bwImg, bw);
+    CGImageRelease(colorImg);
+    CGImageRelease(bwImg);
+    done(ok ? key : nil, ok ? nil : [NSError errorWithDomain:@"Frekans" code:4 userInfo:nil]);
+  }] resume];
+}
+
+// Canlı etkinliğe giden küçük logo: ActivityKit durumu en çok ~4 KB olabildiği için beyaz zeminde
+// 56 px JPEG, boyut ~1,8 KB'ın altına inene kadar kalite düşürülür. Eklenti ağdan görsel yükleyemez.
+static NSData *LogoThumbData(NSString *colorPath) {
+  CGImageSourceRef src = CGImageSourceCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:colorPath], NULL);
+  if (!src) { return nil; }
+  CGImageRef img = CGImageSourceCreateImageAtIndex(src, 0, NULL);
+  CFRelease(src);
+  if (!img) { return nil; }
+  NSData *best = nil;
+  for (NSNumber *sizeN in @[@56, @48, @40]) {
+    int s = sizeN.intValue;
+    CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+    CGContextRef ctx = CGBitmapContextCreate(NULL, s, s, 8, s * 4, cs, (CGBitmapInfo)kCGImageAlphaNoneSkipLast);
+    CGColorSpaceRelease(cs);
+    CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);
+    CGContextFillRect(ctx, CGRectMake(0, 0, s, s));
+    CGFloat iw = CGImageGetWidth(img), ih = CGImageGetHeight(img);
+    CGFloat scale = MIN((s * 0.84) / iw, (s * 0.84) / ih);
+    CGFloat w = iw * scale, h = ih * scale;
+    CGContextSetInterpolationQuality(ctx, kCGInterpolationHigh);
+    CGContextDrawImage(ctx, CGRectMake((s - w) / 2, (s - h) / 2, w, h), img);
+    CGImageRef flat = CGBitmapContextCreateImage(ctx);
+    CGContextRelease(ctx);
+    for (NSNumber *q in @[@0.6, @0.45, @0.3]) {
+      NSMutableData *out = [NSMutableData data];
+      CGImageDestinationRef dst = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)out, (__bridge CFStringRef)UTTypeJPEG.identifier, 1, NULL);
+      CGImageDestinationAddImage(dst, flat, (__bridge CFDictionaryRef)@{(id)kCGImageDestinationLossyCompressionQuality: q});
+      BOOL ok = CGImageDestinationFinalize(dst);
+      CFRelease(dst);
+      if (ok && out.length > 0) {
+        best = out;
+        if (out.length <= 1800) { CGImageRelease(flat); CGImageRelease(img); return out; }
+      }
+    }
+    CGImageRelease(flat);
+  }
+  CGImageRelease(img);
+  return (best.length <= 2400) ? best : nil;
+}
+
+// Radyo logosunun siyah-beyaz kopyasını üretir (iOS ve macOS ortak). Sonuç file:// adresi; açılmayan görselde hata verir.
+RCT_EXPORT_METHOD(grayLogo:(NSString *)urlString
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  EnsureLogo(urlString, ^(NSString *key, NSError *err) {
+    if (!key) { reject(@"logo", @"Logo hazırlanamadı", err); return; }
+    NSString *path = [LogosDir() stringByAppendingPathComponent:[key stringByAppendingString:@"-bw.png"]];
+    resolve([NSURL fileURLWithPath:path].absoluteString);
+  });
 }
 
 RCT_EXPORT_METHOD(startSleepTimer:(double)minutes) {
@@ -329,6 +452,7 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
     @"title": self.trackTitle ?: @"",
     @"artist": self.trackArtist ?: @"",
     @"playing": @(self.player.timeControlStatus != AVPlayerTimeControlStatusPaused),
+    @"logoData": self.logoData ?: [NSNull null],
     @"quick": self.quickStations ?: @[],
   }];
 }
@@ -338,8 +462,11 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
   self.trackArtist = artist;
 #if TARGET_OS_IOS
   // iPhone'da sistemin kilit ekranı oynatıcısı gösterilmez; yalnızca kendi canlı etkinliğimiz çıkar.
-  MPNowPlayingInfoCenter.defaultCenter.nowPlayingInfo = nil;
-  return;
+  // İstisna: CarPlay bağlıyken araç ekranı bu bilgiyi kullanır.
+  if (!self.carPlay) {
+    MPNowPlayingInfoCenter.defaultCenter.nowPlayingInfo = nil;
+    return;
+  }
 #endif
   NSMutableDictionary *info = [NSMutableDictionary dictionary];
   info[MPMediaItemPropertyTitle] = title.length ? title : (self.station ?: @"Frekans");
@@ -351,7 +478,7 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
 
 - (void)setupRemoteCommands {
 #if TARGET_OS_IOS
-  return;  // iPhone: sistem oynatıcısı için uzaktan komut kaydedilmez
+  if (!self.carPlay) { return; }  // iPhone: yalnızca CarPlay bağlıyken uzaktan komut kaydedilir
 #endif
   if (self.remoteReady) { return; }
   self.remoteReady = YES;
@@ -369,6 +496,14 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
     [weakSelf emit:@"onRemote" body:@{@"command": @"next"}]; return MPRemoteCommandHandlerStatusSuccess; }];
   [c.previousTrackCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent *e) {
     [weakSelf emit:@"onRemote" body:@{@"command": @"previous"}]; return MPRemoteCommandHandlerStatusSuccess; }];
+}
+
+- (void)setRemoteCommandsEnabled:(BOOL)on {
+  if (!self.remoteReady) { return; }
+  MPRemoteCommandCenter *c = MPRemoteCommandCenter.sharedCommandCenter;
+  for (MPRemoteCommand *cmd in @[c.playCommand, c.pauseCommand, c.togglePlayPauseCommand, c.nextTrackCommand, c.previousTrackCommand]) {
+    cmd.enabled = on;
+  }
 }
 
 #pragma mark - Observers

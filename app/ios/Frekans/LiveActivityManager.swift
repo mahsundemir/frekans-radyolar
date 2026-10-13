@@ -53,6 +53,7 @@ final class LiveActivityManager {
       title: info["title"] as? String ?? "",
       artist: info["artist"] as? String ?? "",
       playing: info["playing"] as? Bool ?? true,
+      logoData: info["logoData"] as? Data,
       quick: (info["quick"] as? [[String: Any]] ?? []).map {
         FrekansActivityAttributes.Quick(
           id: $0["id"] as? String ?? "", short: $0["short"] as? String ?? "",

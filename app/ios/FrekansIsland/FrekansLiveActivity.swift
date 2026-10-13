@@ -23,22 +23,39 @@ extension Color {
   }
 }
 
-struct Monogram: View {
-  let state: FrekansActivityAttributes.ContentState
+// Radyo kutusu: logo varsa beyaz zeminde logo, yoksa baş harfler.
+// Logo, uygulamanın canlı etkinlik durumuna koyduğu küçük JPEG'dir (eklenti ağdan görsel yükleyemez).
+// Hızlı radyo düğmeleri logo taşımaz, baş harfli gri daire olarak görünür.
+struct LogoTile: View {
+  var logoData: Data? = nil
+  let short: String
+  let colorHex: String
   var size: CGFloat = 40
+  var active: Bool = true
+  var circle: Bool = false
 
   var body: some View {
-    Text(state.short)
-      .font(.system(size: size * 0.36, weight: .heavy))
-      .foregroundStyle(Color.ink(onHex: state.colorHex))
-      .frame(width: size, height: size)
-      .background(Color(hex: state.colorHex), in: RoundedRectangle(cornerRadius: size * 0.3))
+    let shape = RoundedRectangle(cornerRadius: circle ? size / 2 : size * 0.3)
+    if let data = logoData, let img = UIImage(data: data) {
+      Image(uiImage: img)
+        .resizable()
+        .scaledToFit()
+        .frame(width: size, height: size)
+        .clipShape(shape)
+    } else {
+      Text(short)
+        .font(.system(size: size * 0.36, weight: .heavy))
+        .foregroundStyle(active ? Color.ink(onHex: colorHex) : Color(hex: "#A29EB5"))
+        .frame(width: size, height: size)
+        .background(active ? Color(hex: colorHex) : Color(hex: "#2B2836"), in: shape)
+    }
   }
 }
 
 // Oynarken kare kare değişen ses dalgası (durum güncellemeleriyle ilerler); duraklatılınca düz.
 struct WaveGlyph: View {
   let state: FrekansActivityAttributes.ContentState
+  var color: Color? = nil
 
   private static let frames: [[CGFloat]] = [
     [5, 12, 8, 14], [11, 6, 14, 7], [7, 14, 5, 11], [13, 8, 12, 5],
@@ -49,7 +66,7 @@ struct WaveGlyph: View {
     HStack(alignment: .center, spacing: 2) {
       ForEach(0..<4, id: \.self) { i in
         Capsule()
-          .fill(Color(hex: state.colorHex))
+          .fill(color ?? Color(hex: state.colorHex))
           .frame(width: 3, height: heights[i])
       }
     }
@@ -57,108 +74,93 @@ struct WaveGlyph: View {
   }
 }
 
-struct NowPlayingText: View {
-  let state: FrekansActivityAttributes.ContentState
-
-  var body: some View {
-    VStack(alignment: .leading, spacing: 2) {
-      Text(state.name)
-        .font(.system(size: 16, weight: .bold))
-        .lineLimit(1)
-      Text(state.ticker.isEmpty ? subtitle : state.ticker)
-        .font(.system(size: 13, weight: .medium, design: .monospaced))
-        .foregroundStyle(.secondary)
-        .lineLimit(1)
-    }
-  }
-
-  private var subtitle: String {
-    let song = [state.artist, state.title].filter { !$0.isEmpty }.joined(separator: " — ")
-    return song.isEmpty ? "Canlı yayın" : song
-  }
+private func songLine(_ s: FrekansActivityAttributes.ContentState) -> String {
+  let song = [s.artist, s.title].filter { !$0.isEmpty }.joined(separator: " — ")
+  return song.isEmpty ? "Canlı yayın" : song
 }
 
-// Oynat/duraklat, önceki, sonraki düğmeleri
+// Önceki / oynat-duraklat / sonraki
 struct TransportControls: View {
   let state: FrekansActivityAttributes.ContentState
+  var ink: Color? = nil
+  var accent: Color? = nil
+  var iconColor: Color = .white
 
   var body: some View {
-    let accent = Color(hex: state.colorHex)
-    HStack(spacing: 28) {
+    let accentColor = accent ?? Color(hex: state.colorHex)
+    let inkColor = ink ?? Color.ink(onHex: state.colorHex)
+    HStack(spacing: 22) {
       Button(intent: PreviousStationIntent()) {
-        Image(systemName: "backward.fill").font(.system(size: 18, weight: .bold))
-          .frame(width: 44, height: 40)
+        Image(systemName: "backward.fill").font(.system(size: 17, weight: .bold))
+          .frame(width: 34, height: 36)
       }
       Button(intent: TogglePlaybackIntent()) {
         Image(systemName: state.playing ? "pause.fill" : "play.fill")
-          .font(.system(size: 20, weight: .bold))
-          .foregroundStyle(Color.ink(onHex: state.colorHex))
-          .frame(width: 56, height: 40)
-          .background(accent, in: Capsule())
+          .font(.system(size: 19, weight: .bold))
+          .foregroundStyle(inkColor)
+          .frame(width: 52, height: 36)
+          .background(accentColor, in: Capsule())
       }
       Button(intent: NextStationIntent()) {
-        Image(systemName: "forward.fill").font(.system(size: 18, weight: .bold))
-          .frame(width: 44, height: 40)
+        Image(systemName: "forward.fill").font(.system(size: 17, weight: .bold))
+          .frame(width: 34, height: 36)
       }
     }
     .buttonStyle(.plain)
-    .foregroundStyle(.white)
+    .foregroundStyle(iconColor)
   }
 }
 
-// Hızlı radyo seçimi (favoriler önce)
-struct QuickStations: View {
-  let state: FrekansActivityAttributes.ContentState
+// Hızlı radyo düğmesi (logo ya da baş harfler)
+struct QuickChip: View {
+  let quick: FrekansActivityAttributes.Quick
 
   var body: some View {
-    HStack(spacing: 12) {
-      ForEach(state.quick, id: \.id) { q in
-        Button(intent: PlayStationIntent(stationId: q.id)) {
-          Text(q.short)
-            .font(.system(size: 12, weight: .heavy))
-            .foregroundStyle(Color.ink(onHex: q.colorHex))
-            .frame(width: 34, height: 34)
-            .background(Color(hex: q.colorHex), in: Circle())
-            .overlay(Circle().stroke(.white, lineWidth: q.id == state.stationId ? 2.5 : 0).padding(-3))
-        }
-        .buttonStyle(.plain)
-      }
+    Button(intent: PlayStationIntent(stationId: quick.id)) {
+      LogoTile(short: quick.short, colorHex: quick.colorHex, size: 28, active: false, circle: true)
     }
+    .buttonStyle(.plain)
   }
 }
 
-// Kilit ekranı kartı: radyonun rengiyle dolu
+// Kilit ekranı kartı: radyonun rengiyle dolu; logo, ad, kayan şarkı, dalga ve kontroller
 struct LockScreenView: View {
   let state: FrekansActivityAttributes.ContentState
 
   var body: some View {
     let ink = Color.ink(onHex: state.colorHex)
-    let song = [state.artist, state.title].filter { !$0.isEmpty }.joined(separator: " — ")
-    HStack(spacing: 12) {
-      Text(state.short)
-        .font(.system(size: 16, weight: .heavy))
-        .foregroundStyle(Color(hex: state.colorHex))
-        .frame(width: 44, height: 44)
-        .background(ink, in: RoundedRectangle(cornerRadius: 13))
-      VStack(alignment: .leading, spacing: 2) {
-        Text(state.name).font(.system(size: 17, weight: .heavy)).lineLimit(1)
-        Text(state.ticker.isEmpty ? (song.isEmpty ? "Canlı yayın" : song) : state.ticker)
-          .font(.system(size: 13, weight: .medium, design: .monospaced)).lineLimit(1).opacity(0.85)
+    VStack(spacing: 10) {
+      HStack(spacing: 12) {
+        Group {
+          if state.logoData != nil {
+            LogoTile(logoData: state.logoData, short: state.short, colorHex: state.colorHex, size: 52)
+          } else {
+            Text(state.short)
+              .font(.system(size: 18, weight: .heavy))
+              .foregroundStyle(Color(hex: state.colorHex))
+              .frame(width: 52, height: 52)
+              .background(ink, in: RoundedRectangle(cornerRadius: 15))
+          }
+        }
+        VStack(alignment: .leading, spacing: 2) {
+          HStack(spacing: 6) {
+            Circle().fill(ink).frame(width: 7, height: 7)
+            Text("CANLI").font(.system(size: 10, weight: .bold)).tracking(1.4).opacity(0.85)
+          }
+          Text(state.name).font(.system(size: 22, weight: .heavy)).lineLimit(1)
+          Text(state.ticker.isEmpty ? songLine(state) : state.ticker)
+            .font(.system(size: 12, weight: .medium, design: .monospaced)).lineLimit(1).opacity(0.85)
+        }
+        Spacer(minLength: 0)
+        WaveGlyph(state: state, color: ink)
       }
-      Spacer()
-      WaveGlyph(state: state)
-        .colorMultiply(ink)
-      Button(intent: TogglePlaybackIntent()) {
-        Image(systemName: state.playing ? "pause.fill" : "play.fill")
-          .font(.system(size: 18, weight: .bold))
-          .foregroundStyle(Color(hex: state.colorHex))
-          .frame(width: 44, height: 44)
-          .background(ink, in: Circle())
-      }
-      .buttonStyle(.plain)
+      TransportControls(
+        state: state, ink: Color(hex: state.colorHex), accent: ink, iconColor: ink)
     }
     .foregroundStyle(ink)
-    .padding(16)
+    .padding(.horizontal, 16)
+    .padding(.top, 14)
+    .padding(.bottom, 10)
     .activityBackgroundTint(Color(hex: state.colorHex))
     .widgetURL(URL(string: "frekans://radyo/\(state.stationId)"))
   }
@@ -170,26 +172,39 @@ struct FrekansLiveActivity: Widget {
       LockScreenView(state: context.state)
     } dynamicIsland: { context in
       let c = context.state
+      // Hızlı radyolar: çalan hariç ilk 4; ikisi solda, ikisi sağda
+      let others = c.quick.filter { $0.id != c.stationId }
+      let left = Array(others.prefix(2))
+      let right = Array(others.dropFirst(2).prefix(2))
       return DynamicIsland {
+        // Genişletilmiş ada en çok ~160 pt: kamera satırı + ad/şarkı + tek satırlık kontroller (≈140 pt)
         DynamicIslandExpandedRegion(.leading) {
-          Monogram(state: c, size: 44)
-        }
-        DynamicIslandExpandedRegion(.center) {
-          NowPlayingText(state: c)
+          LogoTile(logoData: c.logoData, short: c.short, colorHex: c.colorHex, size: 40)
         }
         DynamicIslandExpandedRegion(.trailing) {
           WaveGlyph(state: c)
         }
-        DynamicIslandExpandedRegion(.bottom) {
-          VStack(spacing: 10) {
-            TransportControls(state: c)
-            if !c.quick.isEmpty {
-              QuickStations(state: c)
-            }
+        DynamicIslandExpandedRegion(.center) {
+          VStack(spacing: 1) {
+            Text(c.name)
+              .font(.system(size: 15, weight: .bold))
+              .lineLimit(1)
+            Text(c.ticker.isEmpty ? songLine(c) : c.ticker)
+              .font(.system(size: 12, weight: .medium, design: .monospaced))
+              .foregroundStyle(.secondary)
+              .lineLimit(1)
           }
         }
+        DynamicIslandExpandedRegion(.bottom) {
+          HStack(spacing: 10) {
+            HStack(spacing: 8) { ForEach(left, id: \.id) { QuickChip(quick: $0) } }
+            TransportControls(state: c)
+            HStack(spacing: 8) { ForEach(right, id: \.id) { QuickChip(quick: $0) } }
+          }
+          .frame(maxWidth: .infinity)
+        }
       } compactLeading: {
-        Monogram(state: c, size: 22)
+        LogoTile(logoData: c.logoData, short: c.short, colorHex: c.colorHex, size: 24)
       } compactTrailing: {
         HStack(spacing: 4) {
           WaveGlyph(state: c)

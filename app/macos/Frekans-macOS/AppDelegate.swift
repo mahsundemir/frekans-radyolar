@@ -121,8 +121,8 @@ final class IslandController: NSObject, NSWindowDelegate {
 
   private let earWidth: CGFloat = 130
   // Genişlemiş ada iki boyutta: kısa kart (iOS Dynamic Island'daki gibi) ve uzun liste paneli
-  private let cardSize = NSSize(width: 400, height: 196)
-  private let tallSize = NSSize(width: 372, height: 700)
+  private let cardSize = NSSize(width: 400, height: 218)
+  private let tallSize = NSSize(width: 400, height: 568)
   private(set) var tall = false
   private var notchWidth: CGFloat = 0
   private var notchHeight: CGFloat = 0

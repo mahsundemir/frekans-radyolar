@@ -51,6 +51,7 @@ export default function MacCompact({
           />
         </View>
       )}
+      <View style={[styles.glow, {backgroundColor: st.color}]} />
     </View>
   );
 }
@@ -59,5 +60,6 @@ const styles = StyleSheet.create({
   root: {flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#000'},
   left: {flexDirection: 'row', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 8},
   right: {alignItems: 'center', justifyContent: 'center'},
+  glow: {position: 'absolute', left: 12, right: 12, bottom: 0, height: 2, borderRadius: 2, opacity: 0.5},
   text: {color: colors.text, fontSize: 12, fontWeight: '600'},
 });

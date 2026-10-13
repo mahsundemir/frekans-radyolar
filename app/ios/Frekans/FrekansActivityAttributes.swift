@@ -1,4 +1,5 @@
 import ActivityKit
+import Foundation
 
 // Uygulama ve Dynamic Island eklentisi bu dosyayı birlikte derler.
 struct FrekansActivityAttributes: ActivityAttributes {
@@ -17,6 +18,7 @@ struct FrekansActivityAttributes: ActivityAttributes {
     var title: String
     var artist: String
     var playing: Bool
+    var logoData: Data? = nil  // küçük JPEG logo (≈1,8 KB); yoksa baş harfler gösterilir
     var quick: [Quick]
     // Kayan yazı ve ses dalgası animasyonu için uygulama tarafından periyodik güncellenir
     var eq: Int = 0

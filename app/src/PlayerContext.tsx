@@ -11,6 +11,8 @@ import {AppState, NativeEventEmitter, NativeModules} from 'react-native';
 import {loadJson, saveJson} from './storage';
 import {inkFor} from './theme';
 import {bundledStations, fetchStations, flatten} from './stations';
+import {detectLanguage, localeOf, translate} from './i18n';
+import type {Key, Vars} from './i18n';
 import type {
   FlatStation,
   NowPlaying,
@@ -32,11 +34,15 @@ type Prefs = {
   lastId: string | null;
   saver?: boolean;
   colors?: Record<string, string>;
+  language?: string;
 };
 
 type Ctx = {
   file: StationsFile;
-  stations: FlatStation[]; // etkin radyolar
+  language: string; // yayın dili (stations.json dil kodu); arayüz dili de buna göre
+  setLanguage: (code: string) => void;
+  t: (key: Key, vars?: Vars) => string;
+  stations: FlatStation[]; // seçili yayın dilindeki etkin radyolar
   all: FlatStation[];
   enabled: Record<string, boolean>;
   favorites: string[];
@@ -87,6 +93,9 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   const [hydrated, setHydrated] = useState(false);
   const [sleepEnd, setSleepEnd] = useState<number | null>(null);
   const [saver, setSaverState] = useState(false);
+  const [language, setLanguageState] = useState<string>(detectLanguage());
+  const languageRef = useRef(language);
+  languageRef.current = language;
   const metaRef = useRef<NowPlaying | null>(null);
   const lastRefresh = useRef(0);
   const fileRef = useRef(file);
@@ -106,9 +115,14 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   );
   const allRef = useRef(all);
   allRef.current = all;
+  // Listede yalnızca seçili yayın dilinin radyoları gezilir (önceki/sonraki, hızlı seçim, ana ekran)
   const stations = useMemo(
-    () => all.filter(s => enabled[s.id] !== false),
-    [all, enabled],
+    () => all.filter(s => s.languageCode === language && enabled[s.id] !== false),
+    [all, enabled, language],
+  );
+  const t = useCallback(
+    (key: Key, vars?: Vars) => translate(language, key, vars),
+    [language],
   );
 
   // Açılışta kayıtlı ayarları ve önbellekteki listeyi yükle
@@ -139,7 +153,14 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
           const last = flatten(list).find(s => s.id === prefs.lastId);
           if (last) {
             setCurrent(last);
+            // Dil seçimi kaydedilmemişse (eski sürümden gelen), son dinlenen radyonun dili
+            if (!prefs.language) {
+              setLanguageState(last.languageCode);
+            }
           }
+        }
+        if (prefs.language && list.languages.some(l => l.code === prefs.language)) {
+          setLanguageState(prefs.language);
         }
       }
       setHydrated(true);
@@ -164,17 +185,19 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
       lastId: current?.id ?? null,
       saver,
       colors: colorOf,
+      language,
     } satisfies Prefs);
-  }, [hydrated, enabled, favorites, volume, current, saver, colorOf]);
+  }, [hydrated, enabled, favorites, volume, current, saver, colorOf, language]);
 
   const select = useCallback((s: FlatStation) => {
+    setLanguageState(s.languageCode); // başka dilden bir radyo (ör. paylaşılan bağlantı) dili de getirir
     setCurrent(s);
     setMeta(null);
     metaRef.current = null;
     setHistory([]);
     setError(null);
     setStatus('buffering');
-    Native?.play(s.streamUrl, s.name, s.id, s.color, s.short);
+    Native?.play(s.streamUrl, s.name, s.id, s.color, s.short, s.logo ?? '');
   }, []);
 
   // Native tarafta zaten çalan (paylaşılan bağlantıyla açılan) radyoyu arayüze yansıt; yeniden çalmaz
@@ -183,16 +206,17 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     const station: FlatStation = known ?? {
       id: req.id,
       name: req.name,
-      short: req.name.slice(0, 2).toLocaleUpperCase('tr'),
+      short: req.name.slice(0, 2).toLocaleUpperCase(localeOf(languageRef.current)),
       streamUrl: req.url,
       metadata: 'none',
       color: '#FF5B4A',
       ink: '#17141F',
       categoryId: 'shared',
-      categoryName: 'Paylaşılan',
-      languageCode: 'tr',
+      categoryName: translate(languageRef.current, 'sharedCategory'),
+      languageCode: languageRef.current,
     };
-    Native?.setStyle?.(station.color, station.short);
+    Native?.setStyle?.(station.color, station.short, station.logo ?? '');
+    setLanguageState(station.languageCode);
     setCurrent(station);
     setMeta(null);
     metaRef.current = null;
@@ -207,7 +231,8 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
         return;
       }
       const i = current ? stations.findIndex(s => s.id === current.id) : -1;
-      const n = (i + dir + stations.length) % stations.length;
+      // Çalan radyo seçili dilde değilse (dil değişti) yeni dilin başından/sonundan başla
+      const n = i < 0 ? (dir > 0 ? 0 : stations.length - 1) : (i + dir + stations.length) % stations.length;
       select(stations[n]);
     },
     [stations, current, select],
@@ -317,13 +342,34 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     return [...favs, ...rest].slice(0, 5);
   }, [favorites, stations]);
   useEffect(() => {
-    Native?.setQuick?.(quick.map(s => ({id: s.id, short: s.short, color: s.color})));
+    Native?.setQuick?.(
+      quick.map(s => ({id: s.id, short: s.short, color: s.color, logo: s.logo ?? ''})),
+    );
   }, [quick]);
+
+  // Araç ekranları (CarPlay / Android Auto) uygulama çalışmasa da radyoları listeleyebilsin diye
+  // liste ve favoriler native tarafa da yazılır; orada kalıcı saklanır.
+  useEffect(() => {
+    Native?.setCatalog?.(
+      JSON.stringify({
+        favorites,
+        stations: stations.map(s => ({
+          id: s.id,
+          name: s.name,
+          short: s.short,
+          color: s.color,
+          category: s.categoryName,
+          logo: s.logo ?? '',
+          url: s.streamUrl,
+        })),
+      }),
+    );
+  }, [stations, favorites]);
 
   // Çalan radyonun rengi değişirse canlı etkinlik de güncellensin
   useEffect(() => {
     if (current) {
-      Native?.setStyle?.(current.color, current.short);
+      Native?.setStyle?.(current.color, current.short, current.logo ?? '');
     }
   }, [current?.color]); // eslint-disable-line react-hooks/exhaustive-deps
 

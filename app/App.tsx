@@ -5,9 +5,8 @@ import {PlayerProvider} from './src/PlayerContext';
 import {colors} from './src/theme';
 import {useIsland} from './src/island';
 import ColorSheet from './src/ui/ColorSheet';
-import MacCard from './src/ui/MacCard';
 import MacCompact from './src/ui/MacCompact';
-import MacPanel from './src/ui/MacPanel';
+import MacIsland from './src/ui/MacIsland';
 import PhoneScreen from './src/ui/PhoneScreen';
 import StationsScreen from './src/ui/StationsScreen';
 
@@ -20,11 +19,7 @@ function MacApp() {
     <View style={{flex: 1, backgroundColor: '#000'}}>
       {island.expanded ? (
         <View style={{flex: 1, paddingTop: island.notchHeight}}>
-          {island.tall ? (
-            <MacPanel onCollapse={() => setIslandTall(false)} />
-          ) : (
-            <MacCard onOpenList={() => setIslandTall(true)} />
-          )}
+          <MacIsland tall={island.tall} onToggleList={() => setIslandTall(!island.tall)} />
         </View>
       ) : (
         <MacCompact notchWidth={island.notchWidth} width={island.collapsedWidth} />
