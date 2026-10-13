@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Easing, StyleProp, Text, TextStyle, View} from 'react-native';
+import {Animated, StyleProp, Text, TextStyle, View} from 'react-native';
+import {usePlayer} from '../PlayerContext';
 
 type Props = {
   text: string;
@@ -16,26 +17,34 @@ export default function Marquee({text, style, speed = 28, gap = 36}: Props) {
   const x = useRef(new Animated.Value(0)).current;
   const overflow = box > 0 && textW > box + 1;
 
+  // Pil tasarrufu: kayan yazı kapalı. Aksi halde saniyede ~15 adımla kayar
+  // (60 kare/sn JS animasyonu yerine; enerji tüketimi çok daha az).
+  const {saver} = usePlayer();
+  const animate = overflow && !saver;
+
   useEffect(() => {
     x.setValue(0);
-    if (!overflow) {
+    if (!animate) {
       return;
     }
     const dist = textW + gap;
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.delay(1400),
-        Animated.timing(x, {
-          toValue: -dist,
-          duration: (dist / speed) * 1000,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-      ]),
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [overflow, textW, gap, speed, x, text]);
+    const dt = 66;
+    let pos = 0;
+    let wait = Math.round(1400 / dt);
+    const id = setInterval(() => {
+      if (wait > 0) {
+        wait--;
+        return;
+      }
+      pos += (speed * dt) / 1000;
+      if (pos >= dist) {
+        pos = 0;
+        wait = Math.round(1400 / dt);
+      }
+      x.setValue(-pos);
+    }, dt);
+    return () => clearInterval(id);
+  }, [animate, textW, gap, speed, x, text]);
 
   const setIfChanged = (set: (n: number) => void, cur: number, next: number) => {
     if (Math.abs(next - cur) > 0.5) {
@@ -61,11 +70,11 @@ export default function Marquee({text, style, speed = 28, gap = 36}: Props) {
           left: 0,
           top: 0,
           flexDirection: 'row',
-          width: textW > 0 ? (overflow ? textW * 2 + gap : textW) : 4000,
+          width: textW > 0 ? (animate ? textW * 2 + gap : textW) : 4000,
           transform: [{translateX: x}],
         }}>
         <Text style={[style, {width: textW > 0 ? textW : undefined}]}>{text}</Text>
-        {overflow && (
+        {animate && (
           <Text style={[style, {width: textW, marginLeft: gap}]}>{text}</Text>
         )}
       </Animated.View>

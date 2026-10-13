@@ -76,6 +76,7 @@ export default function StationsScreen({onBack}: {onBack: () => void}) {
         <View style={styles.search}>
           <SearchIcon color={colors.muted} />
           <TextInput
+            {...({enableFocusRing: false} as object)}
             value={query}
             onChangeText={setQuery}
             placeholder="Radyo ara"
@@ -230,6 +231,17 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   refreshText: {color: colors.muted, fontSize: 13},
+  saverRow: {
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  saverTitle: {color: colors.text, fontSize: 14, fontWeight: '700'},
+  saverSub: {color: colors.muted, fontSize: 12, marginTop: 2},
   list: {paddingVertical: 12, gap: 12},
   groupHead: {flexDirection: 'row', alignItems: 'center', gap: 8, height: 28},
   groupDot: {width: 8, height: 8, borderRadius: 4},

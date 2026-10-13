@@ -118,6 +118,16 @@ RCT_EXPORT_METHOD(getCurrent:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseR
   if (n.userInfo) { [self emit:@"onIsland" body:n.userInfo]; }
 }
 
+// Mac adası: kart (kısa) ↔ liste paneli (uzun) geçişi
+RCT_EXPORT_METHOD(setIslandTall:(BOOL)tall) {
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"FrekansIslandRequest" object:nil userInfo:@{@"tall": @(tall)}];
+}
+
+// Pil tasarrufu: iOS canlı etkinlik güncellemeleri (kayan yazı/dalga karesi) durur
+RCT_EXPORT_METHOD(setEnergySaver:(BOOL)on) {
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"FrekansEnergy" object:nil userInfo:@{@"saver": @(on)}];
+}
+
 // macOS çentik adasının son durumu (JS açıldığında düzeni kurmak için)
 RCT_EXPORT_METHOD(getIslandInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
   NSDictionary *info = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"frekans.islandInfo"];
@@ -326,6 +336,11 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
 - (void)updateNowPlayingTitle:(NSString *)title artist:(NSString *)artist {
   self.trackTitle = title;
   self.trackArtist = artist;
+#if TARGET_OS_IOS
+  // iPhone'da sistemin kilit ekranı oynatıcısı gösterilmez; yalnızca kendi canlı etkinliğimiz çıkar.
+  MPNowPlayingInfoCenter.defaultCenter.nowPlayingInfo = nil;
+  return;
+#endif
   NSMutableDictionary *info = [NSMutableDictionary dictionary];
   info[MPMediaItemPropertyTitle] = title.length ? title : (self.station ?: @"Frekans");
   info[MPMediaItemPropertyArtist] = artist.length ? artist : (self.station ?: @"");
@@ -335,6 +350,9 @@ RCT_EXPORT_METHOD(setVolume:(double)volume) {
 }
 
 - (void)setupRemoteCommands {
+#if TARGET_OS_IOS
+  return;  // iPhone: sistem oynatıcısı için uzaktan komut kaydedilmez
+#endif
   if (self.remoteReady) { return; }
   self.remoteReady = YES;
   MPRemoteCommandCenter *c = MPRemoteCommandCenter.sharedCommandCenter;

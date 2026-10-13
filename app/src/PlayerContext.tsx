@@ -29,6 +29,7 @@ type Prefs = {
   favorites: string[];
   volume: number;
   lastId: string | null;
+  saver?: boolean;
 };
 
 type Ctx = {
@@ -44,6 +45,9 @@ type Ctx = {
   history: NowPlaying[];
   volume: number;
   refreshing: boolean;
+  quick: FlatStation[]; // adadaki hızlı seçim: favoriler önce, en çok 5
+  saver: boolean; // pil tasarrufu: animasyonlar ve canlı etkinlik güncellemeleri kapalı
+  setSaver: (on: boolean) => void;
   sleepEnd: number | null;
   setSleep: (minutes: number) => void;
   select: (s: FlatStation) => void;
@@ -73,6 +77,7 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
   const [refreshing, setRefreshing] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [sleepEnd, setSleepEnd] = useState<number | null>(null);
+  const [saver, setSaverState] = useState(false);
   const metaRef = useRef<NowPlaying | null>(null);
   const lastRefresh = useRef(0);
   const fileRef = useRef(file);
@@ -104,6 +109,8 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
       if (prefs) {
         setEnabledMap(prefs.enabled ?? {});
         setFavorites(prefs.favorites ?? []);
+        setSaverState(!!prefs.saver);
+        Native?.setEnergySaver?.(!!prefs.saver);
         if (typeof prefs.volume === 'number') {
           setVolumeState(prefs.volume);
         }
@@ -134,8 +141,9 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
       favorites,
       volume,
       lastId: current?.id ?? null,
+      saver,
     } satisfies Prefs);
-  }, [hydrated, enabled, favorites, volume, current]);
+  }, [hydrated, enabled, favorites, volume, current, saver]);
 
   const select = useCallback((s: FlatStation) => {
     setCurrent(s);
@@ -204,6 +212,11 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     Native?.setVolume(v);
   }, []);
 
+  const setSaver = useCallback((on: boolean) => {
+    setSaverState(on);
+    Native?.setEnergySaver?.(on);
+  }, []);
+
   const setSleep = useCallback((minutes: number) => {
     Native?.startSleepTimer(minutes);
     setSleepEnd(minutes > 0 ? Date.now() + minutes * 60000 : null);
@@ -253,20 +266,17 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     };
   }, [refresh]);
 
-  // Dynamic Island'daki hızlı radyo seçimi: favoriler önce, kalanı listeden, en çok 5
-  useEffect(() => {
+  // Dynamic Island / Mac adasındaki hızlı radyo seçimi: favoriler önce, kalanı listeden, en çok 5
+  const quick = useMemo(() => {
     const favs = favorites
       .map(id => stations.find(s => s.id === id))
       .filter((s): s is FlatStation => !!s);
     const rest = stations.filter(s => !favorites.includes(s.id));
-    Native?.setQuick?.(
-      [...favs, ...rest].slice(0, 5).map(s => ({
-        id: s.id,
-        short: s.short,
-        color: s.color,
-      })),
-    );
+    return [...favs, ...rest].slice(0, 5);
   }, [favorites, stations]);
+  useEffect(() => {
+    Native?.setQuick?.(quick.map(s => ({id: s.id, short: s.short, color: s.color})));
+  }, [quick]);
 
   // Native olaylar
   const stepRef = useRef(step);
@@ -333,6 +343,9 @@ export function PlayerProvider({children}: {children: React.ReactNode}) {
     history,
     volume,
     refreshing,
+    quick,
+    saver,
+    setSaver,
     sleepEnd,
     setSleep,
     select,

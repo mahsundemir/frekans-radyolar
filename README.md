@@ -8,7 +8,8 @@ Bu proje Claude (yapay zekâ ajanı) ile birlikte geliştirildi. Tasarım, radyo
 
 - **Oynatıcı:** Radyonun canlı yayını, arka planda çalma, uzaktan kontrol (kulaklık ve kilit ekranı tuşları: sonraki, önceki, oynat/duraklat).
 - **Şu an çalan şarkı:** Yayının kendi bilgisinden (ICY ve HLS ID3) okunur ve ekranda gösterilir. Bilgi vermeyen radyolarda radyo adı görünür.
-- **Mac çentik adası:** Mac'te uygulama ekranın üst ortasında, çentiğin bulunduğu yerde bir "ada" olarak durur. Daralmışken çentiğin solunda çalan radyo ve kayan şarkı adı, sağında ses dalgası görünür. Üzerine gelince genişleyip oynatıcıyı, aramayı ve radyo listesini açar. Menü çubuğundaki simgeye tıklayınca ada açık kalır (sabitlenir), sağ tık menüsünde "Çık" var. Çentiksiz Mac'lerde üst ortada küçük bir hap olarak görünür.
+- **Mac çentik adası:** Mac'te uygulama ekranın üst ortasında, çentiğin bulunduğu yerde bir "ada" olarak durur. Daralmışken çentiğin solunda çalan radyo ve kayan şarkı adı, sağında ses dalgası görünür. Üzerine gelince iPhone'daki Dynamic Island ile aynı düzende kısa bir kart açılır (radyo, kayan şarkı, dalga, oynat/önceki/sonraki, favori ve 5 radyoluk hızlı seçim). Kartın sağındaki liste düğmesi uzun paneli açar (arama, kategoriler, tüm radyolar, ayarlar); "Küçült" kartı geri getirir. Menü çubuğundaki simgeye tıklayınca ada açık kalır (sabitlenir), sağ tık menüsünde "Çık" var. Çentiksiz Mac'lerde üst ortada küçük bir hap olarak görünür.
+- **Kilit ekranı (iPhone):** Sistemin kendi "Şu an çalıyor" oynatıcısı gösterilmez, yalnızca uygulamanın canlı etkinliği çıkar. Bunun bedeli: kulaklık/kilit ekranı sistem tuşları çalışmaz, kontroller canlı etkinlikteki düğmelerdir.
 - **iPhone ana ekranı:** Oynatıcının altında radyo listesi durur. Favori yoksa tüm radyolar, favori varsa yalnızca favoriler görünür.
 - **Çalan radyo göstergesi:** Çalan radyonun yanında listelerde (iPhone, Mac, ayarlar) ses dalgası görünür.
 - **Uygulama simgesi:** Tasarım tuvalindeki simgeden üretildi ([assets/icon](app/assets/icon), `make-icon.swift`).
@@ -123,6 +124,19 @@ Testler: `npm test` (Jest).
 5. iPhone'da *Ayarlar > Canlı Etkinlikler* açık olmalı. Radyoyu çalıp ana ekrana çıkınca Dynamic Island'da görünür, uzun basınca genişler.
 
 Release derlemesi imzasız cihaz hedefi için derlendi ve JS paketi, eklenti ve yazı tipi içinde. Gerçek cihazda denenmedi.
+
+## Pil tüketimi: ölçme ve kontrol
+
+**Ölçmek için**
+- **iPhone:** Ayarlar > Pil'de uygulamanın ekran ve arka plan kullanımına bak. Cihaz bağlıyken Xcode'da Debug gezgininde *Energy* göstergesi, ayrıntı için Instruments'ta *Energy Log* / *Power Profiler* ve CPU için *Time Profiler* kullanılır. Enerji ölçümü için Release derlemesini (README'deki "Gerçek iPhone'da deneme") kullan, Debug sonuçları yanıltır.
+- **Mac:** Etkinlik Monitörü > *Enerji* sekmesinde "Energy Impact" ve "12 saatlik güç". Terminalde `sudo powermetrics --samplers cpu_power -i 5000`. Ayrıntı için Instruments'ta *Energy Efficiency*.
+- **Karşılaştırma:** Aynı radyoyu ekran kapalı 30 dakika çal, pil yüzdesini ve Ayarlar > Pil'i not et; sonra Pil tasarrufu açıkken tekrarla.
+- Henüz uygulamaya otomatik ölçüm (MetricKit) eklenmedi ve gerçek tüketim ölçülmedi.
+
+**Uygulamadaki kontroller**
+- **Pil tasarrufu** (Ayarlar > Radyolar): ses dalgaları ve kayan yazı durur, iPhone canlı etkinliğinin saniyede ~1 güncellemesi durur (yalnızca şarkı değişince güncellenir). iOS Düşük Güç Modu açıkken canlı etkinlik güncellemeleri aynı şekilde durur.
+- **Enerji açısından pahalı parçalar:** (1) canlı yayının kendisi (ağ ve ses çözme, kaçınılmaz); (2) canlı etkinliğin yaklaşık her 0,8 saniyede bir güncellenmesi (kayan yazı ve dalga için); (3) Mac'te adanın her zaman ekranda olması, dalga ve kayan yazı animasyonları. Mac animasyonları 60 kare/sn yerine saniyede ~9-15 adımla çalışacak şekilde azaltıldı.
+- Daha da azaltmak için: canlı etkinlik güncelleme aralığını uzat (`LiveActivityManager.swift`, 0,8 sn), dalga/kayan yazıyı yalnızca genişlemiş adada göster ya da düşük bit hızlı yayınları tercih et.
 
 ## Alınan kararlar
 

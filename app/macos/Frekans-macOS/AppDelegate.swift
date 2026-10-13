@@ -115,11 +115,15 @@ final class IslandController: NSObject, NSWindowDelegate {
   let container = HoverView()
   private(set) var expanded = false
   private(set) var pinned = false
+  var frozen = false  // yalnızca hata ayıklama: durumu sabit tutar
   private var collapseWork: DispatchWorkItem?
   private var clickMonitor: Any?
 
   private let earWidth: CGFloat = 130
-  private let expandedSize = NSSize(width: 372, height: 700)
+  // Genişlemiş ada iki boyutta: kısa kart (iOS Dynamic Island'daki gibi) ve uzun liste paneli
+  private let cardSize = NSSize(width: 400, height: 196)
+  private let tallSize = NSSize(width: 372, height: 700)
+  private(set) var tall = false
   private var notchWidth: CGFloat = 0
   private var notchHeight: CGFloat = 0
 
@@ -150,6 +154,9 @@ final class IslandController: NSObject, NSWindowDelegate {
     rootView.autoresizingMask = [.width, .height]
     container.addSubview(rootView)
 
+    NotificationCenter.default.addObserver(
+      self, selector: #selector(islandRequest(_:)), name: Notification.Name("FrekansIslandRequest"),
+      object: nil)
     NotificationCenter.default.addObserver(
       self, selector: #selector(screensChanged),
       name: NSApplication.didChangeScreenParametersNotification, object: nil)
@@ -186,13 +193,24 @@ final class IslandController: NSObject, NSWindowDelegate {
 
   private func frame(expanded: Bool) -> NSRect {
     let s = targetScreen()
+    let body = tall ? tallSize : cardSize
     let size =
       expanded
-      ? NSSize(width: expandedSize.width, height: expandedSize.height + notchHeight)
+      ? NSSize(width: body.width, height: body.height + notchHeight)
       : collapsedSize
     return NSRect(
       x: s.frame.midX - size.width / 2, y: s.frame.maxY - size.height, width: size.width,
       height: size.height)
+  }
+
+  // React tarafı kart ↔ uzun liste geçişini ister
+  @objc private func islandRequest(_ note: Notification) {
+    guard let wantTall = note.userInfo?["tall"] as? Bool, wantTall != tall else { return }
+    tall = wantTall
+    if expanded {
+      panel.setFrame(frame(expanded: true), display: true)
+    }
+    publish()
   }
 
   @objc private func screensChanged() {
@@ -237,11 +255,12 @@ final class IslandController: NSObject, NSWindowDelegate {
   }
 
   func expand() { setExpanded(true) }
-  func collapse() { if !pinned { setExpanded(false) } }
+  func collapse() { if !pinned && !frozen { setExpanded(false) } }
 
   private func setExpanded(_ on: Bool) {
     guard on != expanded else { return }
     expanded = on
+    if !on { tall = false }
     publish()  // JS düzeni hemen değiştirsin, pencere animasyonla büyüsün
     container.layer?.cornerRadius = on ? 26 : 12
     // Pencere tek hamlede boyutlanır: kare kare animasyon React'in yerleşim işlemleriyle çakışıp
@@ -261,6 +280,7 @@ final class IslandController: NSObject, NSWindowDelegate {
       "notchWidth": notchWidth,
       "notchHeight": notchHeight,
       "collapsedWidth": collapsedSize.width,
+      "tall": tall,
     ]
     UserDefaults.standard.set(info, forKey: "frekans.islandInfo")
     NotificationCenter.default.post(name: Notification.Name("FrekansIsland"), object: nil, userInfo: info)
@@ -318,8 +338,14 @@ extension AppDelegate {
       }
     }
     DispatchQueue.main.asyncAfter(deadline: .now() + 14) { snap() }
+    island.frozen = true  // gerçek fare/tıklama olayları durumu bozmasın
     DispatchQueue.main.asyncAfter(deadline: .now() + 16) { island.expand() }
     DispatchQueue.main.asyncAfter(deadline: .now() + 24) { snap() }
+    DispatchQueue.main.asyncAfter(deadline: .now() + 26) {
+      NotificationCenter.default.post(
+        name: Notification.Name("FrekansIslandRequest"), object: nil, userInfo: ["tall": true])
+    }
+    DispatchQueue.main.asyncAfter(deadline: .now() + 34) { snap() }
   }
 }
 #endif

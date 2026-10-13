@@ -11,6 +11,7 @@ final class LiveActivityManager {
   private var step = 0
   private var lastSong = ""
   private var timer: Timer?
+  private var saver = false
 
   func start() {
     guard !started else { return }
@@ -18,6 +19,19 @@ final class LiveActivityManager {
     // Önceki oturumdan kalan etkinlikleri kapat
     for old in Activity<FrekansActivityAttributes>.activities {
       Task { await old.end(nil, dismissalPolicy: .immediate) }
+    }
+    // Pil tasarrufu ya da Düşük Güç Modu: kayan yazı/dalga güncellemeleri durur, yalnızca şarkı değişince güncellenir
+    NotificationCenter.default.addObserver(
+      forName: Notification.Name("FrekansEnergy"), object: nil, queue: .main
+    ) { [weak self] note in
+      self?.saver = note.userInfo?["saver"] as? Bool ?? false
+      self?.updateTicker(playing: self?.base?.playing ?? false)
+      self?.push()
+    }
+    NotificationCenter.default.addObserver(
+      forName: .NSProcessInfoPowerStateDidChange, object: nil, queue: .main
+    ) { [weak self] _ in
+      self?.updateTicker(playing: self?.base?.playing ?? false)
     }
     NotificationCenter.default.addObserver(
       forName: Notification.Name("FrekansNowPlaying"), object: nil, queue: .main
@@ -57,7 +71,8 @@ final class LiveActivityManager {
 
   // Kayan yazı ve dalga animasyonu: oynarken yaklaşık her 0,8 sn'de bir kare ilerler
   private func updateTicker(playing: Bool) {
-    if playing {
+    let reduced = saver || ProcessInfo.processInfo.isLowPowerModeEnabled
+    if playing && !reduced {
       guard timer == nil else { return }
       let t = Timer(timeInterval: 0.8, repeats: true) { [weak self] _ in
         guard let self else { return }
@@ -88,9 +103,10 @@ final class LiveActivityManager {
   private func push() {
     guard var state = base else { return }
     let song = songText(state)
-    state.eq = step % 4
-    state.ticker = windowed(song, width: 24, step: step)
-    state.tickerShort = windowed(song, width: 7, step: step)
+    let s = (saver || ProcessInfo.processInfo.isLowPowerModeEnabled) ? 0 : step
+    state.eq = s % 4
+    state.ticker = windowed(song, width: 24, step: s)
+    state.tickerShort = windowed(song, width: 7, step: s)
     let content = ActivityContent(state: state, staleDate: nil)
     if let activity {
       Task { await activity.update(content) }

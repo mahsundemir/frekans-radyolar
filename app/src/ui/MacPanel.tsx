@@ -32,7 +32,7 @@ import StationsScreen from './StationsScreen';
 import Waveform from './Waveform';
 
 // Menü çubuğu paneli: canlı yayın kartı, kontroller, arama, kategori filtresi, radyo listesi
-export default function MacPanel() {
+export default function MacPanel({onCollapse}: {onCollapse?: () => void}) {
   const p = usePlayer();
   const [cat, setCat] = useState(ALL);
   const [query, setQuery] = useState('');
@@ -131,6 +131,7 @@ export default function MacPanel() {
       <View style={styles.search}>
         <SearchIcon color={colors.muted} />
         <TextInput
+          {...({enableFocusRing: false} as object)}
           value={query}
           onChangeText={setQuery}
           placeholder="Radyo ara"
@@ -209,6 +210,11 @@ export default function MacPanel() {
             {p.sleepEnd ? 'Uyku zamanlayıcı açık' : 'Uyku zamanlayıcı'}
           </Text>
         </Pressable>
+        {onCollapse && (
+          <Pressable onPress={onCollapse} style={styles.footBtn}>
+            <Text style={styles.footText}>Küçült</Text>
+          </Pressable>
+        )}
         <Pressable
           onPress={() => NativeModules.FrekansAudio?.quit()}
           style={styles.footBtn}>

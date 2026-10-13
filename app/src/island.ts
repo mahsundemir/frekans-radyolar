@@ -8,6 +8,7 @@ export type IslandInfo = {
   notchWidth: number; // 0: çentiksiz ekran
   notchHeight: number;
   collapsedWidth: number;
+  tall: boolean; // true: uzun liste paneli, false: kısa kart
 };
 
 // macOS çentik adası: üzerine gelince genişler. Native taraf durumu ve çentik ölçülerini bildirir.
@@ -17,6 +18,7 @@ export function useIsland(): IslandInfo {
     notchWidth: 0,
     notchHeight: 0,
     collapsedWidth: 240,
+    tall: false,
   });
   useEffect(() => {
     if (!Native) {
